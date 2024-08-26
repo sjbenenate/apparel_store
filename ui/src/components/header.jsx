@@ -6,19 +6,17 @@ import { CiUser } from 'react-icons/ci';
 
 export const Header = () => {
   return (
-    <Navbar expand="md" variant="light" bg="blue">
+    <Navbar expand="md" variant="dark" bg="dark" collapseOnSelect>
       <Container>
         <Navbar.Brand href="/">Apparel Store</Navbar.Brand>
-        <Navbar.Toggle />
-        <Navbar.Collapse id="header-navbar-nav">
-          <Nav>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto">
             <Nav.Item href="/cart">
-              {'Cart '}
-              <GiShoppingCart />
+              <GiShoppingCart /> Cart
             </Nav.Item>
             <Nav.Item href="/user">
-              {'User '}
-              <CiUser />
+              <CiUser /> Login
             </Nav.Item>
           </Nav>
         </Navbar.Collapse>

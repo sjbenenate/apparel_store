@@ -1,4 +1,5 @@
 import { Header } from './components/header';
+import { Footer } from './components/footer';
 import Container from 'react-bootstrap/Container';
 
 const App = () => {
@@ -10,6 +11,7 @@ const App = () => {
           <h1>Apparel Shop</h1>
         </Container>
       </main>
+      <Footer />
     </>
   );
 };
