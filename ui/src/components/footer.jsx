@@ -1,10 +1,17 @@
-import Container from 'react-bootstrap/esm/Container';
-import Navbar from 'react-bootstrap/Navbar';
+import { Row, Col, Container } from 'react-bootstrap';
 
 export const Footer = () => {
+  const year = new Date().getFullYear();
   return (
-    <Navbar>
-      <Container>Footer</Container>;
-    </Navbar>
+    <footer>
+      <Container className="text-center py-3">
+        <Row>
+          <Col>
+            <p>Copyright &copy; {year}</p>
+          </Col>
+        </Row>
+      </Container>
+      ;
+    </footer>
   );
 };
