@@ -8,7 +8,7 @@ const App = () => {
       <Header />
       <main>
         <Container className="py-3 bg-color-tertiary">
-          <h1>Apparel Shop</h1>
+          <h1>Apparel Outlet</h1>
         </Container>
       </main>
       <Footer />

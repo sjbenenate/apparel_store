@@ -8,7 +8,7 @@ export const Header = () => {
   return (
     <Navbar expand="md" data-bs-theme="dark" bg="dark" collapseOnSelect>
       <Container>
-        <Navbar.Brand href="/">Apparel Store</Navbar.Brand>
+        <Navbar.Brand href="/">Apparel Outlet</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
