@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-import './styles/bootswatch-materia-bootstrap.min.css';
+import './styles/bootstrap.min.css'; // Bootswatch.com solar theme
 import './styles/custom.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
