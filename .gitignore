@@ -25,3 +25,7 @@ yarn-error.log*
 
 # IDE
 .vscode
+
+
+# misc
+notes.txt
