@@ -2,19 +2,26 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/bootstrap.min.css'; // Bootswatch.com solar theme
 import './styles/custom.css';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import App from './App';
-import { NotFoundView } from './views/404_view';
 import reportWebVitals from './reportWebVitals';
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from 'react-router-dom';
+import App from './App';
+import { HomeView } from './views/home_view';
+import { NotFoundView } from './views/404_view';
+import { ProductView } from './views/product_view';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    errorElement: <NotFoundView />,
-    index: true,
-  },
-]);
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<App />} errorElement={<NotFoundView />}>
+      <Route index path="/" element={<HomeView />} />
+      <Route path="product/:productId" element={<ProductView />} />
+    </Route>
+  )
+);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

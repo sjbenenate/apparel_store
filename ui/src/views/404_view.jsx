@@ -5,9 +5,9 @@ export const NotFoundView = () => {
   console.error(routeError);
 
   return (
-    <div class="text-center">
-      <h2 class="display-1">Status 404</h2>
-      <p class="lead">The page you are looking for could not be found!</p>
+    <div className="text-center">
+      <h2 className="display-1">Status 404</h2>
+      <p className="lead">The page you are looking for could not be found!</p>
     </div>
   );
 };
