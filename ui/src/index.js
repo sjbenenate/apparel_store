@@ -2,13 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/bootstrap.min.css'; // Bootswatch.com solar theme
 import './styles/custom.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
+import { NotFoundView } from './views/404_view';
 import reportWebVitals from './reportWebVitals';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    errorElement: <NotFoundView />,
+    index: true,
+  },
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
