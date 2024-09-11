@@ -1,0 +1,13 @@
+.rating-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rating-container span {
+  flex-grow: 1;
+  flex-shrink: 0;
+}
+
+.rating-msg {
+  margin-left: 0.5em;
+}
