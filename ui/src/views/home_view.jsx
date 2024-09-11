@@ -4,7 +4,6 @@ import products from '../products.js';
 
 const newProductsList = (products) => {
   return products.map((pData) => {
-    console.debug(pData);
     return (
       <Col key={pData._id} xs={12} sm={6} md={4} lg={3}>
         <ProductCard product={pData} />
