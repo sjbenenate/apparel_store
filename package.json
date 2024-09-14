@@ -1,0 +1,20 @@
+{
+  "name": "apparel_store",
+  "version": "1.0.0",
+  "description": "eCommerce application using a MERN stack",
+  "main": "backend/main.js",
+  "scripts": {
+    "server": "nodemon backend/main",
+    "client": "npm run start --prefix ui",
+    "start": "concurrently --kill-others \"npm run server\" \"npm run client\""
+  },
+  "author": "Sarah Benenate",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "nodemon": "^3.1.4"
+  }
+}
