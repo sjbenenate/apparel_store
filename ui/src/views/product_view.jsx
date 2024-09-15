@@ -1,17 +1,37 @@
+import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Col, Row, Image, ListGroup } from 'react-bootstrap';
 import { Rating } from '../components/rating_widet';
-import products from '../products';
+//import products from '../products';
+import axios from 'axios';
 
 export const ProductView = () => {
   const { productId } = useParams();
-  const product = products.find((p) => p._id === productId);
-  console.debug(product);
-  return (
-    <div className="my-3 p-3">
-      <Link class="btn btn-outline-light my-3" to="/">
-        Back
-      </Link>
+  const [product, setProduct] = useState();
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      axios
+        .get(`/api/product/${productId}`)
+        .then((res) => {
+          if (!res.data.error) {
+            setProduct(res.data);
+          } else {
+            console.error(
+              `Error fetching product id ${productId}. ${res.data.reason}`
+            );
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    };
+
+    fetchProduct();
+  }, [productId]);
+
+  const productInfo = () => {
+    return (
       <Row>
         <Col md={4}>
           <Image src={product.image} alt={product.name} fluid />
@@ -52,6 +72,15 @@ export const ProductView = () => {
           </ListGroup>
         </Col>
       </Row>
+    );
+  };
+
+  return (
+    <div className="my-3 p-3">
+      <Link className="btn btn-outline-light my-3" to="/">
+        Back
+      </Link>
+      {product ? productInfo() : <Row>Loading...</Row>}
     </div>
   );
 };
