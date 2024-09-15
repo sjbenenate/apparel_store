@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "eCommerce application using a MERN stack",
   "main": "backend/main.js",
+  "type": "module",
   "scripts": {
+    "start": "node backend/main",
     "server": "nodemon backend/main",
     "client": "npm run start --prefix ui",
-    "start": "concurrently --kill-others \"npm run server\" \"npm run client\""
+    "dev": "concurrently --kill-others \"npm run server\" \"npm run client\""
   },
   "author": "Sarah Benenate",
   "license": "MIT",
