@@ -1,9 +1,12 @@
 import express from 'express';
 import env from 'dotenv';
 import products from './data/products.js';
+import { dbConnect } from './data/db_interface.js';
 
 env.config();
 const port = process.env.PORT || 5000;
+
+dbConnect();
 
 const sendError = (res, reason) => {
   res.json({
@@ -25,11 +28,15 @@ app.get('/api/products', (req, res) => {
 
 app.get('/api/product/:productId', (req, res) => {
   console.log('Get product route hit for id: ' + req.params.productId);
-  const product = products.find((p) => p._id === req.params.productId);
-  if (!product) {
+
+  try {
+    // search for product
+    //   const product = products.find((p) => p._id === req.params.productId);
+    // send product
+    //res.json(product);
+  } catch (err) {
+    console.error(err);
     sendError(res, 'product not found');
-  } else {
-    res.json(product);
   }
 });
 
