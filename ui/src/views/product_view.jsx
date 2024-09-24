@@ -6,81 +6,85 @@ import { Rating } from '../components/rating_widet';
 import axios from 'axios';
 
 export const ProductView = () => {
-  const { productId } = useParams();
-  const [product, setProduct] = useState();
+    const { productId } = useParams();
+    const [product, setProduct] = useState();
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      axios
-        .get(`/api/product/${productId}`)
-        .then((res) => {
-          if (!res.data.error) {
-            setProduct(res.data);
-          } else {
-            console.error(
-              `Error fetching product id ${productId}. ${res.data.reason}`
-            );
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+    useEffect(() => {
+        const fetchProduct = async () => {
+            axios
+                .get(`/api/product/${productId}`)
+                .then((res) => {
+                    if (!res.data.error) {
+                        setProduct(res.data);
+                    } else {
+                        console.error(
+                            `Error fetching product id ${productId}. ${res.data.reason}`
+                        );
+                    }
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        };
+
+        fetchProduct();
+    }, [productId]);
+
+    const productInfo = () => {
+        return (
+            <Row>
+                <Col md={4}>
+                    <Image src={product.image} alt={product.name} fluid />
+                </Col>
+                <Col md={4}>
+                    <ListGroup>
+                        <ListGroup.Item>
+                            <h3>{product.name}</h3>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            <Rating
+                                value={product.rating}
+                                msg={`${product.numReviews} reviews`}
+                            />
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            <p>{product.description}</p>
+                        </ListGroup.Item>
+                    </ListGroup>
+                </Col>
+                <Col md={4}>
+                    <ListGroup>
+                        <ListGroup.Item>
+                            <h5>${product.price}</h5>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            <p>
+                                {product.countInStock
+                                    ? 'In Stock'
+                                    : 'Not In Stock'}
+                            </p>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            <Button
+                                variant="success"
+                                type="button"
+                                disabled={product.countInStock === 0}
+                            >
+                                Add To Cart
+                            </Button>
+                        </ListGroup.Item>
+                    </ListGroup>
+                </Col>
+            </Row>
+        );
     };
 
-    fetchProduct();
-  }, [productId]);
-
-  const productInfo = () => {
     return (
-      <Row>
-        <Col md={4}>
-          <Image src={product.image} alt={product.name} fluid />
-        </Col>
-        <Col md={4}>
-          <ListGroup>
-            <ListGroup.Item>
-              <h3>{product.name}</h3>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Rating
-                value={product.rating}
-                msg={`${product.numReviews} reviews`}
-              />
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <p>{product.description}</p>
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-        <Col md={4}>
-          <ListGroup>
-            <ListGroup.Item>
-              <h5>${product.price}</h5>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <p>{product.countInStock ? 'In Stock' : 'Not In Stock'}</p>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Button
-                variant="success"
-                type="button"
-                disabled={product.countInStock === 0}
-              >
-                Add To Cart
-              </Button>
-            </ListGroup.Item>
-          </ListGroup>
-        </Col>
-      </Row>
+        <div className="my-3 p-3">
+            <Link className="btn btn-outline-light my-3" to="/">
+                Back
+            </Link>
+            {product ? productInfo() : <Row>Loading...</Row>}
+        </div>
     );
-  };
-
-  return (
-    <div className="my-3 p-3">
-      <Link className="btn btn-outline-light my-3" to="/">
-        Back
-      </Link>
-      {product ? productInfo() : <Row>Loading...</Row>}
-    </div>
-  );
 };
