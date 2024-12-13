@@ -12,9 +12,9 @@ import colors from 'colors';
 
 const deleteAll = async () => {
     try {
-        await productModel.deleteMany();
-        await userModel.deleteMany();
-        await orderModel.deleteMany();
+        await productModel.deleteMany({});
+        await userModel.deleteMany({});
+        await orderModel.deleteMany({});
     } catch (err) {
         throw err;
     }

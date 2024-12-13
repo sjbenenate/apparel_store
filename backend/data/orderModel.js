@@ -20,7 +20,7 @@ const orderItemSchema = new mongoose.Schema({
     productId: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: 'Product',
+        ref: 'product',
     },
 });
 
@@ -29,7 +29,7 @@ const orderSchema = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'User',
+            ref: 'user',
         },
         orderItems: [orderItemSchema],
         shippingAddressSchema,
@@ -55,6 +55,6 @@ const orderSchema = new mongoose.Schema(
     }
 );
 
-const orderModel = mongoose.model('Order', orderSchema);
+const orderModel = mongoose.model('order', orderSchema);
 
 export default orderModel;
