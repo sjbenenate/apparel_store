@@ -5,7 +5,7 @@ const reviewSchema = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'User',
+            ref: 'user',
         },
         heading: { type: String },
         comment: { type: String },
@@ -21,7 +21,7 @@ const productSchema = new mongoose.Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             required: true,
-            ref: 'User',
+            ref: 'user',
         },
         name: { type: String, required: true },
         image: { type: String, required: true },
@@ -39,5 +39,5 @@ const productSchema = new mongoose.Schema(
     }
 );
 
-const productModel = mongoose.model('Product', productSchema);
+const productModel = mongoose.model('product', productSchema);
 export default productModel;
