@@ -1,7 +1,7 @@
 import express from 'express';
 import env from 'dotenv';
-import products from './data/products.js';
-import { dbConnect } from './data/db_interface.js';
+import products from './data/products_seed.js';
+import dbConnect from './data/db_interface.js';
 
 env.config();
 const port = process.env.PORT || 5000;
