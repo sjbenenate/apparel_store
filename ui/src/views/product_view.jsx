@@ -12,10 +12,15 @@ export const ProductView = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             axios
-                .get(`/api/product/${productId}`)
+                .get(`/api/products/${productId}`)
                 .then((res) => {
                     if (!res.data.error) {
-                        setProduct(res.data);
+                        if (res.data.length < 1) {
+                            console.log(
+                                `No product returned for id ${productId} despite no errors in response body.`
+                            );
+                        }
+                        setProduct(res.data[0]);
                     } else {
                         console.error(
                             `Error fetching product id ${productId}. ${res.data.reason}`
