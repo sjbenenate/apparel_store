@@ -24,6 +24,6 @@ npm run dev
 
 ### Common Issues
 
-#### Database is timing out:
+#### Database timing out:
 
 -   Dynamic IP on laptop needs too be added to https://cloud.mongodb.com/ every time it changes.
