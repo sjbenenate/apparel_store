@@ -5,4 +5,7 @@ const sendError = (res, reason) => {
     });
 };
 
-export { sendError };
+const asyncHandler = (fn) => (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+};
+export { sendError, asyncHandler };
