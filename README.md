@@ -21,3 +21,9 @@ Loosely based on Udemey course by Brad Traversy
 ```
 npm run dev
 ```
+
+### Common Issues
+
+#### Database is timing out:
+
+-   Dynamic IP on laptop needs too be added to https://cloud.mongodb.com/ every time it changes.

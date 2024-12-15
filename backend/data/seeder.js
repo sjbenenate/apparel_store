@@ -22,7 +22,7 @@ const deleteAll = async () => {
 
 const seedData = async () => {
     try {
-        deleteAll();
+        await deleteAll();
         const createdUsers = await userModel.insertMany(users);
         const adminUsers = createdUsers.find(
             (user) => user.accessLevel === ACCESS_LEVELS.ADMIN
@@ -43,7 +43,7 @@ const seedData = async () => {
 
 const clearData = async () => {
     try {
-        deleteAll();
+        await deleteAll();
         console.log('Data has been cleared'.green.inverse);
         process.exit();
     } catch (err) {
