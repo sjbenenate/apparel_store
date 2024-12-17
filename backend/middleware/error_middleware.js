@@ -17,8 +17,7 @@ const errorHandler = (err, req, res, next) => {
 
     console.error(message);
 
-    res.statusCode = statusCode;
-    res.json({ message, stack });
+    res.status(statusCode).json({ message, stack });
 };
 
 export { UrlNotFound, errorHandler };

@@ -28,7 +28,10 @@ export const ProductView = () => {
                     }
                 })
                 .catch((err) => {
-                    console.error(err);
+                    const msg = err.response.data.message
+                        ? err.response.data.message
+                        : err.message;
+                    console.error(msg);
                 });
         };
 
