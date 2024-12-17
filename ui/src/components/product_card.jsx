@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Card } from 'react-bootstrap';
-import { Rating } from './rating_widet';
+import { Rating } from './rating_widget';
 
 export const ProductCard = ({ product }) => {
     const linkUrl = `/product/${product._id}`;

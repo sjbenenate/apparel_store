@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Col, Row, Image, ListGroup } from 'react-bootstrap';
-import { Rating } from '../components/rating_widet';
+import { Rating } from '../components/rating_widget';
 //import products from '../products';
 import axios from 'axios';
 
