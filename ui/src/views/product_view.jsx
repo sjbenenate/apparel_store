@@ -16,7 +16,7 @@ export const ProductView = () => {
                 .then((res) => {
                     if (res.status !== 200) {
                         console.error(
-                            `Error fetching product id ${productId}. ${res.data.reason}`
+                            `Error fetching product id ${productId}. ${res.message}`
                         );
                     } else {
                         if (res.data.length < 1) {

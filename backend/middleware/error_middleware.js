@@ -7,6 +7,8 @@ const UrlNotFound = (req, res, next) => {
 const errorHandler = (err, req, res, next) => {
     let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
     let message = err.message;
+    const stack =
+        process.env.NODE_ENVIRONMENT !== 'production' ? err.stack : '';
 
     if (err.kind === 'ObjectId' && err.name === 'CastError') {
         statusCode = 404;
@@ -16,9 +18,7 @@ const errorHandler = (err, req, res, next) => {
     console.error(message);
 
     res.statusCode = statusCode;
-    res.send(message);
-
-    //next(err);
+    res.json({ message, stack });
 };
 
 export { UrlNotFound, errorHandler };

@@ -1,9 +1,6 @@
 import express from 'express';
 import productModel from '../data/models/product_model.js';
-import {
-    sendError,
-    asyncHandler,
-} from '../middleware/async_handler_middleware.js';
+import { asyncHandler } from '../middleware/async_handler_middleware.js';
 
 let productRouter = express.Router();
 
