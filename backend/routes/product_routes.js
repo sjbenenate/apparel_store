@@ -1,6 +1,9 @@
 import express from 'express';
 import productModel from '../data/models/product_model.js';
-import { sendError, asyncHandler } from './request_utils.js';
+import {
+    sendError,
+    asyncHandler,
+} from '../middleware/async_handler_middleware.js';
 
 let productRouter = express.Router();
 
@@ -16,12 +19,12 @@ productRouter.get(
 productRouter.get(
     '/:productId',
     asyncHandler(async (req, res) => {
-        console.log('Get product route hit for id: ' + req.params.productId);
+        const id = req.params.productId;
+        console.log('Get product route hit for id: ' + id);
 
-        const product = await productModel.find({ _id: req.params.productId });
+        const product = await productModel.find({ _id: id });
         if (product.length < 1) {
-            console.error('product could not be found');
-            sendError(res, 'product could not be found');
+            throw new Error(`product could not be found for id: ${id}`);
         } else {
             res.json(product);
         }

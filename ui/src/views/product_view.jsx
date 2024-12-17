@@ -14,17 +14,17 @@ export const ProductView = () => {
             axios
                 .get(`/api/products/${productId}`)
                 .then((res) => {
-                    if (!res.data.error) {
-                        if (res.data.length < 1) {
-                            console.log(
-                                `No product returned for id ${productId} despite no errors in response body.`
-                            );
-                        }
-                        setProduct(res.data[0]);
-                    } else {
+                    if (res.status !== 200) {
                         console.error(
                             `Error fetching product id ${productId}. ${res.data.reason}`
                         );
+                    } else {
+                        if (res.data.length < 1) {
+                            console.log(
+                                `No product returned for id ${productId} despite good status code.`
+                            );
+                        }
+                        setProduct(res.data[0]);
                     }
                 })
                 .catch((err) => {
