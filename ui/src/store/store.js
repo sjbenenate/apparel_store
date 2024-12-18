@@ -4,8 +4,9 @@ import apiSlice from './api_slice';
 const store = configureStore({
     reducer: {
         [apiSlice.reducerPath]: apiSlice.reducer,
-        middleware: () => [apiSlice.middleware],
     },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(apiSlice.middleware),
     devTools: process.env.NODE_ENV !== 'production',
 });
 
