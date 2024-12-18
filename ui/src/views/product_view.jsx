@@ -1,44 +1,20 @@
-import { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Button, Col, Row, Image, ListGroup } from 'react-bootstrap';
 import { Rating } from '../components/rating_widget';
-//import products from '../products';
-import axios from 'axios';
+import { useGetProductInfoQuery } from '../store/api_products';
 
 export const ProductView = () => {
     const { productId } = useParams();
-    const [product, setProduct] = useState();
+    const {
+        data: queryData,
+        isLoading,
+        isError,
+    } = useGetProductInfoQuery(productId);
 
-    useEffect(() => {
-        const fetchProduct = async () => {
-            axios
-                .get(`/api/products/${productId}`)
-                .then((res) => {
-                    if (res.status !== 200) {
-                        console.error(
-                            `Error fetching product id ${productId}. ${res.message}`
-                        );
-                    } else {
-                        if (res.data.length < 1) {
-                            console.log(
-                                `No product returned for id ${productId} despite good status code.`
-                            );
-                        }
-                        setProduct(res.data[0]);
-                    }
-                })
-                .catch((err) => {
-                    const msg = err.response.data.message
-                        ? err.response.data.message
-                        : err.message;
-                    console.error(msg);
-                });
-        };
-
-        fetchProduct();
-    }, [productId]);
-
-    const productInfo = () => {
+    const productInfo = (product) => {
+        if (!product) {
+            return <Row>No Product to display </Row>;
+        }
         return (
             <Row>
                 <Col md={4}>
@@ -92,7 +68,9 @@ export const ProductView = () => {
             <Link className="btn btn-outline-light my-3" to="/">
                 Back
             </Link>
-            {product ? productInfo() : <Row>Loading...</Row>}
+            {isError ? <Row>Error loading product!</Row> : null}
+            {isLoading ? <Row>Loading...</Row> : null}
+            {queryData ? productInfo(queryData[0]) : null}
         </div>
     );
 };
