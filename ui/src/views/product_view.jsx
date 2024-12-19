@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Button, Col, Row, Image, ListGroup } from 'react-bootstrap';
 import { Rating } from '../components/rating_widget';
 import { useGetProductInfoQuery } from '../store/api_products';
+import Loader from '../components/loader.jsx';
 
 export const ProductView = () => {
     const { productId } = useParams();
@@ -69,7 +70,7 @@ export const ProductView = () => {
                 Back
             </Link>
             {isError ? <Row>Error loading product!</Row> : null}
-            {isLoading ? <Row>Loading...</Row> : null}
+            {isLoading ? <Loader /> : null}
             {queryData ? productInfo(queryData[0]) : null}
         </div>
     );
