@@ -2,10 +2,11 @@ import { Row, Col } from 'react-bootstrap';
 import { ProductCard } from '../components/product_card.jsx';
 import { useGetProductsQuery } from '../store/api_products.js';
 import Loader from '../components/loader.jsx';
+import Message from '../components/message.jsx';
 
 const newProductsList = (products) => {
-    if (products === undefined || products.length === 0) {
-        return <Col>No products!</Col>;
+    if (!products) {
+        return null;
     }
     return products.map((pData) => {
         return (
@@ -22,6 +23,12 @@ export const HomeView = () => {
     return (
         <>
             <h1>New Products</h1>
+            {isError ? (
+                <Message
+                    variant="danger"
+                    children={'Error loading products!'}
+                />
+            ) : null}
             {isLoading ? <Loader /> : null}
             <Row>{newProductsList(products)}</Row>
         </>

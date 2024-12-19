@@ -3,6 +3,7 @@ import { Button, Col, Row, Image, ListGroup } from 'react-bootstrap';
 import { Rating } from '../components/rating_widget';
 import { useGetProductInfoQuery } from '../store/api_products';
 import Loader from '../components/loader.jsx';
+import Message from '../components/message.jsx';
 
 export const ProductView = () => {
     const { productId } = useParams();
@@ -69,7 +70,9 @@ export const ProductView = () => {
             <Link className="btn btn-outline-light my-3" to="/">
                 Back
             </Link>
-            {isError ? <Row>Error loading product!</Row> : null}
+            {isError ? (
+                <Message variant="danger">Error loading product!</Message>
+            ) : null}
             {isLoading ? <Loader /> : null}
             {queryData ? productInfo(queryData[0]) : null}
         </div>
