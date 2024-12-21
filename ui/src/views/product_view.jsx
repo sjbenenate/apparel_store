@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Form, Button, Col, Row, Image, ListGroup } from 'react-bootstrap';
 import { Rating } from '../components/rating_widget';
 import { useGetProductInfoQuery } from '../store/api_products';
@@ -11,6 +11,7 @@ import { addItemToCart } from '../store/cart_slice.js';
 export const ProductView = () => {
     const { productId } = useParams();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const [qty, setQty] = useState(1);
 
@@ -23,6 +24,7 @@ export const ProductView = () => {
     const addToCart = () => {
         console.log(`adding to cart`);
         dispatch(addItemToCart({ ...product, qty: Number(qty) }));
+        navigate('/cart');
     };
 
     const qtySelect = (qtyInStock) => {
