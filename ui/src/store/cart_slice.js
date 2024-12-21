@@ -2,10 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const FREE_SHIPPING = 100;
 
-const STORAGE_KEY = 'cartItems';
+const STORAGE_KEY = 'cart';
 
 const initialState = localStorage.getItem(STORAGE_KEY)
-    ? { cartItems: JSON.parse(localStorage.getItem(STORAGE_KEY)) }
+    ? JSON.parse(localStorage.getItem(STORAGE_KEY))
     : { cartItems: [] };
 
 const roundDecimals = (value) => {
@@ -43,10 +43,7 @@ const cartSlice = createSlice({
             }
             updateTotals(state);
             try {
-                localStorage.setItem(
-                    STORAGE_KEY,
-                    JSON.stringify(state.cartItems)
-                );
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             } catch (err) {
                 console.warn(err);
             }
