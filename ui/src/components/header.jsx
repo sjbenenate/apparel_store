@@ -5,8 +5,12 @@ import Navbar from 'react-bootstrap/Navbar';
 import { GiShoppingCart } from 'react-icons/gi';
 import { CiUser } from 'react-icons/ci';
 import logo from '../img/peacock_logo.png';
+import { useSelector } from 'react-redux';
+import { selectCartQty } from '../store/cart_slice';
 
 export const Header = () => {
+    const qtyItems = useSelector(selectCartQty);
+
     return (
         <Navbar expand="md" data-bs-theme="dark" bg="dark" collapseOnSelect>
             <Container>
@@ -32,6 +36,7 @@ export const Header = () => {
                         <LinkContainer to="/cart">
                             <Nav.Link>
                                 <GiShoppingCart /> Cart
+                                {qtyItems ? ` (${qtyItems})` : null}
                             </Nav.Link>
                         </LinkContainer>
                         <LinkContainer to="/login">
