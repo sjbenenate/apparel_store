@@ -2,8 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const FREE_SHIPPING = 100;
 
-const initialState = localStorage.getItem('cartInfo')
-    ? localStorage.getItem('cartInfo')
+const STORAGE_KEY = 'cartItems';
+
+const initialState = localStorage.getItem(STORAGE_KEY)
+    ? { cartItems: JSON.parse(localStorage.getItem(STORAGE_KEY)) }
     : { cartItems: [] };
 
 const updateTotals = (state) => {
@@ -31,6 +33,14 @@ const cartSlice = createSlice({
                 );
             }
             updateTotals(state);
+            try {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(state.cartItems)
+                );
+            } catch (err) {
+                console.warn(err);
+            }
         },
     },
 });
