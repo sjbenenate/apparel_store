@@ -8,14 +8,23 @@ const initialState = localStorage.getItem(STORAGE_KEY)
     ? { cartItems: JSON.parse(localStorage.getItem(STORAGE_KEY)) }
     : { cartItems: [] };
 
+const roundDecimals = (value) => {
+    return (Math.round(value * 100) / 100).toFixed(2);
+};
+
 const updateTotals = (state) => {
-    state.itemsPrice = state.cartItems.reduce(
-        (acc, item) => acc + item.price * item.qty,
-        0
+    state.itemsPrice = roundDecimals(
+        state.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0)
     );
-    state.taxPrice = state.itemsPrice * 0.15;
-    state.shippingPrice = state.itemsPrice >= FREE_SHIPPING ? 0 : 10;
-    state.totalPrice = state.itemsPrice + state.taxPrice + state.shippingPrice;
+    state.taxPrice = roundDecimals(state.itemsPrice * 0.15);
+    state.shippingPrice = roundDecimals(
+        state.itemsPrice >= FREE_SHIPPING ? 0 : 10
+    );
+    state.totalPrice = roundDecimals(
+        Number(state.itemsPrice) +
+            Number(state.taxPrice) +
+            Number(state.shippingPrice)
+    );
 };
 
 const cartSlice = createSlice({
