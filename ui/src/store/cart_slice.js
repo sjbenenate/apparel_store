@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { roundDecimals } from '../utils';
 
 const FREE_SHIPPING = 100;
 
@@ -7,10 +8,6 @@ const STORAGE_KEY = 'cart';
 const initialState = localStorage.getItem(STORAGE_KEY)
     ? JSON.parse(localStorage.getItem(STORAGE_KEY))
     : { cartItems: [] };
-
-const roundDecimals = (value) => {
-    return (Math.round(value * 100) / 100).toFixed(2);
-};
 
 const updateTotals = (state) => {
     state.itemsPrice = roundDecimals(
