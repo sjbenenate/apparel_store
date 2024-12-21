@@ -15,7 +15,7 @@ const getProductById = asyncHandler(async (req, res) => {
     if (product.length < 1) {
         throw new Error(`product could not be found for id: ${id}`);
     } else {
-        res.json(product);
+        res.json(product[0]);
     }
 });
 
