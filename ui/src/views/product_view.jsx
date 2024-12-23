@@ -7,6 +7,7 @@ import Loader from '../components/loader.jsx';
 import Message from '../components/message.jsx';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../store/cart_slice.js';
+import { RouteButton } from '../components/controls.jsx';
 
 export const ProductView = () => {
     const { productId } = useParams();
@@ -108,9 +109,7 @@ export const ProductView = () => {
 
     return (
         <div className="my-3 p-3">
-            <Link className="btn btn-outline-light my-3" to="/">
-                Back
-            </Link>
+            <RouteButton text="Back" route="/" />
             {isError ? (
                 <Message variant="danger">Error loading product!</Message>
             ) : null}
