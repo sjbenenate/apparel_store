@@ -63,6 +63,12 @@ const cartSlice = createSlice({
                 console.warn(err);
             }
         },
+        updateQty: (state, action) => {
+            state.cartItems[action.payload.itemId].qty = Number(
+                action.payload.qty
+            );
+            updateTotals(state);
+        },
     },
 });
 
@@ -72,15 +78,10 @@ export const CartSliceReducers = cartSlice.reducer;
 
 // Selectors
 export const selectCartItemIds = (state) => state.cart.cartItemIds;
+export const selectCartItems = (state) => state.cart.cartItems;
 
 export const selectCartPrices = (state) => state.cart.prices;
 
-export const selectCartQty = (state) => {
-    return state.cart.cartItemIds.reduce(
-        (acc, id) => acc + state.cart.cartItems[id]?.qty,
-        0
-    );
-};
 export const selectCart = (state) => state.cart;
 
 export const createSelectCartItem = (itemId) =>

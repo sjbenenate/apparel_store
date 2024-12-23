@@ -7,10 +7,14 @@ import { GiShoppingCart } from 'react-icons/gi';
 import { CiUser } from 'react-icons/ci';
 import logo from '../img/peacock_logo.png';
 import { useSelector } from 'react-redux';
-import { selectCartQty } from '../store/cart_slice';
+import { selectCartItems } from '../store/cart_slice';
 
 const CartQtyIcon = () => {
-    const cartQty = useSelector(selectCartQty);
+    const cartItems = useSelector(selectCartItems);
+    const cartQty = Object.values(cartItems).reduce(
+        (acc, item) => acc + item.qty,
+        0
+    );
 
     if (!cartQty) return;
     return (
