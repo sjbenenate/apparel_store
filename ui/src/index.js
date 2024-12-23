@@ -15,12 +15,14 @@ import App from './App';
 import { HomeView } from './views/home_view';
 import { NotFoundView } from './views/404_view';
 import { ProductView } from './views/product_view';
+import CartView from './views/cart_view';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<App />} errorElement={<NotFoundView />}>
             <Route index path="/" element={<HomeView />} />
             <Route path="product/:productId" element={<ProductView />} />
+            <Route path="cart" element={<CartView />} />
         </Route>
     )
 );
