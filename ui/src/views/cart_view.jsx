@@ -73,7 +73,6 @@ const CartView = () => {
         <div>
             <Row>
                 <h1>Shopping Cart</h1>
-                <RouteButton text="Continue Shopping" />
                 <Row>
                     <Col md={6}>
                         {cartItemIds.length < 1 ? (
@@ -81,6 +80,11 @@ const CartView = () => {
                         ) : (
                             <ListGroup>{getCartRows()}</ListGroup>
                         )}
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={2}>
+                        <RouteButton text="Continue Shopping" />
                     </Col>
                 </Row>
             </Row>
