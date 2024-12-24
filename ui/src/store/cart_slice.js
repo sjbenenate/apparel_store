@@ -54,7 +54,7 @@ const cartSlice = createSlice({
                 state.cartItems = { ...state.cartItems, [itemId]: item };
                 state.cartItemIds = [...state.cartItemIds, itemId];
             } else {
-                state.cartItems[itemId].qty += item.qty;
+                state.cartItems[itemId].qty += Number(item.qty);
             }
             updateTotals(state, itemId);
             try {
@@ -63,8 +63,8 @@ const cartSlice = createSlice({
                 console.warn(err);
             }
         },
-        updateQty: (state, action) => {
-            state.cartItems[action.payload.itemId].qty = Number(
+        setItemQty: (state, action) => {
+            state.cartItems[action.payload._id].qty = Number(
                 action.payload.qty
             );
             updateTotals(state);
@@ -73,7 +73,7 @@ const cartSlice = createSlice({
 });
 
 // Actions and Reducer exports
-export const { addItemToCart } = cartSlice.actions;
+export const { addItemToCart, setItemQty } = cartSlice.actions;
 export const CartSliceReducers = cartSlice.reducer;
 
 // Selectors
@@ -85,6 +85,8 @@ export const selectCartPrices = (state) => state.cart.prices;
 export const selectCart = (state) => state.cart;
 
 export const createSelectCartItem = (itemId) =>
-    createSelector([selectCart], (cart) =>
-        cart.cartItems[itemId] ? cart.cartItems[itemId] : {}
+    createSelector([selectCartItems], (cartItems) =>
+        cartItems[itemId]
+            ? cartItems[itemId]
+            : { message: `no item of this id found: ${itemId}` }
     );
