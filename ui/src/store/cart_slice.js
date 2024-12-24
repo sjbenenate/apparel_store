@@ -40,6 +40,14 @@ const updateTotals = (state) => {
     };
 };
 
+const updateLocalStorage = (state) => {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (err) {
+        console.warn(err);
+    }
+};
+
 // The Slice
 const cartSlice = createSlice({
     name: 'cart',
@@ -56,18 +64,15 @@ const cartSlice = createSlice({
             } else {
                 state.cartItems[itemId].qty += Number(item.qty);
             }
-            updateTotals(state, itemId);
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            } catch (err) {
-                console.warn(err);
-            }
+            updateTotals(state);
+            updateLocalStorage(state);
         },
         setItemQty: (state, action) => {
             state.cartItems[action.payload._id].qty = Number(
                 action.payload.qty
             );
             updateTotals(state);
+            updateLocalStorage(state);
         },
     },
 });
