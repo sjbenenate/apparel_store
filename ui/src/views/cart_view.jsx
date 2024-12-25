@@ -20,6 +20,7 @@ import {
 } from '../store/cart_slice';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
 import { roundDecimals } from '../utils.js';
+import Message from '../components/message.jsx';
 
 const CartRow = ({ itemId }) => {
     const dispatch = useDispatch();
@@ -130,7 +131,15 @@ const CartView = () => {
             </Row>
             <Row>
                 <Col lg={8}>
-                    <Row>{cartList ? cartList : 'No items in cart'}</Row>
+                    <Row>
+                        {cartList ? (
+                            cartList
+                        ) : (
+                            <Message variant="info">
+                                No items in cart. <Link to="/">Find some!</Link>
+                            </Message>
+                        )}
+                    </Row>
                 </Col>
                 <Col lg={4}>
                     <SummaryCard />
