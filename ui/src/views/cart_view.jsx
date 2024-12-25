@@ -65,7 +65,11 @@ const CartRow = ({ itemId }) => {
                 </Col>
                 <Col>{`$${product.price * qty}`}</Col>
                 <Col>
-                    <Button onClick={removeFromCart}>
+                    <Button
+                        type="button"
+                        variant="warning"
+                        onClick={removeFromCart}
+                    >
                         <FaTrash />
                     </Button>
                 </Col>
@@ -75,10 +79,12 @@ const CartRow = ({ itemId }) => {
 };
 
 const PriceRow = ({ label, value }) => (
-    <Row className="py-1">
-        <Col md="2">{label}</Col>
-        <Col>{`$${value}`}</Col>
-    </Row>
+    <ListGroup.Item className="py-1">
+        <Row>
+            <Col>{label}</Col>
+            <Col>{`$${value}`}</Col>
+        </Row>
+    </ListGroup.Item>
 );
 
 const PriceCard = () => {
@@ -87,15 +93,15 @@ const PriceCard = () => {
     return (
         <Card className="p-3 m-3">
             <Card.Title>Totals</Card.Title>
-            <Card.Body>
+            <ListGroup>
                 <PriceRow label="Items" value={prices.itemPrices} />
                 <PriceRow
-                    label={`Tax (${prices.taxPercentage})`}
+                    label={`Tax (${Math.round(prices.taxPercentage * 100)}%)`}
                     value={prices.tax}
                 />
                 <PriceRow label="Shipping" value={prices.shipping} />
                 <PriceRow label="Total" value={prices.total} />
-            </Card.Body>
+            </ListGroup>
         </Card>
     );
 };
@@ -122,10 +128,10 @@ const CartView = () => {
                 <h1>Shopping Cart</h1>
             </Row>
             <Row>
-                <Col>{cartList ? cartList : 'No items in cart'}</Col>
-            </Row>
-            <Row>
-                <Col>
+                <Col lg={8}>
+                    <Row>{cartList ? cartList : 'No items in cart'}</Row>
+                </Col>
+                <Col lg={4}>
                     <PriceCard />
                 </Col>
             </Row>
