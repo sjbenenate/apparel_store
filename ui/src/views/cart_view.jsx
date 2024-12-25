@@ -50,7 +50,7 @@ const CartRow = ({ itemId }) => {
                 <Col md={2}>
                     <Link to={`/product/${itemId}`}>{product.name}</Link>
                 </Col>
-                <Col md={2}>{`$${product.price}`}</Col>
+                <Col>{`$${product.price} each`}</Col>
                 <Col sm={3}>
                     <QtySelect
                         currentQty={qty}
@@ -63,12 +63,39 @@ const CartRow = ({ itemId }) => {
                         }}
                     />
                 </Col>
+                <Col>{`$${product.price * qty}`}</Col>
                 <Col>
                     <Button onClick={removeFromCart}>
                         <FaTrash />
                     </Button>
                 </Col>
             </Row>
+        </Card>
+    );
+};
+
+const PriceRow = ({ label, value }) => (
+    <Row className="py-1">
+        <Col md="2">{label}</Col>
+        <Col>{`$${value}`}</Col>
+    </Row>
+);
+
+const PriceCard = () => {
+    const prices = useSelector(selectCartPrices);
+
+    return (
+        <Card className="p-3 m-3">
+            <Card.Title>Totals</Card.Title>
+            <Card.Body>
+                <PriceRow label="Items" value={prices.itemPrices} />
+                <PriceRow
+                    label={`Tax (${prices.taxPercentage})`}
+                    value={prices.tax}
+                />
+                <PriceRow label="Shipping" value={prices.shipping} />
+                <PriceRow label="Total" value={prices.total} />
+            </Card.Body>
         </Card>
     );
 };
@@ -96,6 +123,11 @@ const CartView = () => {
             </Row>
             <Row>
                 <Col>{cartList ? cartList : 'No items in cart'}</Col>
+            </Row>
+            <Row>
+                <Col>
+                    <PriceCard />
+                </Col>
             </Row>
             <Row>
                 <Col style={{ width: 'contain' }}>

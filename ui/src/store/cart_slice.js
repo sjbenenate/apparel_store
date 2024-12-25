@@ -2,6 +2,7 @@ import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { roundDecimals } from '../utils';
 
 const FREE_SHIPPING = 100;
+const TAX_PERCENTAGE = 0.15;
 
 const STORAGE_KEY = 'cart';
 
@@ -29,12 +30,13 @@ const updateTotals = (state) => {
         0
     );
 
-    const tax = itemPrices * 0.15;
+    const tax = itemPrices * TAX_PERCENTAGE;
     const shipping = itemPrices >= FREE_SHIPPING ? 0 : 10;
 
     state.prices = {
         itemPrices: roundDecimals(itemPrices),
         tax: roundDecimals(tax),
+        taxPercentage: TAX_PERCENTAGE,
         shipping: roundDecimals(shipping),
         total: roundDecimals(itemPrices + tax + shipping),
     };
