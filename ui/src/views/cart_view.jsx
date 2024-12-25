@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     Container,
@@ -84,7 +84,7 @@ const PriceRow = ({ label, value }) => (
     </ListGroup.Item>
 );
 
-const SummaryCard = () => {
+const SummaryCard = ({ checkoutHandler }) => {
     const prices = useSelector(selectCartPrices);
 
     return (
@@ -101,7 +101,11 @@ const SummaryCard = () => {
                 <PriceRow label="Shipping" value={prices.shipping} />
                 <PriceRow label="Total" value={prices.total} />
             </ListGroup>
-            <Button className="btn-contained" disabled={prices.qtyItems < 1}>
+            <Button
+                className="btn-contained"
+                disabled={prices.qtyItems < 1}
+                onClick={checkoutHandler}
+            >
                 Checkout
             </Button>
         </Card>
@@ -109,6 +113,7 @@ const SummaryCard = () => {
 };
 
 const CartView = () => {
+    const navigate = useNavigate();
     const cartItemIds = useSelector(selectCartItemIds);
 
     let cartList = null;
@@ -123,6 +128,10 @@ const CartView = () => {
             </ListGroup>
         );
     }
+
+    const checkoutHandler = () => {
+        navigate('login?redirect=/shipping');
+    };
 
     return (
         <Container>
@@ -142,7 +151,7 @@ const CartView = () => {
                     </Row>
                 </Col>
                 <Col lg={4}>
-                    <SummaryCard />
+                    <SummaryCard checkoutHandler={checkoutHandler} />
                 </Col>
             </Row>
             <Row>
