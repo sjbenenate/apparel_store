@@ -74,6 +74,13 @@ const cartSlice = createSlice({
             updateTotals(state);
             updateLocalStorage(state);
         },
+        removeItem: (state, action) => {
+            const itemId = action.payload.itemId;
+            delete state.cartItems[itemId];
+            state.cartItemIds = state.cartItemIds.filter((id) => id !== itemId);
+            updateTotals(state);
+            updateLocalStorage(state);
+        },
     },
 });
 

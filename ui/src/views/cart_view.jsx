@@ -18,6 +18,7 @@ import {
     setItemQty,
 } from '../store/cart_slice';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
+import { FaTrash } from 'react-icons/fa';
 
 const CartRow = ({ itemId }) => {
     /*const selectItem = useMemo(
@@ -30,7 +31,10 @@ const CartRow = ({ itemId }) => {
     const product = useSelector(selectItem);
     const [qty, setQty] = useState(product.qty);
 
-    console.log(product);
+    const removeFromCart = (e) => {
+        console.log(`Removing item id ${itemId}`);
+        dispatch({ type: 'cart/removeItem', payload: { itemId } });
+    };
 
     return (
         <Card className="p-3">
@@ -58,6 +62,11 @@ const CartRow = ({ itemId }) => {
                             );
                         }}
                     />
+                </Col>
+                <Col>
+                    <Button onClick={removeFromCart}>
+                        <FaTrash />
+                    </Button>
                 </Col>
             </Row>
         </Card>
