@@ -30,11 +30,17 @@ const updateTotals = (state) => {
         0
     );
 
+    const qtyItems = Object.values(state.cartItems).reduce(
+        (acc, item) => acc + item.qty,
+        0
+    );
+
     const tax = itemPrices * TAX_PERCENTAGE;
     const shipping = itemPrices >= FREE_SHIPPING ? 0 : 10;
 
     state.prices = {
         itemPrices: roundDecimals(itemPrices),
+        qtyItems,
         tax: roundDecimals(tax),
         taxPercentage: TAX_PERCENTAGE,
         shipping: roundDecimals(shipping),

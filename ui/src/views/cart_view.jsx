@@ -19,6 +19,7 @@ import {
 } from '../store/cart_slice';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
 import { FaTrash } from 'react-icons/fa';
+import { roundDecimals } from '../utils.js';
 
 const CartRow = ({ itemId }) => {
     /*const selectItem = useMemo(
@@ -63,7 +64,7 @@ const CartRow = ({ itemId }) => {
                         }}
                     />
                 </Col>
-                <Col>{`$${product.price * qty}`}</Col>
+                <Col>{`$${roundDecimals(product.price * qty)}`}</Col>
                 <Col>
                     <Button
                         type="button"
@@ -92,9 +93,11 @@ const PriceCard = () => {
 
     return (
         <Card className="p-3 m-3">
-            <Card.Title>Totals</Card.Title>
+            <Card.Title className="px-3">{`Summary (${prices.qtyItems} Item${
+                prices.qtyItems !== 1 ? 's' : ''
+            })`}</Card.Title>
             <ListGroup>
-                <PriceRow label="Items" value={prices.itemPrices} />
+                <PriceRow label="Subtotal" value={prices.itemPrices} />
                 <PriceRow
                     label={`Tax (${Math.round(prices.taxPercentage * 100)}%)`}
                     value={prices.tax}
