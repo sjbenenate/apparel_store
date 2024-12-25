@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+    Container,
     Row,
     Col,
     Form,
@@ -32,63 +33,67 @@ const CartRow = ({ itemId }) => {
     console.log(product);
 
     return (
-        <ListGroup.Item variant="flush">
-            <Col md={2}>
-                <Image
-                    src={product.image}
-                    alt={product.name}
-                    thumbnail
-                    rounded
-                    fluid
-                />
-            </Col>
-            <Col md={2}>
-                <Link to={`/product/${itemId}`}>{product.name}</Link>
-            </Col>
-            <Col md={2}>{product.price}</Col>
-            <Col md={2}>
-                <QtySelect
-                    currentQty={qty}
-                    qtyInStock={product.countInStock}
-                    onChange={(e) => {
-                        setQty(e.target.value);
-                        dispatch(
-                            setItemQty({ ...product, qty: e.target.value })
-                        );
-                    }}
-                />
-            </Col>
-        </ListGroup.Item>
+        <Card className="p-3">
+            <Row>
+                <Col style={{ maxWidth: '200px' }}>
+                    <Image
+                        src={product.image}
+                        alt={product.name}
+                        rounded
+                        fluid
+                    />
+                </Col>
+                <Col md={2}>
+                    <Link to={`/product/${itemId}`}>{product.name}</Link>
+                </Col>
+                <Col md={2}>{`$${product.price}`}</Col>
+                <Col sm={3}>
+                    <QtySelect
+                        currentQty={qty}
+                        qtyInStock={product.countInStock}
+                        onChange={(e) => {
+                            setQty(e.target.value);
+                            dispatch(
+                                setItemQty({ ...product, qty: e.target.value })
+                            );
+                        }}
+                    />
+                </Col>
+            </Row>
+        </Card>
     );
 };
 
 const CartView = () => {
     const cartItemIds = useSelector(selectCartItemIds);
 
-    const getCartRows = () => {
-        return cartItemIds.map((id) => <CartRow key={id} itemId={id} />);
-    };
+    let cartList = null;
+    if (cartItemIds.length > 0) {
+        cartList = (
+            <ListGroup variant="flush">
+                {cartItemIds.map((id) => (
+                    <ListGroup.Item key={id}>
+                        <CartRow itemId={id} />
+                    </ListGroup.Item>
+                ))}
+            </ListGroup>
+        );
+    }
 
     return (
-        <div>
+        <Container>
             <Row>
                 <h1>Shopping Cart</h1>
-                <Row>
-                    <Col md={6}>
-                        {cartItemIds.length < 1 ? (
-                            'No items in cart'
-                        ) : (
-                            <ListGroup>{getCartRows()}</ListGroup>
-                        )}
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={2}>
-                        <RouteButton text="Continue Shopping" />
-                    </Col>
-                </Row>
             </Row>
-        </div>
+            <Row>
+                <Col>{cartList ? cartList : 'No items in cart'}</Col>
+            </Row>
+            <Row>
+                <Col style={{ width: 'contain' }}>
+                    <RouteButton text="Continue Shopping" />
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
