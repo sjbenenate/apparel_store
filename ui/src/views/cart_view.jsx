@@ -1,16 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     Container,
     Row,
     Col,
-    Form,
     Button,
     Card,
     Image,
     ListGroup,
 } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { FaTrash } from 'react-icons/fa';
 import {
     selectCartPrices,
     createSelectCartItem,
@@ -19,15 +19,9 @@ import {
     removeItem,
 } from '../store/cart_slice';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
-import { FaTrash } from 'react-icons/fa';
 import { roundDecimals } from '../utils.js';
 
 const CartRow = ({ itemId }) => {
-    /*const selectItem = useMemo(
-        (itemId) => createSelectCartItem(itemId),
-        [itemId]
-    );
-    const cartItem = useSelector(selectItem);*/
     const dispatch = useDispatch();
     const selectItem = createSelectCartItem(itemId);
     const product = useSelector(selectItem);
@@ -89,7 +83,7 @@ const PriceRow = ({ label, value }) => (
     </ListGroup.Item>
 );
 
-const PriceCard = () => {
+const SummaryCard = () => {
     const prices = useSelector(selectCartPrices);
 
     return (
@@ -139,7 +133,7 @@ const CartView = () => {
                     <Row>{cartList ? cartList : 'No items in cart'}</Row>
                 </Col>
                 <Col lg={4}>
-                    <PriceCard />
+                    <SummaryCard />
                 </Col>
             </Row>
             <Row>
