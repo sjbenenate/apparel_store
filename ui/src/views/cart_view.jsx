@@ -16,6 +16,7 @@ import {
     createSelectCartItem,
     selectCartItemIds,
     setItemQty,
+    removeItem,
 } from '../store/cart_slice';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
 import { FaTrash } from 'react-icons/fa';
@@ -32,9 +33,14 @@ const CartRow = ({ itemId }) => {
     const product = useSelector(selectItem);
     const [qty, setQty] = useState(product.qty);
 
-    const removeFromCart = (e) => {
+    const addToCart = async (e) => {
+        setQty(e.target.value);
+        dispatch(setItemQty({ ...product, qty: e.target.value }));
+    };
+
+    const removeFromCart = async (e) => {
         console.log(`Removing item id ${itemId}`);
-        dispatch({ type: 'cart/removeItem', payload: { itemId } });
+        dispatch(removeItem({ itemId }));
     };
 
     return (
@@ -56,12 +62,7 @@ const CartRow = ({ itemId }) => {
                     <QtySelect
                         currentQty={qty}
                         qtyInStock={product.countInStock}
-                        onChange={(e) => {
-                            setQty(e.target.value);
-                            dispatch(
-                                setItemQty({ ...product, qty: e.target.value })
-                            );
-                        }}
+                        onChange={addToCart}
                     />
                 </Col>
                 <Col>{`$${roundDecimals(product.price * qty)}`}</Col>
@@ -105,6 +106,9 @@ const PriceCard = () => {
                 <PriceRow label="Shipping" value={prices.shipping} />
                 <PriceRow label="Total" value={prices.total} />
             </ListGroup>
+            <Button className="btn-contained" disabled={prices.qtyItems < 1}>
+                Checkout
+            </Button>
         </Card>
     );
 };
