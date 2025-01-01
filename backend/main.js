@@ -1,6 +1,6 @@
 import express from 'express';
 import env from 'dotenv';
-import dbConnect from './data/db_interface.js';
+import { dbConnect } from './data/db_interface.js';
 import productRouter from './routes/product_routes.js';
 import userRouter from './routes/user_routes.js';
 import { UrlNotFound, errorHandler } from './middleware/error_middleware.js';
