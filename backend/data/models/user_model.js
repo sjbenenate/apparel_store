@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 export const ACCESS_LEVELS = {
     ADMIN: 5,
@@ -22,5 +23,10 @@ const userSchema = new mongoose.Schema(
     }
 );
 
+userSchema.methods.checkPassword = function (password) {
+    return bcrypt.compareSync(password, this.password);
+};
+
 const userModel = mongoose.model('user', userSchema);
+
 export default userModel;

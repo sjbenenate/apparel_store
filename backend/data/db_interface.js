@@ -45,4 +45,9 @@ const findUser = async ({ email, id }) => {
     }
 };
 
-export { dbConnect, findAllProducts, findProductById, findUser };
+const authorizeUser = (user, inputPassword) => {
+    if (!user) return false;
+    return user.checkPassword(inputPassword);
+};
+
+export { dbConnect, findAllProducts, findProductById, findUser, authorizeUser };
