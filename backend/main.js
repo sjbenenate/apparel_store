@@ -11,6 +11,11 @@ const port = process.env.PORT || 5000;
 dbConnect();
 
 const app = express();
+
+// Body parsing middleware
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use(UrlNotFound);
