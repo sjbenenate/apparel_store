@@ -28,4 +28,21 @@ const findProductById = async (id) => {
     return products[0];
 };
 
-export { dbConnect, findAllProducts, findProductById };
+const findUser = async ({ email, id }) => {
+    let users = [];
+    if (email) {
+        users = await userModel.find({ email });
+    } else if (id) {
+        users = await userModel.find({ _id: id });
+    } else {
+        throw new Error('no information to identify user');
+    }
+
+    if (users.length > 0) {
+        return users[0];
+    } else {
+        return null;
+    }
+};
+
+export { dbConnect, findAllProducts, findProductById, findUser };
