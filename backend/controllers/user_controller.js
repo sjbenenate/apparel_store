@@ -1,11 +1,30 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
 import { findUser, authorizeUser } from '../data/db_interface.js';
+import { SignJWT } from 'jose';
 
 const loginUser = asyncHandler(async (req, res) => {
     console.log('authUser endpoint hit');
     const { email, password } = req.body;
     const user = await findUser({ email });
     if (authorizeUser(user, password)) {
+        const expiration_ms =
+            process.env.NODE_ENV !== 'development'
+                ? 2 * 60 * 60 * 1000
+                : 30 * 24 * 60 * 60 * 1000;
+
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+        const token = await new SignJWT({ userId: user._id })
+            .setProtectedHeader({ alg: 'HS256' })
+            .setExpirationTime('30d')
+            .sign(secret);
+
+        res.cookie('jwt', token, {
+            httpOnly: true,
+            maxAge: expiration_ms,
+            secure: process.env.NODE_ENV !== 'development',
+            sameSite: 'strict',
+        });
+
         res.json({
             _id: user._id,
             name: user.name,
