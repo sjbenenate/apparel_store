@@ -29,25 +29,36 @@ const findProductById = async (id) => {
 };
 
 const findUser = async ({ email, id }) => {
-    let users = [];
+    let user;
     if (email) {
-        users = await userModel.find({ email });
+        user = await userModel.findOne({ email }).select('-password').exec();
     } else if (id) {
-        users = await userModel.find({ _id: id });
+        user = await userModel.findById(id).select('-password').exec();
     } else {
         throw new Error('no information to identify user');
     }
-
-    if (users.length > 0) {
-        return users[0];
-    } else {
+    if (!user) {
         return null;
+    } else {
+        return user;
+    }
+
+    return user;
+};
+
+const findAuthorizedUser = async (email, inputPassword) => {
+    const user = await userModel.findOne({ email });
+    if (user.checkPassword(inputPassword)) {
+        return await userModel.findOne({ email }).select('-password');
+    } else {
+        return false;
     }
 };
 
-const authorizeUser = (user, inputPassword) => {
-    if (!user) return false;
-    return user.checkPassword(inputPassword);
+export {
+    dbConnect,
+    findAllProducts,
+    findProductById,
+    findUser,
+    findAuthorizedUser,
 };
-
-export { dbConnect, findAllProducts, findProductById, findUser, authorizeUser };

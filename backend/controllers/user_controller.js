@@ -1,12 +1,12 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
-import { findUser, authorizeUser } from '../data/db_interface.js';
+import { findAuthorizedUser } from '../data/db_interface.js';
 import { SignJWT } from 'jose';
 
 const loginUser = asyncHandler(async (req, res) => {
     console.log('authUser endpoint hit');
     const { email, password } = req.body;
-    const user = await findUser({ email });
-    if (authorizeUser(user, password)) {
+    const user = await findAuthorizedUser(email, password);
+    if (user) {
         const expiration_ms =
             process.env.NODE_ENV !== 'development'
                 ? 2 * 60 * 60 * 1000
