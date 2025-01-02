@@ -21,17 +21,21 @@ userRouter
     .route('/')
     .post(registerUser)
     .get(authMiddleware, adminMiddleware, getUsers);
+
 userRouter.post('/login', loginUser);
 userRouter.post('/logout', authMiddleware, logoutUser);
 
 userRouter
     .route('/profile')
-    .get(authMiddleware, getUserProfile)
-    .put(authMiddleware, updateUserProfile);
+    .all(authMiddleware)
+    .get(getUserProfile)
+    .put(updateUserProfile);
+
 userRouter
     .route('/:id')
-    .get(authMiddleware, adminMiddleware, getUserById)
-    .put(authMiddleware, adminMiddleware, updateUser)
-    .delete(authMiddleware, adminMiddleware, deleteUser);
+    .all(authMiddleware, adminMiddleware)
+    .get(getUserById)
+    .put(updateUser)
+    .delete(deleteUser);
 
 export default userRouter;
