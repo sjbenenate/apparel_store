@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { ACCESS_LEVELS } from '../models/user_model.js';
+import { ACCESS_LEVELS } from '../../constants.js';
 
 const users = [
     {

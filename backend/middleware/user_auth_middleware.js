@@ -1,10 +1,11 @@
 import { asyncHandler } from './async_handler_middleware.js';
 import { jwtVerify } from 'jose';
 import { findUser } from '../data/db_interface.js';
-import { ACCESS_LEVELS } from '../data/models/user_model.js';
+import { ACCESS_LEVELS } from '../constants.js';
+import { JWT_COOKIE } from '../constants.js';
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
-    let token = req.cookies.jwt;
+    let token = req.cookies[JWT_COOKIE];
 
     if (token) {
         try {
@@ -16,7 +17,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
             throw new Error('Auth token invalid');
         }
     } else {
-        throw new Error('No auth token');
+        throw new Error('No user logged in');
     }
 });
 

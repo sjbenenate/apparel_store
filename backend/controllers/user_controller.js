@@ -1,6 +1,7 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
 import { findAuthorizedUser } from '../data/db_interface.js';
 import { SignJWT } from 'jose';
+import { JWT_COOKIE } from '../constants.js';
 
 const loginUser = asyncHandler(async (req, res) => {
     console.log('authUser endpoint hit');
@@ -18,7 +19,7 @@ const loginUser = asyncHandler(async (req, res) => {
             .setExpirationTime('30d')
             .sign(secret);
 
-        res.cookie('jwt', token, {
+        res.cookie(JWT_COOKIE, token, {
             httpOnly: true,
             maxAge: expiration_ms,
             secure: process.env.NODE_ENV !== 'development',
@@ -44,7 +45,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
     console.log('logoutUser endpoint hit');
-    res.send('logout user');
+    res.cookie(JWT_COOKIE, '', {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.status(200).json({ message: 'User logged out' });
 });
 
 const getUserProfile = asyncHandler(async (req, res) => {

@@ -1,11 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-
-export const ACCESS_LEVELS = {
-    ADMIN: 5,
-    MAINTAINER: 2,
-    BASIC: 0,
-};
+import { ACCESS_LEVELS } from '../../constants.js';
 
 const userSchema = new mongoose.Schema(
     {
