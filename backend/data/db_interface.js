@@ -55,10 +55,16 @@ const findAuthorizedUser = async (email, inputPassword) => {
     }
 };
 
+const saveUser = async (name, email, password) => {
+    const user = await userModel.create({ name, email, password });
+    return user._id;
+};
+
 export {
     dbConnect,
     findAllProducts,
     findProductById,
     findUser,
     findAuthorizedUser,
+    saveUser,
 };

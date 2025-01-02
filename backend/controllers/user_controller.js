@@ -1,6 +1,6 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
-import { findAuthorizedUser } from '../data/db_interface.js';
-import { SignJWT } from 'jose';
+import { findAuthorizedUser, saveUser } from '../data/db_interface.js';
+import { generateToken, deleteToken } from '../utils/tokens.js';
 import { JWT_COOKIE } from '../constants.js';
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -8,23 +8,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await findAuthorizedUser(email, password);
     if (user) {
-        const expiration_ms =
-            process.env.NODE_ENV !== 'development'
-                ? 2 * 60 * 60 * 1000
-                : 30 * 24 * 60 * 60 * 1000;
-
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET);
-        const token = await new SignJWT({ userId: user._id })
-            .setProtectedHeader({ alg: 'HS256' })
-            .setExpirationTime('30d')
-            .sign(secret);
-
-        res.cookie(JWT_COOKIE, token, {
-            httpOnly: true,
-            maxAge: expiration_ms,
-            secure: process.env.NODE_ENV !== 'development',
-            sameSite: 'strict',
-        });
+        await generateToken(res, user._id);
 
         res.json({
             _id: user._id,
@@ -40,15 +24,15 @@ const loginUser = asyncHandler(async (req, res) => {
 
 const registerUser = asyncHandler(async (req, res) => {
     console.log('registerUser endpoint hit');
-    res.send('register user');
+    const { name, email, password } = req.body;
+    const userId = await saveUser(name, email, password);
+    await generateToken(res, userId);
+    res.send(`registered user '${name}'`);
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
     console.log('logoutUser endpoint hit');
-    res.cookie(JWT_COOKIE, '', {
-        httpOnly: true,
-        expires: new Date(0),
-    });
+    deleteToken();
     res.status(200).json({ message: 'User logged out' });
 });
 
