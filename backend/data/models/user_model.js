@@ -22,6 +22,15 @@ userSchema.methods.checkPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };
 
+userSchema.methods.json = function () {
+    return {
+        _id: this._id,
+        name: this.name,
+        email: this.email,
+        accessLevel: this.accessLevel,
+    };
+};
+
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();

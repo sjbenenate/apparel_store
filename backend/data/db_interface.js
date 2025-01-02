@@ -57,7 +57,12 @@ const findAuthorizedUser = async (email, inputPassword) => {
 
 const saveUser = async (name, email, password) => {
     const user = await userModel.create({ name, email, password });
-    return user._id;
+    return user;
+};
+
+const modifyUser = async (userId, info) => {
+    await userModel.updateOne({ _id: userId }, info);
+    return await userModel.findById(userId).select('-password').exec();
 };
 
 export {
@@ -67,4 +72,5 @@ export {
     findUser,
     findAuthorizedUser,
     saveUser,
+    modifyUser,
 };

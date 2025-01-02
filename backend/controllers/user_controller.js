@@ -1,7 +1,10 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
-import { findAuthorizedUser, saveUser } from '../data/db_interface.js';
+import {
+    findAuthorizedUser,
+    saveUser,
+    modifyUser,
+} from '../data/db_interface.js';
 import { generateToken, deleteToken } from '../utils/tokens.js';
-import { JWT_COOKIE } from '../constants.js';
 
 const loginUser = asyncHandler(async (req, res) => {
     console.log('authUser endpoint hit');
@@ -10,12 +13,7 @@ const loginUser = asyncHandler(async (req, res) => {
     if (user) {
         await generateToken(res, user._id);
 
-        res.json({
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            accessLevel: user.accessLevel,
-        });
+        res.json(user.json());
     } else {
         res.status(401);
         throw new Error('email or password invalid');
@@ -25,9 +23,9 @@ const loginUser = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
     console.log('registerUser endpoint hit');
     const { name, email, password } = req.body;
-    const userId = await saveUser(name, email, password);
-    await generateToken(res, userId);
-    res.send(`registered user '${name}'`);
+    const user = await saveUser(name, email, password);
+    await generateToken(res, user._id);
+    res.status(201).json(user.json());
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -38,12 +36,24 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const getUserProfile = asyncHandler(async (req, res) => {
     console.log('getUserProfile endpoint hit');
-    res.send('getUserProfile');
+    res.status(200).json(req.user.json());
 });
 
 const updateUserProfile = asyncHandler(async (req, res) => {
     console.log('updateUserProfile endpoint hit');
-    res.send('updateUserProfile');
+    const userId = req.user._id;
+
+    const updatePayload = {
+        name: req.body.name || req.user.name,
+        email: req.body.email || req.user.email,
+    };
+
+    if (req.body.password) {
+        updatePayload.password = req.body.password;
+    }
+
+    const user = await modifyUser(userId, updatePayload);
+    res.status(200).json(user.json());
 });
 
 const getUsers = asyncHandler(async (req, res) => {
