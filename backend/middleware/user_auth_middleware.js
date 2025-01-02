@@ -1,6 +1,7 @@
 import { asyncHandler } from './async_handler_middleware.js';
 import { jwtVerify } from 'jose';
 import { findUser } from '../data/db_interface.js';
+import { ACCESS_LEVELS } from '../data/models/user_model.js';
 
 const authMiddleware = asyncHandler(async (req, res, next) => {
     let token = req.cookies.jwt;
@@ -19,4 +20,16 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     }
 });
 
-export { authMiddleware };
+const adminMiddleware = asyncHandler(async (req, res, next) => {
+    if (!req.user) {
+        throw new Error('no user for admin middleware to verify!');
+    }
+
+    if (req.user.accessLevel !== ACCESS_LEVELS.ADMIN) {
+        throw new Error('Access not allowed for this user');
+    }
+
+    next();
+});
+
+export { authMiddleware, adminMiddleware };

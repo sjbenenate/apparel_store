@@ -10,18 +10,28 @@ import {
     getUserById,
     updateUser,
 } from '../controllers/user_controller.js';
-import { authMiddleware } from '../middleware/user_auth_middleware.js';
+import {
+    authMiddleware,
+    adminMiddleware,
+} from '../middleware/user_auth_middleware.js';
 
 let userRouter = express.Router();
 
-userRouter.route('/').post(registerUser).get(getUsers);
+userRouter
+    .route('/')
+    .post(registerUser)
+    .get(authMiddleware, adminMiddleware, getUsers);
 userRouter.post('/login', loginUser);
-userRouter.post('/logout', logoutUser);
+userRouter.post('/logout', authMiddleware, logoutUser);
 
 userRouter
     .route('/profile')
     .get(authMiddleware, getUserProfile)
     .put(authMiddleware, updateUserProfile);
-userRouter.route('/:id').get(getUserById).put(updateUser).delete(deleteUser);
+userRouter
+    .route('/:id')
+    .get(authMiddleware, adminMiddleware, getUserById)
+    .put(authMiddleware, adminMiddleware, updateUser)
+    .delete(authMiddleware, adminMiddleware, deleteUser);
 
 export default userRouter;
