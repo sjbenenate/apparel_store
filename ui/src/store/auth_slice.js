@@ -23,11 +23,15 @@ const authSlice = createSlice({
             state.userInfo = action.payload;
             updateLocalStorage(state);
         },
+        logout: (state, action) => {
+            state.userInfo = {};
+            updateLocalStorage(state);
+        },
     },
 });
 
 // Actions and Reducer exports
-export const { login } = authSlice.actions;
+export const { login, logout } = authSlice.actions;
 export default authSlice;
 
 // Selectors

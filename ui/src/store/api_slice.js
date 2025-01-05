@@ -6,6 +6,7 @@ const apiSlice = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: BASE_URL }),
     tagTypes: ['Product', 'User', 'Order'],
     endpoints: (builder) => ({}),
+    keepUnusedDataFor: 5,
 });
 
 export default apiSlice;
