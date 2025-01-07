@@ -1,7 +1,7 @@
 # eCommerce Apparel Store
 
 Full stack eCommerce application using a MERN stack.
-Loosely based on Udemey course by Brad Traversy
+Based on Udemey course by Brad Traversy
 
 -   https://www.udemy.com/course/mern-ecommerce/?couponCode=SKILLS4SALEA
 
@@ -9,11 +9,13 @@ Loosely based on Udemey course by Brad Traversy
 
 ### Install
 
+Install the ui dependencies first!
+
 ```
- npm install --dev .
  cd ui
- npm install --dev .
+ npm install . --include=dev
  cd ..
+ npm install . --include=dev
 ```
 
 ### Launch
