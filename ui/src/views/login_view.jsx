@@ -1,23 +1,60 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Button, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import FormContainer from '../components/form_container';
-import { login } from '../store/api_users';
+import { useLoginMutation } from '../store/api_users';
+import { selectAuthInfo, setUserCredentials } from '../store/auth_slice';
+import Message from '../components/message';
+import { MongoServerClosedError } from 'mongodb';
 
 const LoginView = () => {
+    const dispatch = useDispatch();
+    const navigate = useDispatch();
+
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState(``);
+    const [alertMessage, setAlertMessage] = useState(null);
+    const [login, loginStatus] = useLoginMutation();
+    const userInfo = useSelector(selectAuthInfo);
 
-    const dispatch = useDispatch();
-    const submitHandle = (e) => {
-        dispatch(login({ email: inputEmail, password: inputPassword }));
+    if (userInfo) {
+        navigate('/profile');
+    }
+
+    const location = useLocation();
+    console.debug(location);
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get('redirect') || '/';
+
+    const submitHandle = async (e) => {
+        e.preventDefault();
+        console.log(`logging in`);
+        try {
+            const res = await login({
+                email: inputEmail,
+                password: inputPassword,
+            }).unwrap();
+            setAlertMessage(null);
+            dispatch(setUserCredentials(res));
+        } catch (err) {
+            if (err.status === 401) {
+                const msg = err.data.message || err.error;
+                setAlertMessage(msg);
+                console.warn(MongoServerClosedError);
+            } else {
+                console.error(err);
+            }
+        }
     };
 
     return (
         <Container>
             <FormContainer>
                 <h1>Sign In</h1>
+                {alertMessage ? (
+                    <Message variant="danger">{alertMessage}</Message>
+                ) : null}
                 <Form onSubmit={submitHandle}>
                     <Form.Group className="my-3" controlId="email">
                         <Form.Label>Email address</Form.Label>
@@ -36,7 +73,11 @@ const LoginView = () => {
                         />
                     </Form.Group>
                     <Form.Group className="d-flex flex-wrap justify-content-between">
-                        <Button type="submit" variant="info">
+                        <Button
+                            disabled={loginStatus.isLoading}
+                            type="submit"
+                            variant="info"
+                        >
                             Submit
                         </Button>
                         <div className="d-inline-block pt-2">

@@ -48,7 +48,7 @@ const findUser = async ({ email, id }) => {
 
 const findAuthorizedUser = async (email, inputPassword) => {
     const user = await userModel.findOne({ email });
-    if (user.checkPassword(inputPassword)) {
+    if (user && user.checkPassword(inputPassword)) {
         return await userModel.findOne({ email }).select('-password');
     } else {
         return false;
