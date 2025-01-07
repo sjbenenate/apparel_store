@@ -24,7 +24,7 @@ export const ProductView = () => {
 
     const addToCart = () => {
         console.log(`adding to cart`);
-        dispatch(addItemToCart({ ...product, qty }));
+        dispatch(addItemToCart({ ...product, qty: Number(qty) }));
         navigate('/cart');
     };
 
