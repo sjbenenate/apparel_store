@@ -6,7 +6,7 @@ import FormContainer from '../components/form_container';
 import { useLoginMutation } from '../store/api_users';
 import { selectAuthInfo, setUserCredentials } from '../store/auth_slice';
 import Message from '../components/message';
-import { MongoServerClosedError } from 'mongodb';
+import Loader from '../components/loader';
 
 const LoginView = () => {
     const dispatch = useDispatch();
@@ -39,9 +39,9 @@ const LoginView = () => {
             dispatch(setUserCredentials(res));
         } catch (err) {
             if (err.status === 401) {
-                const msg = err.data.message || err.error;
+                const msg = err?.data?.message || err?.error;
                 setAlertMessage(msg);
-                console.warn(MongoServerClosedError);
+                console.warn(msg);
             } else {
                 console.error(err);
             }
@@ -77,9 +77,14 @@ const LoginView = () => {
                             disabled={loginStatus.isLoading}
                             type="submit"
                             variant="info"
+                            style={{
+                                width: '5em',
+                                height: '2.3em',
+                            }}
                         >
                             Submit
                         </Button>
+
                         <div className="d-inline-block pt-2">
                             New Customer?{' '}
                             <span>
@@ -87,6 +92,11 @@ const LoginView = () => {
                             </span>
                         </div>
                     </Form.Group>
+                    {loginStatus.isLoading ? (
+                        <Loader
+                            style={{ margin: 0, height: '2em', width: '2em' }}
+                        />
+                    ) : null}
                 </Form>
             </FormContainer>
         </Container>
