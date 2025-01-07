@@ -17,6 +17,8 @@ import { NotFoundView } from './views/404_view';
 import { ProductView } from './views/product_view';
 import CartView from './views/cart_view';
 import LoginView from './views/login_view';
+import RegisterView from './views/register_view';
+import ProfileView from './views/profile_view';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -25,6 +27,8 @@ const router = createBrowserRouter(
             <Route path="product/:productId" element={<ProductView />} />
             <Route path="cart" element={<CartView />} />
             <Route path="login" element={<LoginView />} />
+            <Route path="profile" element={<ProfileView />} />
+            <Route path="register" element={<RegisterView />} />
         </Route>
     )
 );
