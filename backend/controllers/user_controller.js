@@ -30,7 +30,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const logoutUser = asyncHandler(async (req, res) => {
     console.log('logoutUser endpoint hit');
-    deleteToken();
+    deleteToken(res);
     res.status(200).json({ message: 'User logged out' });
 });
 
