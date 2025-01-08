@@ -11,6 +11,7 @@ import Loader from '../components/loader';
 const LoginView = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const POST_LOGIN_ROUTE = '/';
 
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState(``);
@@ -18,15 +19,15 @@ const LoginView = () => {
     const [login, loginStatus] = useLoginMutation();
     const userInfo = useSelector(selectAuthInfo);
 
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get('redirect') || POST_LOGIN_ROUTE;
+
     useEffect(() => {
         if (userInfo) {
             navigate('/profile');
         }
     }, [userInfo]);
-
-    const location = useLocation();
-    const params = new URLSearchParams(location.search);
-    const redirect = params.get('redirect') || '/';
 
     const submitHandle = async (e) => {
         e.preventDefault();
