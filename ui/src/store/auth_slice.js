@@ -4,7 +4,7 @@ const STORAGE_KEY = 'userAuth';
 
 const initialState = localStorage.getItem(STORAGE_KEY)
     ? JSON.parse(localStorage.getItem(STORAGE_KEY))
-    : { userInfo: {} };
+    : { userInfo: null };
 
 const updateLocalStorage = (state) => {
     try {
@@ -24,7 +24,7 @@ const authSlice = createSlice({
             updateLocalStorage(state);
         },
         clearUserCredentials: (state, action) => {
-            state.userInfo = {};
+            state.userInfo = null;
             updateLocalStorage(state);
         },
     },
@@ -35,4 +35,4 @@ export const { setUserCredentials, clearUserCredentials } = authSlice.actions;
 export default authSlice;
 
 // Selectors
-export const selectAuthInfo = (state) => state.auth.authInfo;
+export const selectAuthInfo = (state) => state.auth.userInfo;

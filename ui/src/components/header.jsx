@@ -1,13 +1,13 @@
 import { LinkContainer } from 'react-router-bootstrap';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Badge from 'react-bootstrap/Badge';
+import { Container, Nav, Navbar, NavDropdown, Badge } from 'react-bootstrap';
 import { GiShoppingCart } from 'react-icons/gi';
 import { CiUser } from 'react-icons/ci';
 import logo from '../img/peacock_logo.png';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectCartItems } from '../store/cart_slice';
+import { selectAuthInfo, clearUserCredentials } from '../store/auth_slice';
+import { useLogoutQuery } from '../store/api_users';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CartQtyIcon = () => {
     const cartItems = useSelector(selectCartItems);
@@ -22,6 +22,44 @@ const CartQtyIcon = () => {
             {cartQty}
         </Badge>
     );
+};
+
+const UserNav = () => {
+    const dispatch = useDispatch();
+    const authInfo = useSelector(selectAuthInfo);
+    const navigate = useNavigate();
+    const logoutQuery = useLogoutQuery();
+
+    const handleLogout = async (e) => {
+        console.debug('logging out');
+        try {
+            const res = await logoutQuery.refetch().unwrap();
+            console.info(`${res?.message}`);
+            dispatch(clearUserCredentials());
+            navigate('/');
+        } catch (err) {
+            console.warn(err?.error || err?.data?.message);
+        }
+    };
+
+    const loggedInNav = (
+        <NavDropdown title={authInfo?.name}>
+            <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+            <NavDropdown.Item>
+                <Link to="/profile">Profile</Link>
+            </NavDropdown.Item>
+        </NavDropdown>
+    );
+
+    const loggedOutNav = (
+        <LinkContainer to="/login">
+            <Nav.Link>
+                <CiUser /> Sign In
+            </Nav.Link>
+        </LinkContainer>
+    );
+
+    return <Nav.Item>{authInfo ? loggedInNav : loggedOutNav}</Nav.Item>;
 };
 
 export const Header = () => {
@@ -53,11 +91,7 @@ export const Header = () => {
                                 <CartQtyIcon />
                             </Nav.Link>
                         </LinkContainer>
-                        <LinkContainer to="/login">
-                            <Nav.Link>
-                                <CiUser /> Sign In
-                            </Nav.Link>
-                        </LinkContainer>
+                        <UserNav />
                     </Nav>
                 </Navbar.Collapse>
             </Container>

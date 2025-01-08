@@ -10,7 +10,7 @@ import Loader from '../components/loader';
 
 const LoginView = () => {
     const dispatch = useDispatch();
-    const navigate = useDispatch();
+    const navigate = useNavigate();
 
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState(``);
@@ -23,7 +23,6 @@ const LoginView = () => {
     }
 
     const location = useLocation();
-    console.debug(location);
     const params = new URLSearchParams(location.search);
     const redirect = params.get('redirect') || '/';
 
@@ -36,7 +35,8 @@ const LoginView = () => {
                 password: inputPassword,
             }).unwrap();
             setAlertMessage(null);
-            dispatch(setUserCredentials(res));
+            dispatch(setUserCredentials({ ...res }));
+            navigate(redirect);
         } catch (err) {
             if (err.status === 401) {
                 const msg = err?.data?.message || err?.error;
@@ -57,9 +57,10 @@ const LoginView = () => {
                 ) : null}
                 <Form onSubmit={submitHandle}>
                     <Form.Group className="my-3" controlId="email">
-                        <Form.Label>Email address</Form.Label>
+                        <Form.Label>Email Address</Form.Label>
                         <Form.Control
                             type="email"
+                            autoComplete="email"
                             value={inputEmail}
                             onChange={(e) => setInputEmail(e.target.value)}
                         />
@@ -68,6 +69,7 @@ const LoginView = () => {
                         <Form.Label>Password</Form.Label>
                         <Form.Control
                             type="password"
+                            autoComplete="current-password"
                             value={inputPassword}
                             onChange={(e) => setInputPassword(e.target.value)}
                         />
