@@ -84,8 +84,13 @@ const PriceRow = ({ label, value }) => (
     </ListGroup.Item>
 );
 
-const SummaryCard = ({ checkoutHandler }) => {
+const SummaryCard = () => {
+    const navigate = useNavigate();
     const prices = useSelector(selectCartPrices);
+
+    const checkoutHandler = () => {
+        navigate('login?redirect=/shipping');
+    };
 
     return (
         <Card className="p-3 m-3">
@@ -113,7 +118,6 @@ const SummaryCard = ({ checkoutHandler }) => {
 };
 
 const CartView = () => {
-    const navigate = useNavigate();
     const cartItemIds = useSelector(selectCartItemIds);
 
     let cartList = null;
@@ -128,10 +132,6 @@ const CartView = () => {
             </ListGroup>
         );
     }
-
-    const checkoutHandler = () => {
-        navigate('login?redirect=/shipping');
-    };
 
     return (
         <Container>
@@ -151,7 +151,7 @@ const CartView = () => {
                     </Row>
                 </Col>
                 <Col lg={4}>
-                    <SummaryCard checkoutHandler={checkoutHandler} />
+                    <SummaryCard />
                 </Col>
             </Row>
             <Row>

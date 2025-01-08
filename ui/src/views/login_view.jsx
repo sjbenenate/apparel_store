@@ -11,7 +11,7 @@ import Loader from '../components/loader';
 const LoginView = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const POST_LOGIN_ROUTE = '/';
+    const POST_LOGIN_ROUTE = '/profile';
 
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState(``);
@@ -21,13 +21,13 @@ const LoginView = () => {
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
-    const redirect = params.get('redirect') || POST_LOGIN_ROUTE;
+    const redirect = params.get('redirect');
 
     useEffect(() => {
-        if (userInfo) {
-            navigate('/profile');
+        if (userInfo && redirect) {
+            navigate(redirect);
         }
-    }, [userInfo]);
+    }, [userInfo, redirect]);
 
     const submitHandle = async (e) => {
         e.preventDefault();
@@ -39,7 +39,8 @@ const LoginView = () => {
             }).unwrap();
             setAlertMessage(null);
             dispatch(setUserCredentials({ ...res }));
-            navigate(redirect);
+            navigate(redirect ? redirect : POST_LOGIN_ROUTE);
+            location.refresh();
         } catch (err) {
             if (err.status === 401) {
                 const msg = err?.data?.message || err?.error;
@@ -93,7 +94,15 @@ const LoginView = () => {
                         <div className="d-inline-block pt-2">
                             New Customer?{' '}
                             <span>
-                                <Link to="/register">Register</Link>
+                                <Link
+                                    to={
+                                        redirect
+                                            ? `/register?redirect=${redirect}`
+                                            : '/register'
+                                    }
+                                >
+                                    Register
+                                </Link>
                             </span>
                         </div>
                     </Form.Group>
