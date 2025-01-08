@@ -50,7 +50,12 @@ const UserNav = () => {
 
     const loggedInNav = (
         <NavDropdown title={authInfo?.name}>
-            <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
+            <NavDropdown.Item
+                onClick={handleLogout}
+                disabled={logoutQuery?.isLoading}
+            >
+                Logout
+            </NavDropdown.Item>
             <NavDropdown.Item onClick={() => navigate('/profile')}>
                 Profile
             </NavDropdown.Item>
