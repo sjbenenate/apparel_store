@@ -17,6 +17,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
             throw new Error('Auth token invalid');
         }
     } else {
+        res.status(401);
         throw new Error('No user logged in');
     }
 });

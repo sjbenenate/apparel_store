@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectCartItems } from '../store/cart_slice';
 import { selectAuthInfo, clearUserCredentials } from '../store/auth_slice';
 import { useLogoutQuery } from '../store/api_users';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CartQtyIcon = () => {
     const cartItems = useSelector(selectCartItems);
@@ -38,15 +38,21 @@ const UserNav = () => {
             dispatch(clearUserCredentials());
             navigate('/');
         } catch (err) {
-            console.warn(err?.error || err?.data?.message);
+            if (err.status !== 401) {
+                console.warn(err?.error || err?.data?.message);
+                return;
+            }
         }
+
+        dispatch(clearUserCredentials());
+        navigate('/');
     };
 
     const loggedInNav = (
         <NavDropdown title={authInfo?.name}>
             <NavDropdown.Item onClick={handleLogout}>Logout</NavDropdown.Item>
-            <NavDropdown.Item>
-                <Link to="/profile">Profile</Link>
+            <NavDropdown.Item onClick={() => navigate('/profile')}>
+                Profile
             </NavDropdown.Item>
         </NavDropdown>
     );
