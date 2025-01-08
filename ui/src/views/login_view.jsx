@@ -18,9 +18,11 @@ const LoginView = () => {
     const [login, loginStatus] = useLoginMutation();
     const userInfo = useSelector(selectAuthInfo);
 
-    if (userInfo) {
-        navigate('/profile');
-    }
+    useEffect(() => {
+        if (userInfo) {
+            navigate('/profile');
+        }
+    }, [userInfo]);
 
     const location = useLocation();
     const params = new URLSearchParams(location.search);
