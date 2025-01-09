@@ -1,6 +1,7 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
 import {
     findAuthorizedUser,
+    findUser,
     saveUser,
     modifyUser,
 } from '../data/db_interface.js';
@@ -23,6 +24,11 @@ const loginUser = asyncHandler(async (req, res) => {
 const registerUser = asyncHandler(async (req, res) => {
     console.log('registerUser endpoint hit');
     const { name, email, password } = req.body;
+    const existingUser = await findUser({ email });
+    if (existingUser) {
+        res.status(409);
+        throw new Error('User already exists with this email.');
+    }
     const user = await saveUser(name, email, password);
     await generateToken(res, user._id);
     res.status(201).json(user.json());

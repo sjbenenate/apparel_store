@@ -10,6 +10,7 @@ const RegisterForm = ({ redirect }) => {
     const [inputEmail, setInputEmail] = useState('');
     const [inputName, setInputName] = useState('');
     const [inputPassword, setInputPassword] = useState('');
+    const [alertMessage, setAlertMessage] = useState(null);
 
     const [registerQuery, registerStatus] = useRegisterMutation();
 
@@ -23,18 +24,29 @@ const RegisterForm = ({ redirect }) => {
                 email: inputEmail,
                 password: inputPassword,
             }).unwrap();
+            setAlertMessage(null);
             dispatch(setUserCredentials({ ...res }));
         } catch (err) {
-            console.error(err?.error || err?.data?.message);
+            if (err.status === 409) {
+                const msg = err?.data?.message || err?.error;
+                setAlertMessage(msg);
+                console.warn(msg);
+            } else {
+                console.error(err);
+            }
         }
     };
     return (
         <Form onSubmit={handleSubmit}>
             <h1>Register</h1>
+            {alertMessage ? (
+                <Message variant="danger">{alertMessage}</Message>
+            ) : null}
             <Form.Group className="my-3" controlId="name">
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                     type="name"
+                    autoComplete="name"
                     value={inputName}
                     onChange={(e) => setInputName(e.target.value)}
                 />
@@ -43,6 +55,7 @@ const RegisterForm = ({ redirect }) => {
                 <Form.Label>Email address</Form.Label>
                 <Form.Control
                     type="email"
+                    autoComplete="email"
                     value={inputEmail}
                     onChange={(e) => setInputEmail(e.target.value)}
                 />
@@ -51,6 +64,7 @@ const RegisterForm = ({ redirect }) => {
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                     type="password"
+                    autoComplete="new-password"
                     value={inputPassword}
                     onChange={(e) => setInputPassword(e.target.value)}
                 />
