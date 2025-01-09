@@ -28,13 +28,8 @@ const LoginForm = ({ redirect }) => {
             dispatch(setUserCredentials({ ...res }));
             // navigate in useEffect for simple code
         } catch (err) {
-            if (err.status === 409) {
-                const msg = err?.data?.message || err?.error;
-                setAlertMessage(msg);
-                console.warn(msg);
-            } else {
-                console.error(err);
-            }
+            const msg = err?.data?.message || err?.error;
+            setAlertMessage(msg);
         }
     };
 
@@ -48,7 +43,7 @@ const LoginForm = ({ redirect }) => {
                 <Form.Label>Email Address</Form.Label>
                 <Form.Control
                     type="email"
-                    autoComplete="email"
+                    autoComplete="email username"
                     value={inputEmail}
                     onChange={(e) => setInputEmail(e.target.value)}
                 />

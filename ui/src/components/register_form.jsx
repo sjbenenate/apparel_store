@@ -10,6 +10,7 @@ const RegisterForm = ({ redirect }) => {
     const [inputEmail, setInputEmail] = useState('');
     const [inputName, setInputName] = useState('');
     const [inputPassword, setInputPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [alertMessage, setAlertMessage] = useState(null);
 
     const [registerQuery, registerStatus] = useRegisterMutation();
@@ -18,6 +19,10 @@ const RegisterForm = ({ redirect }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (inputPassword !== confirmPassword) {
+            setAlertMessage('Passwords to not match!');
+            return;
+        }
         try {
             const res = await registerQuery({
                 name: inputName,
@@ -27,15 +32,11 @@ const RegisterForm = ({ redirect }) => {
             setAlertMessage(null);
             dispatch(setUserCredentials({ ...res }));
         } catch (err) {
-            if (err.status === 409) {
-                const msg = err?.data?.message || err?.error;
-                setAlertMessage(msg);
-                console.warn(msg);
-            } else {
-                console.error(err);
-            }
+            const msg = err?.data?.message || err?.error;
+            setAlertMessage(msg);
         }
     };
+
     return (
         <Form onSubmit={handleSubmit}>
             <h1>Register</h1>
@@ -67,6 +68,15 @@ const RegisterForm = ({ redirect }) => {
                     autoComplete="new-password"
                     value={inputPassword}
                     onChange={(e) => setInputPassword(e.target.value)}
+                />
+            </Form.Group>
+            <Form.Group className="my-3" controlId="confirm-password">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
+                    type="password"
+                    autoComplete="new-password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                 />
             </Form.Group>
             <Form.Group className="d-flex flex-wrap justify-content-between">
