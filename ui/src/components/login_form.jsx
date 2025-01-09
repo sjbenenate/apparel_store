@@ -28,7 +28,7 @@ const LoginForm = ({ redirect }) => {
             dispatch(setUserCredentials({ ...res }));
             // navigate in useEffect for simple code
         } catch (err) {
-            if (err.status === 401) {
+            if (err.status === 409) {
                 const msg = err?.data?.message || err?.error;
                 setAlertMessage(msg);
                 console.warn(msg);
