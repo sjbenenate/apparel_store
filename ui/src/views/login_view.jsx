@@ -11,7 +11,6 @@ import Loader from '../components/loader';
 const LoginView = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const POST_LOGIN_ROUTE = '/profile';
 
     const [inputEmail, setInputEmail] = useState('');
     const [inputPassword, setInputPassword] = useState(``);
@@ -26,6 +25,8 @@ const LoginView = () => {
     useEffect(() => {
         if (userInfo && redirect) {
             navigate(redirect);
+        } else if (userInfo) {
+            navigate('/profile');
         }
     }, [userInfo, redirect]);
 
@@ -39,8 +40,7 @@ const LoginView = () => {
             }).unwrap();
             setAlertMessage(null);
             dispatch(setUserCredentials({ ...res }));
-            navigate(redirect ? redirect : POST_LOGIN_ROUTE);
-            location.refresh();
+            // navigate in useEffect for simple code
         } catch (err) {
             if (err.status === 401) {
                 const msg = err?.data?.message || err?.error;

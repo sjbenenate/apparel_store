@@ -89,7 +89,7 @@ const SummaryCard = () => {
     const prices = useSelector(selectCartPrices);
 
     const checkoutHandler = () => {
-        navigate('login?redirect=/shipping');
+        navigate('/login?redirect=/shipping', { replace: true });
     };
 
     return (
