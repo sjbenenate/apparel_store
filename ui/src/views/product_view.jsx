@@ -90,7 +90,7 @@ export const ProductView = () => {
 
     return (
         <div className="my-3 p-3">
-            <RouteButton text="Back" route="/" />
+            <RouteButton text="Back" to="/" />
             {isError ? (
                 <Message variant="danger">Error loading product!</Message>
             ) : null}
