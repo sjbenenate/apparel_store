@@ -6,6 +6,7 @@ import FormContainer from '../components/form_container';
 import { Form, Button } from 'react-bootstrap';
 import { RouteButton } from '../components/controls';
 import Message from '../components/message';
+import CheckoutSteps from '../components/checkout_steps';
 
 const verifyAddress = (address) => {
     return Object.values(address).reduce((acc, val) => val.length > 0 && acc);
@@ -45,6 +46,7 @@ const ShippingView = () => {
 
     return (
         <FormContainer>
+            <CheckoutSteps currentStep="shipping" />
             <h1>Shipping Address</h1>
             {alertMessage ? (
                 <Message variant="danger">{alertMessage}</Message>
