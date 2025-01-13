@@ -18,6 +18,7 @@ import { ProductView } from './views/product_view';
 import CartView from './views/cart_view';
 import AuthView from './views/auth_view';
 import ProfileView from './views/profile_view';
+import ShippingView from './views/shipping_view';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -31,6 +32,7 @@ const router = createBrowserRouter(
                 path="register"
                 element={<AuthView signInType="register" />}
             />
+            <Route path="shipping" element={<ShippingView />} />
         </Route>
     )
 );

@@ -8,7 +8,7 @@ const STORAGE_KEY = 'cart';
 
 const initialState = localStorage.getItem(STORAGE_KEY)
     ? JSON.parse(localStorage.getItem(STORAGE_KEY))
-    : { cartItems: {}, cartItemIds: [], prices: {} };
+    : { cartItems: {}, cartItemIds: [], prices: {}, shippingAddress: {} };
 
 // Edge case handling when localstorage was saved with older version of app
 if (!initialState.cartItemIds) {
@@ -21,6 +21,10 @@ if (!initialState.prices) {
 
 if (!initialState.cartItems) {
     initialState.cartItems = {};
+}
+
+if (!initialState.shippingAddress) {
+    initialState.shippingAddress = {};
 }
 
 // reducer helpers
@@ -52,7 +56,7 @@ const updateLocalStorage = (state) => {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (err) {
-        console.warn(err);
+        console.error(err);
     }
 };
 
@@ -89,11 +93,16 @@ const cartSlice = createSlice({
             updateTotals(state);
             updateLocalStorage(state);
         },
+        setShippingAddress: (state, action) => {
+            state.shippingAddress = action.payload;
+            updateLocalStorage(state);
+        },
     },
 });
 
 // Actions and Reducer exports
-export const { addItemToCart, setItemQty, removeItem } = cartSlice.actions;
+export const { addItemToCart, setItemQty, removeItem, setShippingAddress } =
+    cartSlice.actions;
 export default cartSlice;
 
 // Selectors
@@ -102,7 +111,7 @@ export const selectCartItems = (state) => state.cart.cartItems;
 
 export const selectCartPrices = (state) => state.cart.prices;
 
-export const selectCart = (state) => state.cart;
+export const selectShippingAddress = (state) => state.cart.shippingAddress;
 
 export const createSelectCartItem = (itemId) =>
     createSelector([selectCartItems], (cartItems) =>
