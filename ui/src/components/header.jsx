@@ -38,7 +38,7 @@ const UserNav = () => {
             dispatch(clearUserCredentials());
             navigate('/');
         } catch (err) {
-            if (err.status !== 401) {
+            if (err.status !== 409) {
                 console.warn(err?.error || err?.data?.message);
                 return;
             }
