@@ -93,7 +93,7 @@ const SummaryCard = () => {
     };
 
     return (
-        <Card className="p-3 m-3">
+        <Card className="p-3 m-1">
             <Card.Title className="px-3">{`Summary (${prices.qtyItems} Item${
                 prices.qtyItems !== 1 ? 's' : ''
             })`}</Card.Title>
@@ -107,7 +107,7 @@ const SummaryCard = () => {
                 <PriceRow label="Total" value={prices.total} />
             </ListGroup>
             <Button
-                className="btn-contained"
+                variant="info"
                 disabled={prices.qtyItems < 1}
                 onClick={checkoutHandler}
             >
@@ -138,7 +138,7 @@ const CartView = () => {
             <Row>
                 <h1>Shopping Cart</h1>
             </Row>
-            <Row>
+            <Row className="mb-2">
                 <Col lg={8}>
                     <Row>
                         {cartList ? (

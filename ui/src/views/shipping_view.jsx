@@ -90,10 +90,12 @@ const ShippingView = () => {
                         onChange={(e) => setCountry(e.target.value)}
                     ></Form.Control>
                 </Form.Group>
-                <Button type="submit" variant="primary">
-                    Continue
-                </Button>
-                <RouteButton to="/cart" text="Back to Cart" />
+                <Form.Group className="d-flex flex-wrap justify-content-between">
+                    <Button type="submit" variant="info">
+                        Continue
+                    </Button>
+                    <RouteButton to="/cart" text="Back to Cart" />
+                </Form.Group>
             </Form>
         </FormContainer>
     );

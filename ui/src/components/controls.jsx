@@ -3,7 +3,7 @@ import { Form } from 'react-bootstrap';
 
 const RouteButton = ({ to = '/', text = 'Back' }) => {
     return (
-        <Link className="btn btn-outline-light my-3" to={to}>
+        <Link className="btn btn-outline-light" to={to}>
             {text}
         </Link>
     );

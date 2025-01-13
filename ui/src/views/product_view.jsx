@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Col, Row, Image, ListGroup } from 'react-bootstrap';
+import { Button, Container, Col, Row, Image, ListGroup } from 'react-bootstrap';
 import { Rating } from '../components/rating_widget';
 import { useGetProductInfoQuery } from '../store/api_products';
 import Loader from '../components/loader.jsx';
@@ -89,13 +89,19 @@ export const ProductView = () => {
     };
 
     return (
-        <div className="my-3 p-3">
-            <RouteButton text="Back" to="/" />
-            {isError ? (
-                <Message variant="danger">Error loading product!</Message>
-            ) : null}
-            {isLoading ? <Loader /> : null}
-            {product ? productInfo(product) : null}
-        </div>
+        <Container className="my-3 p-3">
+            <Row className="mb-3">
+                <Col>
+                    <RouteButton text="Back" to="/" />
+                </Col>
+            </Row>
+            <Row>
+                {isError ? (
+                    <Message variant="danger">Error loading product!</Message>
+                ) : null}
+                {isLoading ? <Loader /> : null}
+                {product ? productInfo(product) : null}
+            </Row>
+        </Container>
     );
 };
