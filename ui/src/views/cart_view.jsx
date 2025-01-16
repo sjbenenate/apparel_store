@@ -92,27 +92,40 @@ const SummaryCard = () => {
         navigate('/login?redirect=/shipping', { replace: true });
     };
 
-    return (
-        <Card className="p-3 m-1">
+    const noItemsBody = (
+        <>
+            <Card.Title className="px-3">Summary</Card.Title>
+            <Card.Text>No items</Card.Text>
+        </>
+    );
+
+    const withItemsBody = (
+        <>
             <Card.Title className="px-3">{`Summary (${prices.qtyItems} Item${
                 prices.qtyItems !== 1 ? 's' : ''
             })`}</Card.Title>
             <ListGroup>
-                <PriceRow label="Subtotal" value={prices.itemPrices} />
+                <PriceRow label="Subtotal" value={prices?.itemPrices} />
                 <PriceRow
-                    label={`Tax (${Math.round(prices.taxPercentage * 100)}%)`}
-                    value={prices.tax}
+                    label={`Tax (${Math.round(prices?.taxPercentage * 100)}%)`}
+                    value={prices?.tax}
                 />
-                <PriceRow label="Shipping" value={prices.shipping} />
-                <PriceRow label="Total" value={prices.total} />
+                <PriceRow label="Shipping" value={prices?.shipping} />
+                <PriceRow label="Total" value={prices?.total} />
             </ListGroup>
             <Button
                 variant="info"
-                disabled={prices.qtyItems < 1}
+                disabled={!prices?.qtyItems}
                 onClick={checkoutHandler}
             >
                 Checkout
             </Button>
+        </>
+    );
+
+    return (
+        <Card className="p-3 m-1">
+            {!prices?.qtyItems ? noItemsBody : withItemsBody}
         </Card>
     );
 };
