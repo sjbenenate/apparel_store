@@ -11,6 +11,7 @@ import { Form, Button } from 'react-bootstrap';
 import { RouteButton } from '../components/controls';
 import Message from '../components/message';
 import CheckoutSteps from '../components/checkout_steps';
+import { PAYMENT_METHODS } from '../constants';
 
 const PaymentView = () => {
     // Hooks
@@ -26,7 +27,7 @@ const PaymentView = () => {
     const [alertMessage, setAlertMessage] = useState(null);
 
     useEffect(() => {
-        if (!shippingAddress || !Object.keys(shippingAddress).length) {
+        if (!shippingAddress) {
             console.log('No shipping address. Redirect to shipping form.');
             navigate('/shipping');
         }
@@ -34,7 +35,26 @@ const PaymentView = () => {
 
     const handleSubmit = (e) => {
         console.log('submit payment');
+        e.preventDefault();
+        dispatch(setPaymentMethod(inputPayment));
+        navigate('/orderConfirmation');
     };
+
+    const paymentSelectOptions = Object.values(PAYMENT_METHODS).map(
+        (payMethod) => (
+            <Form.Check
+                key={payMethod}
+                type="radio"
+                label={payMethod}
+                id={payMethod}
+                value={payMethod}
+                checked={inputPayment === payMethod}
+                onChange={(e) => {
+                    setInputPayment(e.target.value);
+                }}
+            />
+        )
+    );
 
     return (
         <FormContainer>
@@ -46,26 +66,7 @@ const PaymentView = () => {
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="payment" className="my-2">
                     <Form.Label>Select a payment method</Form.Label>
-                    <Form.Check
-                        type="radio"
-                        label="PayPal or Card"
-                        id="paypal-or-card"
-                        value={inputPayment}
-                        onChange={(e) => {
-                            console.log('paypal');
-                            setInputPayment(e.target.value);
-                        }}
-                    />
-                    <Form.Check
-                        type="radio"
-                        label="Bit Coin"
-                        id="bit-coin"
-                        value={inputPayment}
-                        onChange={(e) => {
-                            console.log('bits');
-                            setInputPayment(e.target.value);
-                        }}
-                    />
+                    {paymentSelectOptions}
                 </Form.Group>
                 <Form.Group className="d-flex flex-wrap justify-content-between">
                     <RouteButton to="/shipping" text="Back to Shipping" />

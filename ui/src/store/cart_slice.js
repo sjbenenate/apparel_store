@@ -1,5 +1,6 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { roundDecimals } from '../utils';
+import { PAYMENT_METHODS } from '../constants';
 
 const FREE_SHIPPING = 100;
 const TAX_PERCENTAGE = 0.15;
@@ -11,7 +12,7 @@ const DEFAULT_STATE = {
     cartItemIds: [],
     prices: {},
     shippingAddress: null,
-    paymentMethod: 'PayPal',
+    paymentMethod: PAYMENT_METHODS.paypal,
 };
 
 const initialState = localStorage.getItem(STORAGE_KEY)
