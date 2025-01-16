@@ -95,12 +95,21 @@ const cartSlice = createSlice({
             state.shippingAddress = action.payload;
             updateLocalStorage(state);
         },
+        setPaymentMethod: (state, action) => {
+            state.paymentMethod = action.payload;
+            updateLocalStorage(state);
+        },
     },
 });
 
 // Actions and Reducer exports
-export const { addItemToCart, setItemQty, removeItem, setShippingAddress } =
-    cartSlice.actions;
+export const {
+    addItemToCart,
+    setItemQty,
+    removeItem,
+    setShippingAddress,
+    setPaymentMethod,
+} = cartSlice.actions;
 export default cartSlice;
 
 // Selectors
@@ -110,6 +119,8 @@ export const selectCartItems = (state) => state.cart.cartItems;
 export const selectCartPrices = (state) => state.cart.prices;
 
 export const selectShippingAddress = (state) => state.cart.shippingAddress;
+
+export const selectPaymentMethod = (state) => state.cart.paymentMethod;
 
 export const createSelectCartItem = (itemId) =>
     createSelector([selectCartItems], (cartItems) =>

@@ -93,10 +93,10 @@ const ShippingView = () => {
                     ></Form.Control>
                 </Form.Group>
                 <Form.Group className="d-flex flex-wrap justify-content-between">
+                    <RouteButton to="/cart" text="Back to Cart" />
                     <Button type="submit" variant="info">
                         Continue
                     </Button>
-                    <RouteButton to="/cart" text="Back to Cart" />
                 </Form.Group>
             </Form>
         </FormContainer>
