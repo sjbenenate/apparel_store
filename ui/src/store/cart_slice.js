@@ -6,26 +6,24 @@ const TAX_PERCENTAGE = 0.15;
 
 const STORAGE_KEY = 'cart';
 
+const DEFAULT_STATE = {
+    cartItems: {},
+    cartItemIds: [],
+    prices: {},
+    shippingAddress: {},
+    paymentMethod: 'PayPal',
+};
+
 const initialState = localStorage.getItem(STORAGE_KEY)
     ? JSON.parse(localStorage.getItem(STORAGE_KEY))
-    : { cartItems: {}, cartItemIds: [], prices: {}, shippingAddress: {} };
+    : DEFAULT_STATE;
 
 // Edge case handling when localstorage was saved with older version of app
-if (!initialState.cartItemIds) {
-    initialState.cartItemIds = [];
-}
-
-if (!initialState.prices) {
-    initialState.prices = {};
-}
-
-if (!initialState.cartItems) {
-    initialState.cartItems = {};
-}
-
-if (!initialState.shippingAddress) {
-    initialState.shippingAddress = {};
-}
+Object.entries(DEFAULT_STATE).forEach(([key, value]) => {
+    if (!initialState[key]) {
+        initialState[key] = value;
+    }
+});
 
 // reducer helpers
 const updateTotals = (state) => {
