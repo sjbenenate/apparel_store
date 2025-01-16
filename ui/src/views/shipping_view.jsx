@@ -32,13 +32,13 @@ const ShippingView = () => {
     const [alertMessage, setAlertMessage] = useState(null);
 
     const handleSubmit = (e) => {
+        e.preventDefault();
         const payload = { streetAddress, city, postalCode, country };
         if (verifyAddress(payload)) {
             dispatch(setShippingAddress(payload));
             navigate('/payment');
         } else {
             setAlertMessage('An address input field is invalid');
-            e.preventDefault();
         }
     };
 
@@ -94,7 +94,13 @@ const ShippingView = () => {
                 </Form.Group>
                 <Form.Group className="d-flex flex-wrap justify-content-between">
                     <RouteButton to="/cart" text="Back to Cart" />
-                    <Button type="submit" variant="info">
+                    <Button
+                        type="submit"
+                        variant="info"
+                        disabled={
+                            !streetAddress || !city || !postalCode || !country
+                        }
+                    >
                         Continue
                     </Button>
                 </Form.Group>

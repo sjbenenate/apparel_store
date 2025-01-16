@@ -10,7 +10,7 @@ const DEFAULT_STATE = {
     cartItems: {},
     cartItemIds: [],
     prices: {},
-    shippingAddress: {},
+    shippingAddress: null,
     paymentMethod: 'PayPal',
 };
 
