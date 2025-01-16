@@ -2,12 +2,24 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { Nav } from 'react-bootstrap';
 
 const CheckoutSteps = ({ currentStep }) => {
+    const stepOrder = ['cart', 'shipping', 'payment', 'confirmation'];
+    const currentIndex = stepOrder.findIndex(
+        (item) => item === currentStep.toLowerCase()
+    );
+
+    if (currentIndex === -1) {
+        throw new Error('Invalid step passed to CheckoutSteps');
+    }
+
     const stepNavItem = (step, route) => {
-        const isCurrent = step.toLowerCase() === currentStep;
+        const index = stepOrder.findIndex(
+            (item) => item === step.toLowerCase()
+        );
+        const disabled = index > currentIndex;
         return (
-            <Nav.Item key={step} className={isCurrent ? 'text-uppercase' : ''}>
+            <Nav.Item key={step}>
                 <LinkContainer to={route}>
-                    <Nav.Link disabled={isCurrent}>{step}</Nav.Link>
+                    <Nav.Link disabled={disabled}>{step}</Nav.Link>
                 </LinkContainer>
             </Nav.Item>
         );
