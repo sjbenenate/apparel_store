@@ -2,18 +2,19 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-    setPaymentMethod,
     selectPaymentMethod,
+    selectCartItems,
+    selectCartPrices,
     selectShippingAddress,
+    clearCart,
 } from '../store/cart_slice';
 import FormContainer from '../components/form_container';
 import { Form, Button } from 'react-bootstrap';
 import { RouteButton } from '../components/controls';
 import Message from '../components/message';
 import CheckoutSteps from '../components/checkout_steps';
-import { PAYMENT_METHODS } from '../constants';
 
-const PaymentView = () => {
+const OrderConfirmationView = () => {
     // Hooks
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -23,55 +24,35 @@ const PaymentView = () => {
     const paymentMethod = useSelector(selectPaymentMethod);
 
     // state variables
-    const [inputPayment, setInputPayment] = useState(paymentMethod);
     const [alertMessage, setAlertMessage] = useState(null);
 
     useEffect(() => {
-        if (!shippingAddress) {
+        if (!shippingAddress?.streetAddress) {
             console.log('No shipping address. Redirect to shipping form.');
             navigate('/shipping');
         }
-    }, [shippingAddress]);
+        if (!paymentMethod) {
+            console.log('No payment method. Redirect to payment page.');
+            navigate('/payment');
+        }
+    }, [shippingAddress, paymentMethod]);
 
     const handleSubmit = (e) => {
-        console.log('submit payment');
-        e.preventDefault();
-        dispatch(setPaymentMethod(inputPayment));
-        navigate('/orderConfirmation');
+        console.log('handle confirmation');
     };
-
-    const paymentSelectOptions = Object.values(PAYMENT_METHODS).map(
-        (payMethod) => (
-            <Form.Check
-                key={payMethod}
-                type="radio"
-                label={payMethod}
-                id={payMethod}
-                value={payMethod}
-                checked={inputPayment === payMethod}
-                onChange={(e) => {
-                    setInputPayment(e.target.value);
-                }}
-            />
-        )
-    );
 
     return (
         <FormContainer>
-            <CheckoutSteps currentStep="payment" />
-            <h1>Payment</h1>
+            <CheckoutSteps currentStep="confirmation" />
+            <h1>Order Confirmation</h1>
             {alertMessage ? (
                 <Message variant="danger">{alertMessage}</Message>
             ) : null}
             <Form onSubmit={handleSubmit}>
-                <Form.Group controlId="payment" className="my-2">
-                    <Form.Label>Select a payment method</Form.Label>
-                    {paymentSelectOptions}
-                </Form.Group>
                 <Form.Group className="d-flex flex-wrap justify-content-between">
-                    <RouteButton to="/shipping" text="Back to Shipping" />
+                    <RouteButton to="/payment" text="Back to Payment" />
                     <Button type="submit" variant="info" autoFocus>
-                        Continue
+                        Place Order
                     </Button>
                 </Form.Group>
             </Form>
@@ -79,4 +60,4 @@ const PaymentView = () => {
     );
 };
 
-export default PaymentView;
+export default OrderConfirmationView;

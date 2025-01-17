@@ -100,6 +100,10 @@ const cartSlice = createSlice({
             state.paymentMethod = action.payload;
             updateLocalStorage(state);
         },
+        clearCart: (state, action) => {
+            state = DEFAULT_STATE;
+            updateLocalStorage(state);
+        },
     },
 });
 
@@ -110,6 +114,7 @@ export const {
     removeItem,
     setShippingAddress,
     setPaymentMethod,
+    clearCart,
 } = cartSlice.actions;
 export default cartSlice;
 

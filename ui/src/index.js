@@ -21,7 +21,7 @@ import ProfileView from './views/profile_view';
 import ShippingView from './views/shipping_view';
 import PrivateRoute from './components/private_route';
 import PaymentView from './views/payment_view';
-
+import OrderConfirmationView from './views/order_confirmation_view';
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<App />} errorElement={<NotFoundView />}>
@@ -37,6 +37,10 @@ const router = createBrowserRouter(
             <Route element={<PrivateRoute />}>
                 <Route path="shipping" element={<ShippingView />} />
                 <Route path="payment" element={<PaymentView />} />
+                <Route
+                    path="orderConfirmation"
+                    element={<OrderConfirmationView />}
+                />
             </Route>
         </Route>
     )

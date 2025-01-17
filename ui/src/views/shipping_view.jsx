@@ -42,6 +42,8 @@ const ShippingView = () => {
         }
     };
 
+    const submitDisabled = !streetAddress || !city || !postalCode || !country;
+
     const groupClass = 'my-2';
 
     return (
@@ -97,9 +99,8 @@ const ShippingView = () => {
                     <Button
                         type="submit"
                         variant="info"
-                        disabled={
-                            !streetAddress || !city || !postalCode || !country
-                        }
+                        autoFocus={submitDisabled}
+                        disabled={submitDisabled}
                     >
                         Continue
                     </Button>
