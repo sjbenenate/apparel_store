@@ -14,12 +14,8 @@ import {
 
 let orderRouter = Router();
 
-orderRouter
-    .route('/')
-    .all(authMiddleware)
-    .get(adminMiddleware, getAllOrders)
-    .post(addToOrder);
-orderRouter.get('/:id', authMiddleware, getOrderById);
+orderRouter.get('/myOrders', authMiddleware, getOrdersByUser);
+
 orderRouter.put(
     '/:id/pay',
     authMiddleware,
@@ -33,7 +29,11 @@ orderRouter.put(
     adminMiddleware,
     updateOrderToDelivered
 );
-
-orderRouter.get('/myOrders', authMiddleware, getOrdersByUser);
+orderRouter.get('/:id', authMiddleware, getOrderById);
+orderRouter
+    .route('/')
+    .all(authMiddleware)
+    .get(adminMiddleware, getAllOrders)
+    .post(addToOrder);
 
 export default orderRouter;
