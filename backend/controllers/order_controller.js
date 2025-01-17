@@ -40,7 +40,32 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 });
 
 const addToOrder = asyncHandler(async (req, res) => {
-    res.send('add to order');
+    console.log('add to order started');
+    const shippingAddress = JSON.parse(req.body?.shippingAddress);
+    const orderItems = JSON.parse(req.body?.orderItems);
+    const { paymentMethod, orderPrice, shippingPrice, totalPrice } = req.body;
+
+    if (!orderItems || orderItems.length < 1) {
+        res.status(400);
+        throw new Error('No items in order');
+    }
+    const orderPayload = {
+        userId: req.user._id,
+        orderItems: orderItems.map((item) => {
+            return {
+                ...item,
+                productId: item._id,
+                _id: undefined,
+            };
+        }),
+        shippingAddress,
+        orderPrice,
+        shippingPrice,
+        totalPrice,
+        paymentMethod,
+    };
+    const order = await saveOrder(orderPayload);
+    res.json(order);
 });
 
 export {

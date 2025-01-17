@@ -1,15 +1,10 @@
 import mongoose from 'mongoose';
 
 const shippingAddressSchema = new mongoose.Schema({
-    address: { type: String, required: true },
+    streetAddress: { type: String, required: true },
     city: { type: String, required: true },
     postalCode: { type: Number, required: true },
     country: { type: String, required: true },
-    orderId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-        ref: 'Order',
-    },
 });
 
 const orderItemSchema = new mongoose.Schema({
@@ -32,17 +27,17 @@ const orderSchema = new mongoose.Schema(
             ref: 'user',
         },
         orderItems: [orderItemSchema],
-        shippingAddressSchema,
+        shippingAddress: shippingAddressSchema,
         paymentMethod: {
             type: String,
             required: true,
         },
-        paymentResult: {
+        /*paymentResult: {
             id: { type: String, required: true },
             status: { type: String },
             email: { type: String },
             updateTime: { type: String },
-        },
+        },*/
         orderPrice: { type: Number, required: true, default: 0.0 },
         shippingPrice: { type: Number, required: true, default: 0.0 },
         totalPrice: { type: Number, required: true, default: 0.0 },
