@@ -66,16 +66,22 @@ const modifyUser = async (userId, info) => {
     return await userModel.findById(userId).select('-password').exec();
 };
 
-const findOrders = async ({ userId, orderId }) => {
+const findOrders = async (userId) => {
     let orders;
     if (userId) {
         orders = await orderModel.find({ userId });
-    } else if (orderId) {
-        orders = await orderModel.find({ _id: orderId });
     } else {
         orders = await orderModel.find();
     }
     return orders;
+};
+
+const findOrderById = async (orderId) => {
+    const orders = await orderModel.find({ _id: orderId });
+    if (orders.length < 1) {
+        return null;
+    }
+    return orders[0];
 };
 
 const saveOrder = async (orderData) => {
@@ -104,6 +110,7 @@ export {
     saveUser,
     modifyUser,
     findOrders,
+    findOrderById,
     saveOrder,
     modifyOrder,
 };
