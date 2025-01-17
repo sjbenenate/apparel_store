@@ -4,6 +4,7 @@ import colors from 'colors';
 
 import userModel from './models/user_model.js';
 import productModel from './models/product_model.js';
+import orderModel from './models/order_model.js';
 
 env.config();
 const mongo_uri = process.env.MONGO_URI || '';
@@ -65,6 +66,35 @@ const modifyUser = async (userId, info) => {
     return await userModel.findById(userId).select('-password').exec();
 };
 
+const findOrders = async ({ userId, orderId }) => {
+    let orders;
+    if (userId) {
+        orders = await orderModel.find({ userId });
+    } else if (orderId) {
+        orders = await orderModel.find({ _id: orderId });
+    } else {
+        orders = await orderModel.find();
+    }
+    return orders;
+};
+
+const saveOrder = async (orderData) => {
+    const res = await orderModel.create(orderData);
+    return res;
+};
+
+const modifyOrder = async ({ orderId, isPayed, isDelivered }) => {
+    let payload = { _id: orderId };
+    if (isPayed !== undefined) {
+        payload.isPayed = isPayed;
+    }
+    if (isDelivered !== undefined) {
+        payload.isDelivered = isDelivered;
+    }
+    const order = await orderModel.updateOne(payload);
+    return order;
+};
+
 export {
     dbConnect,
     findAllProducts,
@@ -73,4 +103,7 @@ export {
     findAuthorizedUser,
     saveUser,
     modifyUser,
+    findOrders,
+    saveOrder,
+    modifyOrder,
 };

@@ -3,6 +3,7 @@ import env from 'dotenv';
 import { dbConnect } from './data/db_interface.js';
 import productRouter from './routes/product_routes.js';
 import userRouter from './routes/user_routes.js';
+import orderRouter from './routes/order_routes.js';
 import { UrlNotFound, errorHandler } from './middleware/error_middleware.js';
 import cookieParser from 'cookie-parser';
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 // Routes
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 app.get('/', (req, res) => {
     res.send('Server was reached on root route.');
