@@ -19,7 +19,9 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 const getAllOrders = asyncHandler(async (req, res) => {
-    res.send('get all orders');
+    console.log('get all orders');
+    const orders = await findOrders();
+    res.status(200).json(orders);
 });
 
 const getOrdersByUser = asyncHandler(async (req, res) => {
