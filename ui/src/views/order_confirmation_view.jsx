@@ -8,11 +8,11 @@ import {
     selectShippingAddress,
     clearCart,
 } from '../store/cart_slice';
-import FormContainer from '../components/form_container';
-import { Form, Button } from 'react-bootstrap';
+import { Container, Button, Row, Col } from 'react-bootstrap';
 import { RouteButton } from '../components/controls';
 import Message from '../components/message';
 import CheckoutSteps from '../components/checkout_steps';
+import CartSummary from '../components/cart_summary';
 
 const OrderConfirmationView = () => {
     // Hooks
@@ -37,26 +37,48 @@ const OrderConfirmationView = () => {
         }
     }, [shippingAddress, paymentMethod]);
 
-    const handleSubmit = (e) => {
+    const placeOrderHandler = (e) => {
         console.log('handle confirmation');
     };
 
+    const btnSpaceClassName = 'my-2';
+
     return (
-        <FormContainer>
+        <Container>
             <CheckoutSteps currentStep="confirmation" />
             <h1>Order Confirmation</h1>
             {alertMessage ? (
                 <Message variant="danger">{alertMessage}</Message>
             ) : null}
-            <Form onSubmit={handleSubmit}>
-                <Form.Group className="d-flex flex-wrap justify-content-between">
-                    <RouteButton to="/payment" text="Back to Payment" />
-                    <Button type="submit" variant="info" autoFocus>
-                        Place Order
-                    </Button>
-                </Form.Group>
-            </Form>
-        </FormContainer>
+            <Row>
+                <Col md={8}>This is 8 column text</Col>
+
+                <Col md={4}>
+                    <CartSummary
+                        actionButtonText="Place Order"
+                        actionButtonHandler={placeOrderHandler}
+                    />
+                </Col>
+            </Row>
+
+            <div className="d-flex flex-wrap justify-content-sm-between">
+                <RouteButton
+                    to="/payment"
+                    text="Back to Payment"
+                    className={btnSpaceClassName}
+                />
+
+                <Button
+                    type="button"
+                    variant="info"
+                    autoFocus
+                    onClick={placeOrderHandler}
+                    className={btnSpaceClassName}
+                >
+                    Place Order
+                </Button>
+            </div>
+        </Container>
     );
 };
 
