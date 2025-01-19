@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import {
     selectPaymentMethod,
     selectCartItems,
-    selectCartPrices,
+    selectCartItemIds,
     selectShippingAddress,
     clearCart,
 } from '../store/cart_slice';
-import { Container, Button, Row, Col } from 'react-bootstrap';
+import { Container, Button, Row, Col, ListGroup, Image } from 'react-bootstrap';
 import { RouteButton } from '../components/controls';
 import Message from '../components/message';
 import CheckoutSteps from '../components/checkout_steps';
@@ -22,6 +22,8 @@ const OrderConfirmationView = () => {
     // Store data
     const shippingAddress = useSelector(selectShippingAddress);
     const paymentMethod = useSelector(selectPaymentMethod);
+    const cartItems = useSelector(selectCartItems);
+    const cartItemIds = useSelector(selectCartItemIds);
 
     // state variables
     const [alertMessage, setAlertMessage] = useState(null);
@@ -43,6 +45,33 @@ const OrderConfirmationView = () => {
 
     const btnSpaceClassName = 'my-2';
 
+    const cartItemsList = () => {
+        if (!cartItemIds || cartItemIds.length === 0) return 'No items in cart';
+        return (
+            <ListGroup>
+                {cartItemIds.map((id) => {
+                    const item = cartItems[id];
+                    return (
+                        <ListGroup.Item>
+                            <Row>
+                                <Col>
+                                    <Image
+                                        src={item.image}
+                                        alt={item.name}
+                                        rounded
+                                        fluid
+                                    />
+                                </Col>
+                                <Col>{item.name}</Col>
+                                <Col>{`Qty: ${item.qty}`}</Col>
+                            </Row>
+                        </ListGroup.Item>
+                    );
+                })}
+            </ListGroup>
+        );
+    };
+
     return (
         <Container>
             <CheckoutSteps currentStep="confirmation" />
@@ -51,7 +80,32 @@ const OrderConfirmationView = () => {
                 <Message variant="danger">{alertMessage}</Message>
             ) : null}
             <Row>
-                <Col md={8}>This is 8 column text</Col>
+                <Col md={8}>
+                    <ListGroup variant="flush" className="mb-3">
+                        <ListGroup.Item>
+                            <h2>Items</h2>
+                        </ListGroup.Item>
+                        <ListGroup.Item>{cartItemsList()}</ListGroup.Item>
+                        <ListGroup.Item>
+                            <h2>Shipping Address</h2>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            <p>
+                                {shippingAddress?.streetAddress}
+                                <br />
+                                {shippingAddress?.city}
+                                <br />
+                                {shippingAddress?.postalCode}
+                                <br />
+                                {shippingAddress?.country}
+                            </p>
+                        </ListGroup.Item>
+                        <ListGroup.Item>
+                            <h2>Payment Method</h2>
+                        </ListGroup.Item>
+                        <ListGroup.Item>{paymentMethod}</ListGroup.Item>
+                    </ListGroup>
+                </Col>
 
                 <Col md={4}>
                     <CartSummary
