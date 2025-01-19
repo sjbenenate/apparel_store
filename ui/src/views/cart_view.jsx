@@ -12,7 +12,6 @@ import {
 } from 'react-bootstrap';
 import { FaTrash } from 'react-icons/fa';
 import {
-    selectCartPrices,
     createSelectCartItem,
     selectCartItemIds,
     setItemQty,
@@ -21,6 +20,7 @@ import {
 import { RouteButton, QtySelect } from '../components/controls.jsx';
 import { roundDecimals } from '../utils.js';
 import Message from '../components/message.jsx';
+import CartSummary from '../components/cart_summary.jsx';
 
 const CartRow = ({ itemId }) => {
     const dispatch = useDispatch();
@@ -75,63 +75,13 @@ const CartRow = ({ itemId }) => {
     );
 };
 
-const PriceRow = ({ label, value }) => (
-    <ListGroup.Item className="py-1">
-        <Row>
-            <Col>{label}</Col>
-            <Col>{`$${value}`}</Col>
-        </Row>
-    </ListGroup.Item>
-);
-
-const SummaryCard = () => {
+const CartView = () => {
     const navigate = useNavigate();
-    const prices = useSelector(selectCartPrices);
+    const cartItemIds = useSelector(selectCartItemIds);
 
     const checkoutHandler = () => {
         navigate('/login?redirect=/shipping', { replace: true });
     };
-
-    const noItemsBody = (
-        <>
-            <Card.Title className="px-3">Summary</Card.Title>
-            <Card.Text>No items</Card.Text>
-        </>
-    );
-
-    const withItemsBody = (
-        <>
-            <Card.Title className="px-3">{`Summary (${prices.qtyItems} Item${
-                prices.qtyItems !== 1 ? 's' : ''
-            })`}</Card.Title>
-            <ListGroup>
-                <PriceRow label="Subtotal" value={prices?.itemPrices} />
-                <PriceRow
-                    label={`Tax (${Math.round(prices?.taxPercentage * 100)}%)`}
-                    value={prices?.tax}
-                />
-                <PriceRow label="Shipping" value={prices?.shipping} />
-                <PriceRow label="Total" value={prices?.total} />
-            </ListGroup>
-            <Button
-                variant="info"
-                disabled={!prices?.qtyItems}
-                onClick={checkoutHandler}
-            >
-                Checkout
-            </Button>
-        </>
-    );
-
-    return (
-        <Card className="p-3 m-1">
-            {!prices?.qtyItems ? noItemsBody : withItemsBody}
-        </Card>
-    );
-};
-
-const CartView = () => {
-    const cartItemIds = useSelector(selectCartItemIds);
 
     let cartList = null;
     if (cartItemIds.length > 0) {
@@ -164,7 +114,10 @@ const CartView = () => {
                     </Row>
                 </Col>
                 <Col lg={4}>
-                    <SummaryCard />
+                    <CartSummary
+                        actionButtonText="Checkout"
+                        actionButtonHandler={checkoutHandler}
+                    />
                 </Col>
             </Row>
             <Row>

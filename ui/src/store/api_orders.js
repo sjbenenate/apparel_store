@@ -3,11 +3,11 @@ import apiSlice from './api_slice';
 
 const ordersApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        addToOrder: builder.mutation({
+        createOrder: builder.mutation({
             query: (data) => ({
                 url: ORDERS_URL,
                 method: 'POST',
-                body: data,
+                body: { ...data },
             }),
         }),
         getOrder: builder.query({
@@ -18,4 +18,4 @@ const ordersApiSlice = apiSlice.injectEndpoints({
     }),
 });
 
-export const { useAddToOrderMutation, useGetOrderQuery } = ordersApiSlice;
+export const { useCreateOrderMutation, useGetOrderQuery } = ordersApiSlice;
