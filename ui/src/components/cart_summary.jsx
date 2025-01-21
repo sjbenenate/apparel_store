@@ -3,12 +3,10 @@ import { Row, Col, Button, Card, ListGroup } from 'react-bootstrap';
 import { selectCartPrices } from '../store/cart_slice';
 
 const PriceRow = ({ label, value }) => (
-    <ListGroup.Item className="py-1">
-        <Row>
-            <Col>{label}</Col>
-            <Col>{`$${value}`}</Col>
-        </Row>
-    </ListGroup.Item>
+    <Row className="py-1">
+        <Col>{label}</Col>
+        <Col>{`$${value}`}</Col>
+    </Row>
 );
 
 const CartSummary = ({ children }) => {
@@ -16,7 +14,7 @@ const CartSummary = ({ children }) => {
 
     const getPriceRows = () => {
         return (
-            <>
+            <Col>
                 <PriceRow label="Subtotal" value={prices?.itemPrices} />
                 <PriceRow
                     label={`Tax (${Math.round(prices?.taxPercentage * 100)}%)`}
@@ -24,7 +22,7 @@ const CartSummary = ({ children }) => {
                 />
                 <PriceRow label="Shipping" value={prices?.shipping} />
                 <PriceRow label="Total" value={prices?.total} />
-            </>
+            </Col>
         );
     };
 

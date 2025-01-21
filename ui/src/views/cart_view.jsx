@@ -40,8 +40,8 @@ const CartRow = ({ itemId }) => {
 
     return (
         <Card className="p-3">
-            <Row>
-                <Col style={{ maxWidth: '200px' }}>
+            <Row className="align-items-center">
+                <Col sm={2}>
                     <Image
                         src={product.image}
                         alt={product.name}
@@ -49,18 +49,19 @@ const CartRow = ({ itemId }) => {
                         fluid
                     />
                 </Col>
-                <Col md={2}>
+                <Col md={3}>
                     <Link to={`/product/${itemId}`}>{product.name}</Link>
                 </Col>
-                <Col>{`$${product.price} each`}</Col>
-                <Col sm={3}>
+                <Col>
                     <QtySelect
                         currentQty={qty}
                         qtyInStock={product.countInStock}
                         onChange={addToCart}
                     />
                 </Col>
-                <Col>{`$${roundDecimals(product.price * qty)}`}</Col>
+                <Col sm={3}>{`$${product.price} x ${qty} = $${roundDecimals(
+                    product.price * qty
+                )}`}</Col>
                 <Col>
                     <Button
                         type="button"
