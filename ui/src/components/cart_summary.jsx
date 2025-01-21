@@ -11,7 +11,7 @@ const PriceRow = ({ label, value }) => (
     </ListGroup.Item>
 );
 
-const CartSummary = ({ actionButtonText, actionButtonHandler }) => {
+const CartSummary = ({ children }) => {
     const prices = useSelector(selectCartPrices);
 
     const getPriceRows = () => {
@@ -40,13 +40,7 @@ const CartSummary = ({ actionButtonText, actionButtonHandler }) => {
                     <ListGroup.Item>No items in cart</ListGroup.Item>
                 )}
             </ListGroup>
-            <Button
-                variant="info"
-                disabled={!prices?.qtyItems}
-                onClick={actionButtonHandler}
-            >
-                {actionButtonText}
-            </Button>
+            {children}
         </Card>
     );
 };

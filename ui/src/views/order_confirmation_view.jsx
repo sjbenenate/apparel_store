@@ -33,7 +33,7 @@ const OrderConfirmationView = () => {
     // state variables
     const [alertMessage, setAlertMessage] = useState(null);
 
-    useEffect(() => {
+    const placeOrderHandler = async (e) => {
         if (!shippingAddress?.streetAddress) {
             console.log('No shipping address. Redirect to shipping form.');
             navigate('/shipping');
@@ -42,9 +42,7 @@ const OrderConfirmationView = () => {
             console.log('No payment method. Redirect to payment page.');
             navigate('/payment');
         }
-    }, [shippingAddress, paymentMethod]);
 
-    const placeOrderHandler = async (e) => {
         console.log('placing order');
         try {
             const payload = {
@@ -57,6 +55,7 @@ const OrderConfirmationView = () => {
                 totalPrice: cartPrices?.total,
             };
             const res = await createOrder(payload).unwrap();
+            dispatch(clearCart());
             console.log(`routing to /order/${res.orderId}`);
             navigate(`/order/${res.orderId}`);
         } catch (err) {
@@ -131,10 +130,16 @@ const OrderConfirmationView = () => {
                 </Col>
 
                 <Col md={4}>
-                    <CartSummary
-                        actionButtonText="Place Order"
-                        actionButtonHandler={placeOrderHandler}
-                    />
+                    <CartSummary>
+                        <Button
+                            variant="info"
+                            onClick={placeOrderHandler}
+                            disabled={createOrderStatus?.isLoading}
+                            autoFocus
+                        >
+                            Place Order
+                        </Button>
+                    </CartSummary>
                 </Col>
             </Row>
 
@@ -148,9 +153,9 @@ const OrderConfirmationView = () => {
                 <Button
                     type="button"
                     variant="info"
-                    autoFocus
                     onClick={placeOrderHandler}
                     className={btnSpaceClassName}
+                    disabled={createOrderStatus?.isLoading}
                 >
                     Place Order
                 </Button>

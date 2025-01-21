@@ -114,10 +114,16 @@ const CartView = () => {
                     </Row>
                 </Col>
                 <Col lg={4}>
-                    <CartSummary
-                        actionButtonText="Checkout"
-                        actionButtonHandler={checkoutHandler}
-                    />
+                    <CartSummary>
+                        <Button
+                            variant="info"
+                            disabled={cartItemIds.length === 0}
+                            onClick={checkoutHandler}
+                            autoFocus
+                        >
+                            Checkout
+                        </Button>
+                    </CartSummary>
                 </Col>
             </Row>
             <Row>

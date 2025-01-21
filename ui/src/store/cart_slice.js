@@ -77,6 +77,7 @@ const cartSlice = createSlice({
             }
             updateTotals(state);
             updateLocalStorage(state);
+            return state;
         },
         setItemQty: (state, action) => {
             state.cartItems[action.payload._id].qty = Number(
@@ -84,6 +85,7 @@ const cartSlice = createSlice({
             );
             updateTotals(state);
             updateLocalStorage(state);
+            return state;
         },
         removeItem: (state, action) => {
             const itemId = action.payload.itemId;
@@ -91,18 +93,22 @@ const cartSlice = createSlice({
             state.cartItemIds = state.cartItemIds.filter((id) => id !== itemId);
             updateTotals(state);
             updateLocalStorage(state);
+            return state;
         },
         setShippingAddress: (state, action) => {
             state.shippingAddress = action.payload;
             updateLocalStorage(state);
+            return state;
         },
         setPaymentMethod: (state, action) => {
             state.paymentMethod = action.payload;
             updateLocalStorage(state);
+            return state;
         },
         clearCart: (state, action) => {
             state = DEFAULT_STATE;
             updateLocalStorage(state);
+            return state;
         },
     },
 });
