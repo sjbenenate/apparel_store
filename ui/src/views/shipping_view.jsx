@@ -99,7 +99,7 @@ const ShippingView = () => {
                     <Button
                         type="submit"
                         variant="info"
-                        autoFocus={submitDisabled}
+                        autoFocus={!submitDisabled}
                         disabled={submitDisabled}
                     >
                         Continue
