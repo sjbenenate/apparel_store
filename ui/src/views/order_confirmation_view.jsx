@@ -15,6 +15,7 @@ import Message from '../components/message';
 import CheckoutSteps from '../components/checkout_steps';
 import CartSummary from '../components/cart_summary';
 import { useCreateOrderMutation } from '../store/api_orders';
+import Address from '../components/address';
 
 const OrderConfirmationView = () => {
     // Hooks
@@ -112,15 +113,7 @@ const OrderConfirmationView = () => {
                             <h2>Shipping Address</h2>
                         </ListGroup.Item>
                         <ListGroup.Item>
-                            <p>
-                                {shippingAddress?.streetAddress}
-                                <br />
-                                {shippingAddress?.city}
-                                <br />
-                                {shippingAddress?.postalCode}
-                                <br />
-                                {shippingAddress?.country}
-                            </p>
+                            <Address {...shippingAddress} />
                         </ListGroup.Item>
                         <ListGroup.Item>
                             <h2>Payment Method</h2>
