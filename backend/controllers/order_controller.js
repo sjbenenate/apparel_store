@@ -13,7 +13,7 @@ const getOrderById = asyncHandler(async (req, res) => {
     const order = await findOrderById(orderId);
     const user = await findUser({ id: order.userId });
     if (order) {
-        res.status(200).json({ ...order, user });
+        res.status(200).json({ order, user });
     } else {
         res.status(404);
         throw new Error('Order could not be found');

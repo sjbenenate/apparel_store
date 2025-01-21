@@ -92,7 +92,7 @@ export const ProductView = () => {
         <Container className="my-3 p-3">
             <Row className="mb-3">
                 <Col>
-                    <RouteButton text="Back" to="/" />
+                    <RouteButton text="Home" to="/" />
                 </Col>
             </Row>
             <Row>

@@ -14,25 +14,20 @@ import Loader from '../components/loader';
 import Message from '../components/message';
 import { PriceRow } from '../components/cart_summary';
 import Address from '../components/address';
+import { ProductRowSmall } from '../components/product_previews';
 
 export const OrderView = () => {
     const { orderId } = useParams();
 
-    const orderQuery = useGetOrderQuery(orderId);
-    const isPayed = orderQuery?.data?.isPayed;
-    const isDelivered = orderQuery?.data?.isDelivered;
+    const { data, isLoading, isError } = useGetOrderQuery(orderId);
 
-    const renderOrderInfo = () => {
-        const user = orderQuery?.data?.user;
-        const products = orderQuery?.data?.orderItems || [];
-        const shippingAddress = orderQuery?.data?.shippingAddress;
-
+    const renderOrderInfo = (order, user) => {
         return (
             <ListGroup>
                 <ListGroup.Item>
                     <p>
                         <strong>Created on: </strong>
-                        {orderQuery?.data?.createdAt}
+                        {new Date(order.createdAt).toLocaleDateString()}
                         <br />
                         <strong>Name: </strong>
                         {user?.name}
@@ -43,8 +38,8 @@ export const OrderView = () => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                     <h2>Shipping Address</h2>
-                    <Address {...shippingAddress} />
-                    {isDelivered ? (
+                    <Address {...order.shippingAddress} />
+                    {order.isDelivered ? (
                         <Message variant="success">Delivered</Message>
                     ) : (
                         <Message variant="warning">Not delivered</Message>
@@ -52,8 +47,11 @@ export const OrderView = () => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                     <h2>Payment</h2>
-                    <p>{orderQuery?.data?.paymentMethod}</p>
-                    {isPayed ? (
+                    <p>
+                        <strong>Method: </strong>
+                        {order.paymentMethod}
+                    </p>
+                    {order.isPayed ? (
                         <Message variant="success">Payment received!</Message>
                     ) : (
                         <Message variant="warning">
@@ -64,21 +62,12 @@ export const OrderView = () => {
                 <ListGroup.Item>
                     <h2>Products</h2>
                     <Col>
-                        {products.map((p, index) => (
-                            <Row key={index}>
-                                <Col sm="2">
-                                    <Image
-                                        src={p.image}
-                                        alt={p.name}
-                                        rounded
-                                        fluid
-                                    />
-                                </Col>
-                                <Col>{p.name}</Col>
-                                <Col>
-                                    ${p.price} x {p.qty} = ${p.price * p.qty}
-                                </Col>
-                            </Row>
+                        {order.orderItems.map((p, index) => (
+                            <ProductRowSmall
+                                key={index}
+                                productId={p._id}
+                                {...p}
+                            />
                         ))}
                     </Col>
                 </ListGroup.Item>
@@ -86,29 +75,37 @@ export const OrderView = () => {
         );
     };
 
-    const renderSummaryCard = () => {
+    const renderSummaryCard = (order) => {
         return (
             <Card>
                 <ListGroup>
                     <ListGroup.Item>
                         <h3>Order Summary</h3>
                     </ListGroup.Item>
-                    <PriceRow
-                        label="SubTotal"
-                        value={orderQuery?.data?.orderPrice}
-                    />
-                    <PriceRow
-                        label="Tax (15%)"
-                        value={orderQuery?.data?.taxPrice}
-                    />
-                    <PriceRow
-                        label="Shipping"
-                        value={orderQuery?.data?.shippingPrice}
-                    />
-                    <PriceRow
-                        label="Total"
-                        value={orderQuery?.data?.totalPrice}
-                    />
+                    <ListGroup.Item>
+                        {order ? (
+                            <Col>
+                                <PriceRow
+                                    label="SubTotal"
+                                    value={order.orderPrice}
+                                />
+                                <PriceRow
+                                    label="Tax (15%)"
+                                    value={order.taxPrice}
+                                />
+                                <PriceRow
+                                    label="Shipping"
+                                    value={order.shippingPrice}
+                                />
+                                <PriceRow
+                                    label="Total"
+                                    value={order.totalPrice}
+                                />
+                            </Col>
+                        ) : (
+                            'no info to display'
+                        )}
+                    </ListGroup.Item>
                 </ListGroup>
             </Card>
         );
@@ -121,15 +118,15 @@ export const OrderView = () => {
             </Row>
             <Row>
                 <Col md="8">
-                    {orderQuery.isLoading ? <Loader /> : null}
-                    {orderQuery.isError ? (
+                    {isLoading ? <Loader /> : null}
+                    {isError ? (
                         <Message variant="danger">
                             Error loading order info
                         </Message>
                     ) : null}
-                    {orderQuery?.data ? renderOrderInfo() : null}
+                    {data ? renderOrderInfo(data.order, data.user) : null}
                 </Col>
-                <Col md="4">{renderSummaryCard()}</Col>
+                <Col md="4">{renderSummaryCard(data?.order)}</Col>
             </Row>
         </Container>
     );

@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { selectAuthInfo } from '../store/auth_slice';
 import { Link } from 'react-router-dom';
 import { useGetUserOrdersQuery } from '../store/api_orders';
+import { ProductRowSmall } from '../components/product_previews';
 
 const UserInfoItem = ({ label, value }) => {
     return (
@@ -21,6 +22,11 @@ const UserInfoItem = ({ label, value }) => {
 const ProfileView = () => {
     const userInfo = useSelector(selectAuthInfo);
     const ordersQuery = useGetUserOrdersQuery();
+    const orders = ordersQuery.data
+        ? ordersQuery.data.toSorted(
+              (o1, o2) => new Date(o1.createdAt) > new Date(o2.createdAt) // TODO is not sorting as expected
+          )
+        : [];
 
     return (
         <Container>
@@ -30,18 +36,35 @@ const ProfileView = () => {
                     <UserInfoItem label="Name" value={userInfo?.name} />
                     <UserInfoItem label="Email" value={userInfo?.email} />
                 </ListGroup>
-                <h2>Orders</h2>
                 <ListGroup>
-                    {ordersQuery.isSuccess
-                        ? ordersQuery.data.map((order) => (
-                              <ListGroup.Item>
-                                  <Link to={`/order/${order._id}`}>
-                                      {order._id} with total items{' '}
-                                      {order.orderItems.length}
-                                  </Link>
-                              </ListGroup.Item>
-                          ))
-                        : 'no orders found'}
+                    <h2>Orders</h2>
+                    <Col>
+                        {orders.length > 0 ? (
+                            orders.map((order, index) => {
+                                return (
+                                    <Row key={index}>
+                                        <Col>
+                                            <Link to={`/order/${order._id}`}>
+                                                {order._id}
+                                            </Link>
+                                        </Col>
+                                        <Col>
+                                            <strong>Items: </strong>
+                                            {order.orderItems.length}
+                                        </Col>
+                                        <Col>
+                                            <strong>Date: </strong>
+                                            {new Date(
+                                                order.createdAt
+                                            ).toLocaleDateString()}
+                                        </Col>
+                                    </Row>
+                                );
+                            })
+                        ) : (
+                            <Row>No Orders for this user</Row>
+                        )}
+                    </Col>
                 </ListGroup>
             </FormContainer>
         </Container>
