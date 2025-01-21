@@ -4,14 +4,16 @@ import {
     findOrderById,
     saveOrder,
     modifyOrder,
+    findUser,
 } from '../data/db_interface.js';
 
 const getOrderById = asyncHandler(async (req, res) => {
     const orderId = req.params?.id;
     console.log(`get order by id: ${orderId}`);
     const order = await findOrderById(orderId);
+    const user = await findUser({ id: order.userId });
     if (order) {
-        res.status(200).json(order);
+        res.status(200).json({ ...order, user });
     } else {
         res.status(404);
         throw new Error('Order could not be found');
@@ -26,7 +28,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
 
 const getOrdersByUser = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const orders = await findOrders({ userId });
+    const orders = await findOrders(userId);
     console.log(`get orders by user ${req?.user?.name}`);
     res.status(200).json(orders);
 });

@@ -46,3 +46,4 @@ const CartSummary = ({ children }) => {
 };
 
 export default CartSummary;
+export { PriceRow };
