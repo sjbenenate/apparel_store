@@ -41,9 +41,10 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 
 const addToOrder = asyncHandler(async (req, res) => {
     console.log('add to order started');
-    const shippingAddress = JSON.parse(req.body?.shippingAddress);
-    const orderItems = JSON.parse(req.body?.orderItems);
-    const { paymentMethod, orderPrice, shippingPrice, totalPrice } = req.body;
+    const shippingAddress = req.body?.shippingAddress;
+    const orderItems = req.body?.orderItems;
+    const { paymentMethod, orderPrice, shippingPrice, taxPrice, totalPrice } =
+        req.body;
 
     if (!orderItems || orderItems.length < 1) {
         res.status(400);
@@ -61,11 +62,13 @@ const addToOrder = asyncHandler(async (req, res) => {
         shippingAddress,
         orderPrice,
         shippingPrice,
+        taxPrice,
         totalPrice,
         paymentMethod,
     };
     const order = await saveOrder(orderPayload);
-    res.json(order);
+    res.status(200).json({ orderId: order._id });
+    console.log(`order created ${order._id}`);
 });
 
 export {

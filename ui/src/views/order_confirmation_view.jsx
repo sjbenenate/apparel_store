@@ -7,12 +7,14 @@ import {
     selectCartItemIds,
     selectShippingAddress,
     clearCart,
+    selectCartPrices,
 } from '../store/cart_slice';
 import { Container, Button, Row, Col, ListGroup, Image } from 'react-bootstrap';
 import { RouteButton } from '../components/controls';
 import Message from '../components/message';
 import CheckoutSteps from '../components/checkout_steps';
 import CartSummary from '../components/cart_summary';
+import { useCreateOrderMutation } from '../store/api_orders';
 
 const OrderConfirmationView = () => {
     // Hooks
@@ -24,6 +26,9 @@ const OrderConfirmationView = () => {
     const paymentMethod = useSelector(selectPaymentMethod);
     const cartItems = useSelector(selectCartItems);
     const cartItemIds = useSelector(selectCartItemIds);
+    const cartPrices = useSelector(selectCartPrices);
+
+    const [createOrder, createOrderStatus] = useCreateOrderMutation();
 
     // state variables
     const [alertMessage, setAlertMessage] = useState(null);
@@ -39,8 +44,26 @@ const OrderConfirmationView = () => {
         }
     }, [shippingAddress, paymentMethod]);
 
-    const placeOrderHandler = (e) => {
-        console.log('handle confirmation');
+    const placeOrderHandler = async (e) => {
+        console.log('placing order');
+        try {
+            const payload = {
+                shippingAddress: { ...shippingAddress },
+                orderItems: Object.values(cartItems),
+                paymentMethod,
+                taxPrice: cartPrices?.tax,
+                orderPrice: cartPrices?.itemPrices,
+                shippingPrice: cartPrices?.shipping,
+                totalPrice: cartPrices?.total,
+            };
+            const res = await createOrder(payload).unwrap();
+            console.log(`routing to /order/${res.orderId}`);
+            navigate(`/order/${res.orderId}`);
+        } catch (err) {
+            const msg = err?.data?.message || err?.error;
+            console.warn(msg);
+            setAlertMessage(msg);
+        }
     };
 
     const btnSpaceClassName = 'my-2';
@@ -52,7 +75,7 @@ const OrderConfirmationView = () => {
                 {cartItemIds.map((id) => {
                     const item = cartItems[id];
                     return (
-                        <ListGroup.Item>
+                        <ListGroup.Item key={id}>
                             <Row>
                                 <Col>
                                     <Image
