@@ -89,10 +89,10 @@ const saveOrder = async (orderData) => {
     return res;
 };
 
-const modifyOrder = async ({ orderId, isPayed, isDelivered }) => {
+const modifyOrder = async ({ orderId, isPaid, isDelivered }) => {
     let payload = { _id: orderId };
-    if (isPayed !== undefined) {
-        payload.isPayed = isPayed;
+    if (isPaid !== undefined) {
+        payload.isPaid = isPaid;
     }
     if (isDelivered !== undefined) {
         payload.isDelivered = isDelivered;

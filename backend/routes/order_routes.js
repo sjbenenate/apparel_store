@@ -3,7 +3,7 @@ import {
     getOrderById,
     getOrdersByUser,
     getAllOrders,
-    updateOrderToPayed,
+    updateOrderToPaid,
     updateOrderToDelivered,
     addToOrder,
 } from '../controllers/order_controller.js';
@@ -16,12 +16,7 @@ let orderRouter = Router();
 
 orderRouter.get('/myOrders', authMiddleware, getOrdersByUser);
 
-orderRouter.put(
-    '/:id/pay',
-    authMiddleware,
-    adminMiddleware,
-    updateOrderToPayed
-);
+orderRouter.put('/:id/pay', authMiddleware, adminMiddleware, updateOrderToPaid);
 
 orderRouter.put(
     '/:id/deliver',

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Container, Col, Row, ListGroup } from 'react-bootstrap';
-import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import { usePayPalScriptReducer, PayPalButtons } from '@paypal/react-paypal-js';
 import {
     useGetOrderQuery,
     useGetPayPalClientIdQuery,
@@ -23,21 +23,34 @@ export const OrderView = () => {
 
     const { data: clientIdResponse, isLoading: clientIdLoading } =
         useGetPayPalClientIdQuery();
-    const [{ paypalOptions }, paypalDispatch] = usePayPalScriptReducer();
+    const [paypalDispatchState, paypalDispatch] = usePayPalScriptReducer();
 
     useEffect(() => {
+        if (
+            !clientIdResponse ||
+            !orderResponse ||
+            orderResponse?.order?.isPaid ||
+            paypalDispatchState.isLoading
+        )
+            return;
+        const loadPayPalScript = () => {
+            paypalDispatch({
+                type: 'resetOptions',
+                value: {
+                    clientId: clientIdResponse.clientId,
+                    currency: 'USD',
+                    intent: 'capture',
+                },
+            });
+            paypalDispatch({
+                type: 'setLoadingStatus',
+                value: 'pending',
+            });
+        };
         console.log('paypal dispatching');
-        if (!clientIdResponse) return;
-        paypalDispatch({
-            type: 'resetOptions',
-            value: {
-                clientId: clientIdResponse.clientId,
-                currency: 'USD',
-                intent: 'capture',
-            },
-        });
+        loadPayPalScript();
         console.log('papal dispatching done');
-    }, [clientIdResponse, paypalOptions]);
+    }, [clientIdResponse, orderResponse]);
 
     const renderOrderInfo = (order, user) => {
         return (
@@ -69,7 +82,7 @@ export const OrderView = () => {
                         <strong>Method: </strong>
                         {order.paymentMethod}
                     </p>
-                    {order.isPayed ? (
+                    {order.isPaid ? (
                         <Message variant="success">Payment received!</Message>
                     ) : (
                         <Message variant="warning">

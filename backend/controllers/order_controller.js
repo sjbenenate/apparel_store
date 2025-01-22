@@ -33,8 +33,8 @@ const getOrdersByUser = asyncHandler(async (req, res) => {
     res.status(200).json(orders);
 });
 
-const updateOrderToPayed = asyncHandler(async (req, res) => {
-    res.send('update order to payed');
+const updateOrderToPaid = asyncHandler(async (req, res) => {
+    res.send('update order to paid');
 });
 
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
@@ -77,7 +77,7 @@ export {
     getOrderById,
     getOrdersByUser,
     getAllOrders,
-    updateOrderToPayed,
+    updateOrderToPaid,
     updateOrderToDelivered,
     addToOrder,
 };
