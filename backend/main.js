@@ -6,6 +6,7 @@ import userRouter from './routes/user_routes.js';
 import orderRouter from './routes/order_routes.js';
 import { UrlNotFound, errorHandler } from './middleware/error_middleware.js';
 import cookieParser from 'cookie-parser';
+import { authMiddleware } from './middleware/user_auth_middleware.js';
 
 // Environment and database config
 env.config();
@@ -25,6 +26,10 @@ app.use(cookieParser());
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
 app.use('/api/orders', orderRouter);
+
+app.get('/api/config/paypal', authMiddleware, async (req, res) => {
+    res.json({ clientId: process.env.PAYPAL_CLIENT_ID });
+});
 
 app.get('/', (req, res) => {
     res.send('Server was reached on root route.');
