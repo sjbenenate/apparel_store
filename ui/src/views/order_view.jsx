@@ -1,15 +1,11 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { Card, Container, Col, Row, ListGroup } from 'react-bootstrap';
+import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import {
-    Button,
-    Card,
-    Container,
-    Col,
-    Row,
-    Image,
-    ListGroup,
-} from 'react-bootstrap';
-import { useGetOrderQuery } from '../store/api_orders';
+    useGetOrderQuery,
+    useGetPayPalClientIdQuery,
+} from '../store/api_orders';
 import Loader from '../components/loader';
 import Message from '../components/message';
 import { PriceRow } from '../components/cart_summary';
@@ -19,7 +15,29 @@ import { ProductRowSmall } from '../components/product_previews';
 export const OrderView = () => {
     const { orderId } = useParams();
 
-    const { data, isLoading, isError } = useGetOrderQuery(orderId);
+    const {
+        data: orderResponse,
+        isLoading,
+        isError,
+    } = useGetOrderQuery(orderId);
+
+    const { data: clientIdResponse, isLoading: clientIdLoading } =
+        useGetPayPalClientIdQuery();
+    const [{ paypalOptions }, paypalDispatch] = usePayPalScriptReducer();
+
+    useEffect(() => {
+        console.log('paypal dispatching');
+        if (!clientIdResponse) return;
+        paypalDispatch({
+            type: 'resetOptions',
+            value: {
+                clientId: clientIdResponse.clientId,
+                currency: 'USD',
+                intent: 'capture',
+            },
+        });
+        console.log('papal dispatching done');
+    }, [clientIdResponse, paypalOptions]);
 
     const renderOrderInfo = (order, user) => {
         return (
@@ -124,9 +142,14 @@ export const OrderView = () => {
                             Error loading order info
                         </Message>
                     ) : null}
-                    {data ? renderOrderInfo(data.order, data.user) : null}
+                    {orderResponse
+                        ? renderOrderInfo(
+                              orderResponse.order,
+                              orderResponse.user
+                          )
+                        : null}
                 </Col>
-                <Col md="4">{renderSummaryCard(data?.order)}</Col>
+                <Col md="4">{renderSummaryCard(orderResponse?.order)}</Col>
             </Row>
         </Container>
     );

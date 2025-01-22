@@ -10,6 +10,7 @@ import {
     RouterProvider,
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import store from './store/store';
 import App from './App';
 import { HomeView } from './views/home_view';
@@ -53,7 +54,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <RouterProvider router={router} />
+            <PayPalScriptProvider>
+                <RouterProvider router={router} />
+            </PayPalScriptProvider>
         </Provider>
     </React.StrictMode>
 );
