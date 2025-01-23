@@ -1,9 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Container, Col, Row, ListGroup } from 'react-bootstrap';
 import { usePayPalScriptReducer, PayPalButtons } from '@paypal/react-paypal-js';
 import {
     useGetOrderQuery,
+    usePayOrderMutation,
     useGetPayPalClientIdQuery,
 } from '../store/api_orders';
 import Loader from '../components/loader';
@@ -15,6 +16,8 @@ import { ProductRowSmall } from '../components/product_previews';
 export const OrderView = () => {
     const { orderId } = useParams();
 
+    const [alertMessage, setAlertMessage] = useState(null);
+
     const {
         data: orderResponse,
         isLoading,
@@ -23,21 +26,19 @@ export const OrderView = () => {
 
     const { data: clientIdResponse, isLoading: clientIdLoading } =
         useGetPayPalClientIdQuery();
-    const [paypalDispatchState, paypalDispatch] = usePayPalScriptReducer();
+    const [{ isPending: paypalIsPending }, paypalDispatch] =
+        usePayPalScriptReducer();
+
+    const [payOrder, payOrderStatus] = usePayOrderMutation();
 
     useEffect(() => {
-        if (
-            !clientIdResponse ||
-            !orderResponse ||
-            orderResponse?.order?.isPaid ||
-            paypalDispatchState.isLoading
-        )
+        if (!clientIdResponse || !orderResponse || orderResponse?.order?.isPaid)
             return;
         const loadPayPalScript = () => {
             paypalDispatch({
                 type: 'resetOptions',
                 value: {
-                    clientId: clientIdResponse.clientId,
+                    'client-id': clientIdResponse.clientId,
                     currency: 'USD',
                     intent: 'capture',
                 },
@@ -73,7 +74,7 @@ export const OrderView = () => {
                     {order.isDelivered ? (
                         <Message variant="success">Delivered</Message>
                     ) : (
-                        <Message variant="warning">Not delivered</Message>
+                        <Message variant="danger">Not delivered</Message>
                     )}
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -85,7 +86,7 @@ export const OrderView = () => {
                     {order.isPaid ? (
                         <Message variant="success">Payment received!</Message>
                     ) : (
-                        <Message variant="warning">
+                        <Message variant="danger">
                             Requires payment for processing.
                         </Message>
                     )}
@@ -104,6 +105,29 @@ export const OrderView = () => {
                 </ListGroup.Item>
             </ListGroup>
         );
+    };
+
+    const printError = (err) => {
+        const msg = err?.message || err?.error;
+        console.error(msg);
+        setAlertMessage(msg);
+    };
+
+    const paypalCreateOrder = async () => {
+        console.log('paypal create order called');
+        if (orderResponse.order?.isPaid) {
+            throw new Error('This order is already paid');
+        }
+        const res = await payOrder({ orderId }).unwrap();
+        return res.paypalId;
+    };
+
+    const paypalOnApprove = async (data, actions) => {
+        console.log('paypal on approve called');
+    };
+
+    const paypalOnError = async (err) => {
+        printError(err);
     };
 
     const renderSummaryCard = (order) => {
@@ -137,6 +161,14 @@ export const OrderView = () => {
                             'no info to display'
                         )}
                     </ListGroup.Item>
+                    <ListGroup.Item>
+                        <PayPalButtons
+                            //disabled={payOrderStatus?.isLoading}
+                            createOrder={paypalCreateOrder}
+                            onApprove={paypalOnApprove}
+                            onError={paypalOnError}
+                        />
+                    </ListGroup.Item>
                 </ListGroup>
             </Card>
         );
@@ -162,7 +194,14 @@ export const OrderView = () => {
                           )
                         : null}
                 </Col>
-                <Col md="4">{renderSummaryCard(orderResponse?.order)}</Col>
+                <Col md="4">
+                    <Row>{renderSummaryCard(orderResponse?.order)}</Row>
+                    <Row>
+                        {alertMessage ? (
+                            <Message variant="danger">{alertMessage}</Message>
+                        ) : null}
+                    </Row>
+                </Col>
             </Row>
         </Container>
     );

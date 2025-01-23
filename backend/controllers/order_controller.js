@@ -6,6 +6,8 @@ import {
     modifyOrder,
     findUser,
 } from '../data/db_interface.js';
+import { CheckoutPaymentIntent } from '@paypal/paypal-server-sdk';
+import paypalOrdersController from './paypal_controller.js';
 
 const getOrderById = asyncHandler(async (req, res) => {
     const orderId = req.params?.id;
@@ -33,8 +35,43 @@ const getOrdersByUser = asyncHandler(async (req, res) => {
     res.status(200).json(orders);
 });
 
-const updateOrderToPaid = asyncHandler(async (req, res) => {
-    res.send('update order to paid');
+const payOrderWithPayPal = asyncHandler(async (req, res) => {
+    const orderId = req.params?.id;
+    const order = await findOrderById(orderId);
+    if (!order) {
+        res.status(500).json({ message: 'Order was not found' });
+    }
+
+    const payload = {
+        body: {
+            intent: CheckoutPaymentIntent.Capture,
+            purchaseUnits: [
+                {
+                    amount: {
+                        currencyCode: 'USD',
+                        value: String(order.totalPrice),
+                    },
+                },
+            ],
+        },
+        prefer: 'return=minimal',
+    };
+
+    try {
+        const paypalRes = await paypalOrdersController.ordersCreate(payload);
+        console.log('paypal response received');
+        //return the paypal order id here
+        if (paypalRes?.statusCode === 201) {
+            res.status(201).json({ paypalId: paypalRes.result.id });
+        } else {
+            console.log('How did I get here?'); // TODO read Paypal docs on other responses for errors
+            res.status(500).json({ message: "I'm lost" });
+        }
+    } catch (err) {
+        console.warn('paypal response was bad');
+        throw new Error('Bad paypal response');
+    }
+    // TODO: what happens here if shipping address was changed in PayPal window?
 });
 
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
@@ -77,7 +114,7 @@ export {
     getOrderById,
     getOrdersByUser,
     getAllOrders,
-    updateOrderToPaid,
+    payOrderWithPayPal,
     updateOrderToDelivered,
     addToOrder,
 };
