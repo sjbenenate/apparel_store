@@ -38,6 +38,7 @@ const getOrdersByUser = asyncHandler(async (req, res) => {
 const payOrderWithPayPal = asyncHandler(async (req, res) => {
     const orderId = req.params?.id;
     const order = await findOrderById(orderId);
+    const user = await findUser({ id: order.userId });
     if (!order) {
         res.status(500).json({ message: 'Order was not found' });
     }
@@ -53,8 +54,21 @@ const payOrderWithPayPal = asyncHandler(async (req, res) => {
                     },
                 },
             ],
+            shipping: {
+                name: {
+                    full_name: user.name,
+                },
+                address: {
+                    address_line_1: order?.shippingAddress?.streetAddress,
+                    address_line_2: order?.shippingAddress?.city,
+                    //admin_area_2: 'San Jose',
+                    //admin_area_1: 'CA',
+                    postal_code: order?.shippingAddress?.postalCode,
+                    country_code: order?.shippingAddress?.country,
+                },
+            },
         },
-        prefer: 'return=minimal',
+        //prefer: 'return=minimal',
     };
 
     try {
@@ -62,7 +76,7 @@ const payOrderWithPayPal = asyncHandler(async (req, res) => {
         console.log('paypal response received');
         //return the paypal order id here
         if (paypalRes?.statusCode === 201) {
-            res.status(201).json({ paypalId: paypalRes.result.id });
+            res.status(201).json(paypalRes.result);
         } else {
             console.log('How did I get here?'); // TODO read Paypal docs on other responses for errors
             res.status(500).json({ message: "I'm lost" });

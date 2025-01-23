@@ -119,7 +119,9 @@ export const OrderView = () => {
             throw new Error('This order is already paid');
         }
         const res = await payOrder({ orderId }).unwrap();
-        return res.paypalId;
+        const id = res.id;
+        console.log(`paypal id ${id}`);
+        return id;
     };
 
     const paypalOnApprove = async (data, actions) => {
@@ -128,6 +130,16 @@ export const OrderView = () => {
 
     const paypalOnError = async (err) => {
         printError(err);
+    };
+
+    const onShippingAddressChange = (props) => {
+        console.log(`shipping address change handler ${props}`);
+    };
+
+    const paypalOnClick = async (a, b, c, d) => {
+        console.log('paypal onClick');
+        //const res = await b.resolve();
+        console.log('what happened above this line?');
     };
 
     const renderSummaryCard = (order) => {
@@ -163,10 +175,12 @@ export const OrderView = () => {
                     </ListGroup.Item>
                     <ListGroup.Item>
                         <PayPalButtons
-                            //disabled={payOrderStatus?.isLoading}
+                            disabled={payOrderStatus?.isLoading}
                             createOrder={paypalCreateOrder}
                             onApprove={paypalOnApprove}
                             onError={paypalOnError}
+                            onShippingAddressChange={onShippingAddressChange}
+                            onClick={paypalOnClick}
                         />
                     </ListGroup.Item>
                 </ListGroup>
