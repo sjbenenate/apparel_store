@@ -3,7 +3,8 @@ import {
     getOrderById,
     getOrdersByUser,
     getAllOrders,
-    payOrderWithPayPal,
+    createPayTransaction,
+    capturePayTransaction,
     updateOrderToDelivered,
     addToOrder,
 } from '../controllers/order_controller.js';
@@ -16,7 +17,9 @@ let orderRouter = Router();
 
 orderRouter.get('/myOrders', authMiddleware, getOrdersByUser);
 
-orderRouter.post('/:id/pay', authMiddleware, payOrderWithPayPal);
+orderRouter.post('/:id/payInitiate', authMiddleware, createPayTransaction);
+
+orderRouter.post('/:id/payCapture', authMiddleware, capturePayTransaction);
 
 orderRouter.put(
     '/:id/deliver',

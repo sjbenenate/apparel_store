@@ -26,11 +26,18 @@ const ordersApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             }),
         }),
-        payOrder: builder.mutation({
+        createPayTransaction: builder.mutation({
             query: ({ orderId, data }) => ({
-                url: `${ORDERS_URL}/${orderId}/pay`,
+                url: `${ORDERS_URL}/${orderId}/payInitiate`,
                 method: 'POST',
                 body: { ...data, orderId },
+            }),
+        }),
+        capturePayTransaction: builder.mutation({
+            query: ({ orderId, paymentId }) => ({
+                url: `${ORDERS_URL}/${orderId}/payCapture`,
+                method: 'POST',
+                body: { orderId, paymentId },
             }),
         }),
     }),
@@ -41,5 +48,6 @@ export const {
     useGetOrderQuery,
     useGetUserOrdersQuery,
     useGetPayPalClientIdQuery,
-    usePayOrderMutation,
+    useCreatePayTransactionMutation,
+    useCapturePayTransactionMutation,
 } = ordersApiSlice;

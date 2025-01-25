@@ -6,6 +6,8 @@ import {
     useGetOrderQuery,
     usePayOrderMutation,
     useGetPayPalClientIdQuery,
+    useCreatePayTransactionMutation,
+    useCapturePayTransactionMutation,
 } from '../store/api_orders';
 import Loader from '../components/loader';
 import Message from '../components/message';
@@ -22,6 +24,7 @@ export const OrderView = () => {
         data: orderResponse,
         isLoading,
         isError,
+        refetch: orderRefetch,
     } = useGetOrderQuery(orderId);
 
     const { data: clientIdResponse, isLoading: clientIdLoading } =
@@ -29,7 +32,10 @@ export const OrderView = () => {
     const [{ isPending: paypalIsPending }, paypalDispatch] =
         usePayPalScriptReducer();
 
-    const [payOrder, payOrderStatus] = usePayOrderMutation();
+    const [createPayment, createPaymentStatus] =
+        useCreatePayTransactionMutation();
+    const [capturePayment, capturePaymentStatus] =
+        useCapturePayTransactionMutation();
 
     useEffect(() => {
         if (!clientIdResponse || !orderResponse || orderResponse?.order?.isPaid)
@@ -118,7 +124,7 @@ export const OrderView = () => {
         if (orderResponse.order?.isPaid) {
             throw new Error('This order is already paid');
         }
-        const res = await payOrder({ orderId }).unwrap();
+        const res = await createPayment({ orderId }).unwrap();
         const id = res.id;
         console.log(`paypal id ${id}`);
         return id;
@@ -126,20 +132,30 @@ export const OrderView = () => {
 
     const paypalOnApprove = async (data, actions) => {
         console.log('paypal on approve called');
+        try {
+            console.log(data);
+            const res = await capturePayment({
+                orderId,
+                paymentId: data.orderID,
+            });
+            console.log(res);
+            orderRefetch();
+        } catch (err) {
+            printError(err);
+        }
+        // TODO paypal capture order
     };
 
     const paypalOnError = async (err) => {
         printError(err);
     };
 
-    const onShippingAddressChange = (props) => {
-        console.log(`shipping address change handler ${props}`);
-    };
+    const onShippingAddressChange = (data, actions) => {
+        console.log(`shipping address change handler`);
+        console.log(data);
 
-    const paypalOnClick = async (a, b, c, d) => {
-        console.log('paypal onClick');
-        //const res = await b.resolve();
-        console.log('what happened above this line?');
+        // TODO update shipping address for order in database
+        // OR handle in backend on capture using address in response
     };
 
     const renderSummaryCard = (order) => {
@@ -173,16 +189,18 @@ export const OrderView = () => {
                             'no info to display'
                         )}
                     </ListGroup.Item>
-                    <ListGroup.Item>
-                        <PayPalButtons
-                            disabled={payOrderStatus?.isLoading}
-                            createOrder={paypalCreateOrder}
-                            onApprove={paypalOnApprove}
-                            onError={paypalOnError}
-                            onShippingAddressChange={onShippingAddressChange}
-                            onClick={paypalOnClick}
-                        />
-                    </ListGroup.Item>
+                    {order && !order?.isPaid ? (
+                        <ListGroup.Item display="false">
+                            <PayPalButtons
+                                createOrder={paypalCreateOrder}
+                                onApprove={paypalOnApprove}
+                                onError={paypalOnError}
+                                onShippingAddressChange={
+                                    onShippingAddressChange
+                                }
+                            />
+                        </ListGroup.Item>
+                    ) : null}
                 </ListGroup>
             </Card>
         );

@@ -6,7 +6,10 @@ import {
     modifyOrder,
     findUser,
 } from '../data/db_interface.js';
-import { CheckoutPaymentIntent } from '@paypal/paypal-server-sdk';
+import {
+    CheckoutPaymentIntent,
+    CaptureStatus,
+} from '@paypal/paypal-server-sdk';
 import paypalOrdersController from './paypal_controller.js';
 
 const getOrderById = asyncHandler(async (req, res) => {
@@ -35,7 +38,7 @@ const getOrdersByUser = asyncHandler(async (req, res) => {
     res.status(200).json(orders);
 });
 
-const payOrderWithPayPal = asyncHandler(async (req, res) => {
+const createPayTransaction = asyncHandler(async (req, res) => {
     const orderId = req.params?.id;
     const order = await findOrderById(orderId);
     const user = await findUser({ id: order.userId });
@@ -68,7 +71,7 @@ const payOrderWithPayPal = asyncHandler(async (req, res) => {
                 },
             },
         },
-        //prefer: 'return=minimal',
+        prefer: 'return=minimal',
     };
 
     try {
@@ -76,6 +79,11 @@ const payOrderWithPayPal = asyncHandler(async (req, res) => {
         console.log('paypal response received');
         //return the paypal order id here
         if (paypalRes?.statusCode === 201) {
+            console.log(
+                `Updating order ${order._id} with paypal id ${paypalRes.result.id}`
+            );
+            order.paymentId = paypalRes.result.id;
+            await saveOrder(order);
             res.status(201).json(paypalRes.result);
         } else {
             console.log('How did I get here?'); // TODO read Paypal docs on other responses for errors
@@ -86,6 +94,30 @@ const payOrderWithPayPal = asyncHandler(async (req, res) => {
         throw new Error('Bad paypal response');
     }
     // TODO: what happens here if shipping address was changed in PayPal window?
+});
+
+const capturePayTransaction = asyncHandler(async (req, res) => {
+    const orderId = req.params?.id;
+    const paymentId = req.body?.paymentId;
+    let order = await findOrderById(orderId);
+    try {
+        const paypalRes = await paypalOrdersController.ordersCapture({
+            id: paymentId,
+        });
+        order.paymentDetails = JSON.stringify(paypalRes.result);
+        order.isPaid = paypalRes.result.status === CaptureStatus.Completed;
+        await saveOrder(order);
+        if (order.isPaid) {
+            res.status(201).json({ isPaid: order.isPaid });
+        } else {
+            res.status(500).json({
+                message: `Paypal payment status returned is ${paypalRes?.result?.status}`,
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
 });
 
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
@@ -120,7 +152,7 @@ const addToOrder = asyncHandler(async (req, res) => {
         paymentMethod,
     };
     const order = await saveOrder(orderPayload);
-    res.status(200).json({ orderId: order._id });
+    res.status(201).json({ orderId: order._id });
     console.log(`order created ${order._id}`);
 });
 
@@ -128,7 +160,8 @@ export {
     getOrderById,
     getOrdersByUser,
     getAllOrders,
-    payOrderWithPayPal,
+    createPayTransaction,
+    capturePayTransaction,
     updateOrderToDelivered,
     addToOrder,
 };
