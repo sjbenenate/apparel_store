@@ -74,25 +74,37 @@ const createPayTransaction = asyncHandler(async (req, res) => {
         prefer: 'return=minimal',
     };
 
-    try {
-        const paypalRes = await paypalOrdersController.ordersCreate(payload);
-        console.log('paypal response received');
-        //return the paypal order id here
-        if (paypalRes?.statusCode === 201) {
+    const paypalRes = await paypalOrdersController.ordersCreate(payload);
+    const statusCode = paypalRes.statusCode;
+    switch (statusCode) {
+        case 200:
+        // fall through to 201 handling
+        case 201:
             console.log(
                 `Updating order ${order._id} with paypal id ${paypalRes.result.id}`
             );
-            order.paymentId = paypalRes.result.id;
+            const paymentId = paypalRes.result.id;
+            order.paymentId = paymentId;
             await saveOrder(order);
-            res.status(201).json(paypalRes.result);
-        } else {
-            console.log('How did I get here?'); // TODO read Paypal docs on other responses for errors
-            res.status(500).json({ message: "I'm lost" });
-        }
-    } catch (err) {
-        console.warn('paypal response was bad');
-        throw new Error('Bad paypal response');
+            res.status(201).json({ id: paymentId });
+            break;
+        case 400:
+        // fall through to 422 below
+        case 422:
+            console.log('Paypal error response');
+            console.log(
+                `${paypalRes?.result?.name} (${paypalRes?.result?.debug_id}): ${paypalRes?.result?.message}`
+            );
+            res.status(statusCode).json({
+                message: `${paypalRes?.result?.name} (${paypalRes?.result?.debug_id}): ${paypalRes?.result?.message}`,
+            });
+            break;
+        default:
+            console.error(paypalRes?.result);
+            throw new Error('Paypal create order error');
+            break;
     }
+
     // TODO: what happens here if shipping address was changed in PayPal window?
 });
 
