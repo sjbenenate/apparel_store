@@ -124,10 +124,14 @@ export const OrderView = () => {
         if (orderResponse.order?.isPaid) {
             throw new Error('This order is already paid');
         }
-        const res = await createPayment({ orderId }).unwrap();
-        const id = res.id;
-        console.log(`paypal id ${id}`);
-        return id;
+        try {
+            const res = await createPayment({ orderId }).unwrap();
+            const id = res.id;
+            console.log(`paypal id ${id}`);
+            return id;
+        } catch (err) {
+            printError(err);
+        }
     };
 
     const paypalOnApprove = async (data, actions) => {
