@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { Container, Row, Col, ListGroup } from 'react-bootstrap';
+import { Container, Row, Col, ListGroup, Table } from 'react-bootstrap';
 import FormContainer from '../components/form_container';
 import { useSelector } from 'react-redux';
 import { selectAuthInfo } from '../store/auth_slice';
 import { Link } from 'react-router-dom';
 import { useGetUserOrdersQuery } from '../store/api_orders';
-import { ProductRowSmall } from '../components/product_previews';
 
 const UserInfoItem = ({ label, value }) => {
     return (
@@ -28,6 +27,53 @@ const ProfileView = () => {
           )
         : [];
 
+    const ordersTable = () => {
+        return (
+            <Table>
+                <thead>
+                    <tr>
+                        <td>Order ID</td>
+                        <td>Items</td>
+                        <td>Paid</td>
+                        <td>Date</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {orders.map((order, index) => {
+                        return (
+                            <tr key={index}>
+                                <td>
+                                    <Link to={`/order/${order._id}`}>
+                                        {order._id}
+                                    </Link>
+                                </td>
+                                <td>
+                                    <strong>Items: </strong>
+                                    {order.orderItems.length}
+                                </td>
+                                <td
+                                    style={{
+                                        background: order.isPaid
+                                            ? 'green'
+                                            : 'red',
+                                    }}
+                                >
+                                    {order.isPaid ? 'Yes' : 'No'}
+                                </td>
+                                <td>
+                                    <strong>Date: </strong>
+                                    {new Date(
+                                        order.createdAt
+                                    ).toLocaleDateString()}
+                                </td>
+                            </tr>
+                        );
+                    })}
+                </tbody>
+            </Table>
+        );
+    };
+
     return (
         <Container>
             <FormContainer>
@@ -38,33 +84,11 @@ const ProfileView = () => {
                 </ListGroup>
                 <ListGroup>
                     <h2>Orders</h2>
-                    <Col>
-                        {orders.length > 0 ? (
-                            orders.map((order, index) => {
-                                return (
-                                    <Row key={index}>
-                                        <Col>
-                                            <Link to={`/order/${order._id}`}>
-                                                {order._id}
-                                            </Link>
-                                        </Col>
-                                        <Col>
-                                            <strong>Items: </strong>
-                                            {order.orderItems.length}
-                                        </Col>
-                                        <Col>
-                                            <strong>Date: </strong>
-                                            {new Date(
-                                                order.createdAt
-                                            ).toLocaleDateString()}
-                                        </Col>
-                                    </Row>
-                                );
-                            })
-                        ) : (
-                            <Row>No Orders for this user</Row>
-                        )}
-                    </Col>
+                    <div>
+                        {orders.length > 0
+                            ? ordersTable()
+                            : 'No orders for this user.'}
+                    </div>
                 </ListGroup>
             </FormContainer>
         </Container>
