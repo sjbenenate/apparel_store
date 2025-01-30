@@ -112,23 +112,38 @@ const capturePayTransaction = asyncHandler(async (req, res) => {
     const orderId = req.params?.id;
     const paymentId = req.body?.paymentId;
     let order = await findOrderById(orderId);
-    try {
-        const paypalRes = await paypalOrdersController.ordersCapture({
-            id: paymentId,
-        });
-        order.paymentDetails = JSON.stringify(paypalRes.result);
-        order.isPaid = paypalRes.result.status === CaptureStatus.Completed;
-        await saveOrder(order);
-        if (order.isPaid) {
-            res.status(201).json({ isPaid: order.isPaid });
-        } else {
-            res.status(500).json({
-                message: `Paypal payment status returned is ${paypalRes?.result?.status}`,
+    const paypalRes = await paypalOrdersController.ordersCapture({
+        id: paymentId,
+    });
+    switch (paypalRes.statusCode) {
+        case 200:
+        case 201:
+            order.paymentDetails = JSON.stringify(paypalRes.result);
+            order.isPaid = paypalRes.result.status === CaptureStatus.Completed;
+            await saveOrder(order);
+            if (order.isPaid) {
+                res.status(201).json({ isPaid: order.isPaid });
+            } else {
+                res.status(500).json({
+                    message: `Paypal payment status returned is ${paypalRes?.result?.status}`,
+                });
+            }
+            break;
+        case 403:
+        case 404:
+        case 422:
+            console.log('Paypal error response');
+            console.log(
+                `${paypalRes?.result?.name} (${paypalRes?.result?.debug_id}): ${paypalRes?.result?.message}`
+            );
+            res.status(statusCode).json({
+                message: `${paypalRes?.result?.name} (${paypalRes?.result?.debug_id}): ${paypalRes?.result?.message}`,
             });
-        }
-    } catch (err) {
-        console.log(err);
-        throw err;
+            break;
+        default:
+            console.error(paypalRes?.result);
+            throw new Error('Paypal create order error');
+            break;
     }
 });
 
