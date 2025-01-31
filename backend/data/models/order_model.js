@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
 const shippingAddressSchema = new mongoose.Schema({
+    name: { type: String, required: false },
     streetAddress: { type: String, required: true },
     city: { type: String, required: true },
-    postalCode: { type: Number, required: true },
+    state: { type: String, required: true },
+    postalCode: { type: String, required: true },
     country: { type: String, required: true },
 });
 

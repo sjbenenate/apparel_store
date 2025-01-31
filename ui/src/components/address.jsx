@@ -1,6 +1,6 @@
 import { Row, Col } from 'react-bootstrap';
 
-const Address = ({ streetAddress, city, postalCode, country }) => {
+const Address = ({ streetAddress, city, postalCode, country, state }) => {
     const labelColWidth = '3';
     return (
         <div>
@@ -18,7 +18,13 @@ const Address = ({ streetAddress, city, postalCode, country }) => {
             </Row>
             <Row>
                 <Col sm={labelColWidth}>
-                    <strong>Postal Code:</strong>
+                    <strong>State:</strong>
+                </Col>
+                <Col>{state}</Col>
+            </Row>
+            <Row>
+                <Col sm={labelColWidth}>
+                    <strong>Zip:</strong>
                 </Col>
                 <Col>{postalCode}</Col>
             </Row>

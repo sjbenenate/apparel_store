@@ -24,16 +24,17 @@ const ShippingView = () => {
     const [streetAddress, setStreetAddress] = useState(
         shippingAddress?.streetAddress || ''
     );
+    const [state, setState] = useState(shippingAddress?.state || '');
     const [city, setCity] = useState(shippingAddress?.city || '');
     const [postalCode, setPostalCode] = useState(
         shippingAddress?.postalCode || ''
     );
-    const [country, setCountry] = useState(shippingAddress?.country || '');
+    const [country, setCountry] = useState(shippingAddress?.country || 'US');
     const [alertMessage, setAlertMessage] = useState(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const payload = { streetAddress, city, postalCode, country };
+        const payload = { streetAddress, city, postalCode, country, state };
         if (verifyAddress(payload)) {
             dispatch(setShippingAddress(payload));
             navigate('/payment');
@@ -68,10 +69,22 @@ const ShippingView = () => {
                     <Form.Label>City</Form.Label>
                     <Form.Control
                         type="address-level2"
+                        autoComplete="address-level2"
                         as="input"
                         placeholder="City"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
+                    ></Form.Control>
+                </Form.Group>
+                <Form.Group controlId="address-level1" className={groupClass}>
+                    <Form.Label>State</Form.Label>
+                    <Form.Control
+                        type="address-level1"
+                        autoComplete="address-level1"
+                        as="input"
+                        placeholder="State"
+                        value={state}
+                        onChange={(e) => setState(e.target.value)}
                     ></Form.Control>
                 </Form.Group>
                 <Form.Group controlId="postal-code" className={groupClass}>
