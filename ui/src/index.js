@@ -24,6 +24,7 @@ import PrivateRoute from './components/private_route';
 import PaymentView from './views/payment_view';
 import OrderConfirmationView from './views/order_confirmation_view';
 import OrderView from './views/order_view';
+import ProfileEditView from './views/profile_edit_view';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -32,7 +33,6 @@ const router = createBrowserRouter(
             <Route path="product/:productId" element={<ProductView />} />
             <Route path="cart" element={<CartView />} />
             <Route path="login" element={<AuthView signInType="login" />} />
-            <Route path="profile" element={<ProfileView />} />
             <Route
                 path="register"
                 element={<AuthView signInType="register" />}
@@ -45,6 +45,8 @@ const router = createBrowserRouter(
                     element={<OrderConfirmationView />}
                 />
                 <Route path="order/:orderId" element={<OrderView />} />
+                <Route path="profile" element={<ProfileView />} />
+                <Route path="profile/edit" element={<ProfileEditView />} />
             </Route>
         </Route>
     )

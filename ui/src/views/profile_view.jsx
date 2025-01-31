@@ -1,8 +1,9 @@
-import { Container, Row, Col, ListGroup } from 'react-bootstrap';
-import FormContainer from '../components/form_container';
+import { useState } from 'react';
+import { Button, Col, Container, ListGroup, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectAuthInfo } from '../store/auth_slice';
 import OrdersHistory from '../components/orders_history';
+import { RouteButton } from '../components/controls';
 
 const UserInfoItem = ({ label, value }) => {
     return (
@@ -14,25 +15,28 @@ const UserInfoItem = ({ label, value }) => {
         </ListGroup.Item>
     );
 };
-
 const ProfileView = () => {
     const userInfo = useSelector(selectAuthInfo);
 
     return (
         <Container>
-            <FormContainer>
-                <h1>Profile</h1>
-                <ListGroup>
-                    <UserInfoItem label="Name" value={userInfo?.name} />
-                    <UserInfoItem label="Email" value={userInfo?.email} />
-                </ListGroup>
-                <ListGroup>
+            <h1>My Account</h1>
+            <Row>
+                <Col md={4} className="my-3 px-md-3">
+                    <h2>Personal Info</h2>
+                    <ListGroup>
+                        <UserInfoItem label="Name" value={userInfo?.name} />
+                        <UserInfoItem label="Email" value={userInfo?.email} />
+                    </ListGroup>
+                    <RouteButton to={'/profile/edit'} text="Edit" />
+                </Col>
+                <Col md={8} className="my-3 px-md-3">
                     <h2>Orders</h2>
                     <div>
                         <OrdersHistory />
                     </div>
-                </ListGroup>
-            </FormContainer>
+                </Col>
+            </Row>
         </Container>
     );
 };
