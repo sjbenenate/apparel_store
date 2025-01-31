@@ -130,7 +130,7 @@ const OrderConfirmationView = () => {
                             disabled={createOrderStatus?.isLoading}
                             autoFocus
                         >
-                            Place Order
+                            Create Order
                         </Button>
                     </CartSummary>
                 </Col>
