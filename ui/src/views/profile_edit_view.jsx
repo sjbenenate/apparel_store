@@ -26,6 +26,10 @@ const ProfileEditView = () => {
     const handleProfileUpdate = async (e) => {
         e.preventDefault();
         console.log('update submit handler');
+        if (inputPassword !== confirmPassword) {
+            setAlertMessage('Passwords do not match');
+            return;
+        }
         try {
             const res = await updateProfile({
                 _id: userInfo._id,
