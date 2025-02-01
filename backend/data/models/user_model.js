@@ -22,6 +22,11 @@ userSchema.methods.checkPassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };
 
+userSchema.methods.encryptPassword = async function (password) {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password, salt);
+};
+
 userSchema.methods.json = function () {
     return {
         _id: this._id,
@@ -35,8 +40,7 @@ userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
         next();
     } else {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
+        this.password = await this.encryptPassword(this.password);
     }
 });
 

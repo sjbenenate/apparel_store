@@ -61,8 +61,16 @@ const saveUser = async (name, email, password) => {
     return user;
 };
 
-const modifyUser = async (userId, info) => {
-    await userModel.updateOne({ _id: userId }, info);
+const modifyUser = async (userId, { name, email, password }) => {
+    let payload = {};
+    if (name) payload.name = name;
+    if (email) payload.email = email;
+    if (password) {
+        payload.password = await userModel.schema.methods.encryptPassword(
+            password
+        );
+    }
+    await userModel.updateOne({ _id: userId }, payload);
     return await userModel.findById(userId).select('-password').exec();
 };
 
