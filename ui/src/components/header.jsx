@@ -8,6 +8,7 @@ import { selectCartItems } from '../store/cart_slice';
 import { selectAuthInfo, clearUserCredentials } from '../store/auth_slice';
 import { useLogoutQuery } from '../store/api_users';
 import { useNavigate } from 'react-router-dom';
+import { ACCESS_LEVELS } from '../constants';
 
 const CartQtyIcon = () => {
     const cartItems = useSelector(selectCartItems);
@@ -73,7 +74,31 @@ const UserNav = () => {
     return <Nav.Item>{authInfo ? loggedInNav : loggedOutNav}</Nav.Item>;
 };
 
-export const Header = () => {
+const AdminNav = () => {
+    const authInfo = useSelector(selectAuthInfo);
+
+    if (authInfo && authInfo.accessLevel > ACCESS_LEVELS.BASIC) {
+        return (
+            <Nav.Item>
+                <NavDropdown title="Admin Area">
+                    <LinkContainer to="/admin/ordersList">
+                        <NavDropdown.Item>Orders</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/admin/productsList">
+                        <NavDropdown.Item>Products</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/admin/usersList">
+                        <NavDropdown.Item>Users</NavDropdown.Item>
+                    </LinkContainer>
+                </NavDropdown>
+            </Nav.Item>
+        );
+    } else {
+        return null;
+    }
+};
+
+const Header = () => {
     return (
         <Navbar expand="md" data-bs-theme="dark" bg="dark" collapseOnSelect>
             <Container>
@@ -103,9 +128,12 @@ export const Header = () => {
                             </Nav.Link>
                         </LinkContainer>
                         <UserNav />
+                        <AdminNav />
                     </Nav>
                 </Navbar.Collapse>
             </Container>
         </Navbar>
     );
 };
+
+export default Header;
