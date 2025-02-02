@@ -14,3 +14,9 @@ export const PAYMENT_METHODS = {
     paypal: 'PayPal',
     //bitcoin: 'Bit Coin',
 };
+
+export const ACCESS_LEVELS = {
+    ADMIN: 5,
+    MAINTAINER: 2,
+    BASIC: 0,
+};

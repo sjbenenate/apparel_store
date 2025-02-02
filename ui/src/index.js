@@ -25,6 +25,11 @@ import PaymentView from './views/payment_view';
 import OrderConfirmationView from './views/order_confirmation_view';
 import OrderView from './views/order_view';
 import ProfileEditView from './views/profile_edit_view';
+import AdminRoute from './components/admin_route';
+import OrdersListView from './views/admin/orders_list_view';
+import ProductsListView from './views/admin/products_list_view';
+import UsersListView from './views/admin/users_list_view';
+import { ACCESS_LEVELS } from './constants';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -47,6 +52,18 @@ const router = createBrowserRouter(
                 <Route path="order/:orderId" element={<OrderView />} />
                 <Route path="profile" element={<ProfileView />} />
                 <Route path="profile/edit" element={<ProfileEditView />} />
+            </Route>
+            <Route
+                element={<AdminRoute accessLevel={ACCESS_LEVELS.MAINTAINER} />}
+            >
+                <Route path="admin/ordersList" element={<OrdersListView />} />
+                <Route
+                    path="admin/productsList"
+                    element={<ProductsListView />}
+                />
+            </Route>
+            <Route element={<AdminRoute accessLevel={ACCESS_LEVELS.ADMIN} />}>
+                <Route path="admin/usersList" element={<UsersListView />} />
             </Route>
         </Route>
     )
