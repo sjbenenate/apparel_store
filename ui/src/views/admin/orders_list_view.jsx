@@ -1,21 +1,24 @@
-import { Container, ListGroup } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { useGetAllOrdersQuery } from '../../store/api_orders';
+import OrdersHistory from '../../components/orders_history';
+import Loader from '../../components/loader';
+import Message from '../../components/message';
 
 const OrdersListView = () => {
-    const orderQuery = useGetAllOrdersQuery();
+    const ordersQuery = useGetAllOrdersQuery();
 
     return (
         <Container>
             <h1>Orders</h1>
-            {orderQuery.data ? (
-                <ListGroup>
-                    {orderQuery.data.map((order, index) => (
-                        <ListGroup.Item key={index}>{order._id}</ListGroup.Item>
-                    ))}
-                </ListGroup>
-            ) : (
-                <p>No orders found</p>
-            )}
+            <div>
+                <OrdersHistory
+                    orders={ordersQuery.isSuccess ? ordersQuery.data : []}
+                />
+                {ordersQuery.isLoading ? <Loader /> : null}
+                {ordersQuery.isError ? (
+                    <Message variant="danger">Error loading orders</Message>
+                ) : null}
+            </div>
         </Container>
     );
 };
