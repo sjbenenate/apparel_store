@@ -127,8 +127,8 @@ const Header = () => {
                                 <CartQtyIcon />
                             </Nav.Link>
                         </LinkContainer>
-                        <UserNav />
                         <AdminNav />
+                        <UserNav />
                     </Nav>
                 </Navbar.Collapse>
             </Container>
