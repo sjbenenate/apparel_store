@@ -31,7 +31,7 @@ const ProfileView = () => {
                     <RouteButton to={'/profile/edit'} text="Edit" />
                 </Col>
                 <Col md={8} className="my-3 px-md-3">
-                    <h2>Orders</h2>
+                    <h2>My Orders</h2>
                     <div>
                         <OrdersHistory />
                     </div>
