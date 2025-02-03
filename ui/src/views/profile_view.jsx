@@ -23,11 +23,7 @@ const ProfileView = () => {
     const userInfo = useSelector(selectAuthInfo);
 
     const ordersQuery = useGetUserOrdersQuery();
-    const orders = ordersQuery.data
-        ? ordersQuery.data.toSorted(
-              (o1, o2) => new Date(o1.createdAt) > new Date(o2.createdAt) // TODO is not sorting as expected
-          )
-        : [];
+    const orders = ordersQuery.data ? ordersQuery.data : [];
 
     return (
         <Container>

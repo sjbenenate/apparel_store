@@ -108,8 +108,6 @@ const createPayTransaction = asyncHandler(async (req, res) => {
             throw new Error('Paypal create order error');
             break;
     }
-
-    // TODO: what happens here if shipping address was changed in PayPal window?
 });
 
 const capturePayTransaction = asyncHandler(async (req, res) => {
