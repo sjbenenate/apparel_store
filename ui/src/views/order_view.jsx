@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Card, Container, Col, Row, ListGroup } from 'react-bootstrap';
 import { usePayPalScriptReducer, PayPalButtons } from '@paypal/react-paypal-js';
 import {
     useGetOrderQuery,
-    usePayOrderMutation,
     useGetPayPalClientIdQuery,
     useCreatePayTransactionMutation,
     useCapturePayTransactionMutation,
@@ -14,6 +13,7 @@ import Message from '../components/message';
 import { PriceRow } from '../components/cart_summary';
 import Address from '../components/address';
 import { ProductRowSmall } from '../components/product_previews';
+import { localTimeString } from '../utils';
 
 export const OrderView = () => {
     const { orderId } = useParams();
@@ -90,7 +90,9 @@ export const OrderView = () => {
                         {order.paymentMethod}
                     </p>
                     {order.isPaid ? (
-                        <Message variant="success">Payment received!</Message>
+                        <Message variant="success">
+                            Payment received on {localTimeString(order.paidAt)}
+                        </Message>
                     ) : (
                         <Message variant="danger">
                             Requires payment for processing.
