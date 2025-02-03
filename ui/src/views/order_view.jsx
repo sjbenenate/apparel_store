@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, Container, Col, Row, ListGroup } from 'react-bootstrap';
+import { Button, Card, Container, Col, Row, ListGroup } from 'react-bootstrap';
 import { usePayPalScriptReducer, PayPalButtons } from '@paypal/react-paypal-js';
 import {
     useGetOrderQuery,
     useGetPayPalClientIdQuery,
     useCreatePayTransactionMutation,
     useCapturePayTransactionMutation,
+    useMarkAsDeliveredQuery,
 } from '../store/api_orders';
 import Loader from '../components/loader';
 import Message from '../components/message';
@@ -14,11 +15,16 @@ import { PriceRow } from '../components/cart_summary';
 import Address from '../components/address';
 import { ProductRowSmall } from '../components/product_previews';
 import { localTimeString } from '../utils';
+import { useSelector } from 'react-redux';
+import { selectAuthInfo } from '../store/auth_slice';
+import { ACCESS_LEVELS } from '../constants';
 
 export const OrderView = () => {
     const { orderId } = useParams();
 
     const [alertMessage, setAlertMessage] = useState(null);
+
+    const userInfo = useSelector(selectAuthInfo);
 
     const {
         data: orderResponse,
@@ -26,6 +32,8 @@ export const OrderView = () => {
         isError,
         refetch: orderRefetch,
     } = useGetOrderQuery(orderId);
+
+    const deliverQuery = useMarkAsDeliveredQuery(orderId);
 
     const { data: clientIdResponse, isLoading: clientIdLoading } =
         useGetPayPalClientIdQuery();
@@ -78,7 +86,9 @@ export const OrderView = () => {
                     <h2>Shipping Address</h2>
                     <Address {...order.shippingAddress} />
                     {order.isDelivered ? (
-                        <Message variant="success">Delivered</Message>
+                        <Message variant="success">
+                            Delivered on {localTimeString(order.deliveredAt)}
+                        </Message>
                     ) : (
                         <Message variant="danger">Not delivered</Message>
                     )}
@@ -116,7 +126,7 @@ export const OrderView = () => {
     };
 
     const printError = (err) => {
-        const msg = err?.message || err?.error;
+        const msg = err?.message || err?.data?.message;
         console.error(msg);
         setAlertMessage(msg);
     };
@@ -149,22 +159,24 @@ export const OrderView = () => {
         } catch (err) {
             printError(err);
         }
-        // TODO paypal capture order
     };
 
     const paypalOnError = async (err) => {
         printError(err);
     };
 
-    const onShippingAddressChange = (data, actions) => {
-        console.log(`shipping address change handler`);
-        console.log(data);
-
-        // TODO update shipping address for order in database
-        // OR handle in backend on capture using address in response
+    const deliveredHandler = async (e) => {
+        try {
+            const res = await deliverQuery.refetch().unwrap();
+            console.log(res);
+            orderRefetch();
+        } catch (err) {
+            printError(err);
+        }
     };
 
     const renderSummaryCard = (order) => {
+        if (!order) return <Card>No Order</Card>;
         return (
             <Card>
                 <ListGroup>
@@ -172,40 +184,49 @@ export const OrderView = () => {
                         <h3>Order Summary</h3>
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        {order ? (
-                            <Col>
-                                <PriceRow
-                                    label="SubTotal"
-                                    value={order.orderPrice}
-                                />
-                                <PriceRow
-                                    label="Tax (15%)"
-                                    value={order.taxPrice}
-                                />
-                                <PriceRow
-                                    label="Shipping"
-                                    value={order.shippingPrice}
-                                />
-                                <PriceRow
-                                    label="Total"
-                                    value={order.totalPrice}
-                                />
-                            </Col>
-                        ) : (
-                            'no info to display'
-                        )}
+                        <Col>
+                            <PriceRow
+                                label="SubTotal"
+                                value={order.orderPrice}
+                            />
+                            <PriceRow
+                                label="Tax (15%)"
+                                value={order.taxPrice}
+                            />
+                            <PriceRow
+                                label="Shipping"
+                                value={order.shippingPrice}
+                            />
+                            <PriceRow label="Total" value={order.totalPrice} />
+                        </Col>
                     </ListGroup.Item>
-                    {order && !order?.isPaid ? (
+                    {!order?.isPaid ? (
                         <ListGroup.Item display="false">
                             <PayPalButtons
                                 createOrder={paypalCreateOrder}
                                 onApprove={paypalOnApprove}
                                 onError={paypalOnError}
-                                onShippingAddressChange={
-                                    onShippingAddressChange
-                                }
                             />
                         </ListGroup.Item>
+                    ) : null}
+                    {userInfo.accessLevel >= ACCESS_LEVELS.MAINTAINER ? (
+                        <>
+                            <ListGroup.Item>
+                                <h3>Admin Zone</h3>
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                <Button
+                                    disabled={
+                                        order.isDelivered ||
+                                        deliverQuery?.isLoading
+                                    }
+                                    className="btn-block btn-info"
+                                    onClick={deliveredHandler}
+                                >
+                                    Set Delivered
+                                </Button>
+                            </ListGroup.Item>
+                        </>
                     ) : null}
                 </ListGroup>
             </Card>
@@ -233,12 +254,12 @@ export const OrderView = () => {
                         : null}
                 </Col>
                 <Col md="4">
-                    <Row>{renderSummaryCard(orderResponse?.order)}</Row>
                     <Row>
                         {alertMessage ? (
                             <Message variant="danger">{alertMessage}</Message>
                         ) : null}
                     </Row>
+                    <Row>{renderSummaryCard(orderResponse?.order)}</Row>
                 </Col>
             </Row>
         </Container>

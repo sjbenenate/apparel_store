@@ -115,7 +115,10 @@ const createPayTransaction = asyncHandler(async (req, res) => {
 const capturePayTransaction = asyncHandler(async (req, res) => {
     const orderId = req.params?.id;
     const paymentId = req.body?.paymentId;
-    let order = await findOrderById(orderId);
+    const order = await findOrderById(orderId);
+    if (!order) {
+        throw new Error('Order could not be found by this id');
+    }
     const paypalRes = await paypalOrdersController.ordersCapture({
         id: paymentId,
     });
@@ -123,28 +126,30 @@ const capturePayTransaction = asyncHandler(async (req, res) => {
         case 200:
         case 201:
             if (paypalRes.result.status === CaptureStatus.Completed) {
-                order.paidAt = new Date();
-                order.isPaid = true;
-                order.shippingAddress = {
-                    name: paypalRes.result?.purchaseUnits[0]?.shipping?.name
-                        ?.fullName,
-                    streetAddress:
-                        paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                            ?.addressLine1,
-                    city: paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                        ?.adminArea2,
-                    state: paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                        ?.adminArea1,
-                    postalCode:
-                        paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                            ?.postalCode,
-                    country:
-                        paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                            ?.countryCode,
+                const updatePayload = {
+                    paidAt: new Date(),
+                    isPaid: true,
+                    shippingAddress: {
+                        name: paypalRes.result?.purchaseUnits[0]?.shipping?.name
+                            ?.fullName,
+                        streetAddress:
+                            paypalRes.result?.purchaseUnits[0]?.shipping
+                                ?.address?.addressLine1,
+                        city: paypalRes.result?.purchaseUnits[0]?.shipping
+                            ?.address?.adminArea2,
+                        state: paypalRes.result?.purchaseUnits[0]?.shipping
+                            ?.address?.adminArea1,
+                        postalCode:
+                            paypalRes.result?.purchaseUnits[0]?.shipping
+                                ?.address?.postalCode,
+                        country:
+                            paypalRes.result?.purchaseUnits[0]?.shipping
+                                ?.address?.countryCode,
+                    },
                 };
 
-                await saveOrder(order);
-                res.status(201).json({ isPaid: order.isPaid });
+                await modifyOrder(orderId, updatePayload);
+                res.status(201).json({ isPaid: true });
             } else {
                 res.status(500).json({
                     message: `Paypal payment status returned is ${paypalRes?.result?.status}`,
@@ -170,7 +175,17 @@ const capturePayTransaction = asyncHandler(async (req, res) => {
 });
 
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
-    res.send('update order to delivered');
+    const orderId = req.params?.id;
+    console.log(`update order to delivered ${orderId}`);
+    const order = await findOrderById(orderId);
+    if (!order) {
+        throw new Error(`Order was not found for delivery update ${orderId}`);
+    }
+    await modifyOrder(orderId, {
+        isDelivered: true,
+        deliveredAt: new Date(),
+    });
+    res.status(201).json({ message: 'order marked as delivered' });
 });
 
 const createUserOrder = asyncHandler(async (req, res) => {

@@ -97,16 +97,23 @@ const saveOrder = async (orderData) => {
     return res;
 };
 
-const modifyOrder = async ({ orderId, isPaid, isDelivered }) => {
-    let payload = { _id: orderId };
-    if (isPaid !== undefined) {
+const modifyOrder = async (
+    orderId,
+    { isPaid, paidAt, isDelivered, deliveredAt, shippingAddress }
+) => {
+    let payload = {};
+    if (isPaid && paidAt) {
         payload.isPaid = isPaid;
     }
-    if (isDelivered !== undefined) {
+    if (isDelivered && deliveredAt) {
         payload.isDelivered = isDelivered;
+        payload.deliveredAt = deliveredAt;
     }
-    const order = await orderModel.updateOne(payload);
-    return order;
+    if (shippingAddress) {
+        payload.shippingAddress = shippingAddress;
+    }
+    const order = await orderModel.updateOne({ _id: orderId }, payload);
+    return order.acknowledged;
 };
 
 export {

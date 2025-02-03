@@ -46,6 +46,12 @@ const ordersApiSlice = apiSlice.injectEndpoints({
                 method: 'GET',
             }),
         }),
+        markAsDelivered: builder.query({
+            query: (id) => ({
+                url: `${ORDERS_URL}/${id}/deliver`,
+                method: 'PUT',
+            }),
+        }),
     }),
 });
 
@@ -57,4 +63,5 @@ export const {
     useCreatePayTransactionMutation,
     useCapturePayTransactionMutation,
     useGetAllOrdersQuery,
+    useMarkAsDeliveredQuery,
 } = ordersApiSlice;
