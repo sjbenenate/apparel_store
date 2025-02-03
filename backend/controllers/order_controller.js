@@ -172,7 +172,7 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
     res.send('update order to delivered');
 });
 
-const addToOrder = asyncHandler(async (req, res) => {
+const createUserOrder = asyncHandler(async (req, res) => {
     console.log('add to order started');
     const shippingAddress = req.body?.shippingAddress;
     const orderItems = req.body?.orderItems;
@@ -211,5 +211,5 @@ export {
     createPayTransaction,
     capturePayTransaction,
     updateOrderToDelivered,
-    addToOrder,
+    createUserOrder,
 };

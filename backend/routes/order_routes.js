@@ -6,7 +6,7 @@ import {
     createPayTransaction,
     capturePayTransaction,
     updateOrderToDelivered,
-    addToOrder,
+    createUserOrder,
 } from '../controllers/order_controller.js';
 import {
     authMiddleware,
@@ -32,6 +32,6 @@ orderRouter
     .route('/')
     .all(authMiddleware)
     .get(adminMiddleware, getAllOrders)
-    .post(addToOrder);
+    .post(createUserOrder);
 
 export default orderRouter;
