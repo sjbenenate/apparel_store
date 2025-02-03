@@ -122,27 +122,28 @@ const capturePayTransaction = asyncHandler(async (req, res) => {
     switch (paypalRes.statusCode) {
         case 200:
         case 201:
-            order.paymentDetails = JSON.stringify(paypalRes.result);
-            order.isPaid = paypalRes.result.status === CaptureStatus.Completed;
-            order.shippingAddress = {
-                name: paypalRes.result?.purchaseUnits[0]?.shipping?.name
-                    ?.fullName,
-                streetAddress:
-                    paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                        ?.addressLine1,
-                city: paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                    ?.adminArea2,
-                state: paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                    ?.adminArea1,
-                postalCode:
-                    paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                        ?.postalCode,
-                country:
-                    paypalRes.result?.purchaseUnits[0]?.shipping?.address
-                        ?.countryCode,
-            };
-            await saveOrder(order);
-            if (order.isPaid) {
+            if (paypalRes.result.status === CaptureStatus.Completed) {
+                order.paidAt = new Date();
+                order.isPaid = true;
+                order.shippingAddress = {
+                    name: paypalRes.result?.purchaseUnits[0]?.shipping?.name
+                        ?.fullName,
+                    streetAddress:
+                        paypalRes.result?.purchaseUnits[0]?.shipping?.address
+                            ?.addressLine1,
+                    city: paypalRes.result?.purchaseUnits[0]?.shipping?.address
+                        ?.adminArea2,
+                    state: paypalRes.result?.purchaseUnits[0]?.shipping?.address
+                        ?.adminArea1,
+                    postalCode:
+                        paypalRes.result?.purchaseUnits[0]?.shipping?.address
+                            ?.postalCode,
+                    country:
+                        paypalRes.result?.purchaseUnits[0]?.shipping?.address
+                            ?.countryCode,
+                };
+
+                await saveOrder(order);
                 res.status(201).json({ isPaid: order.isPaid });
             } else {
                 res.status(500).json({
