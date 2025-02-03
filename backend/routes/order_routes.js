@@ -12,6 +12,7 @@ import {
     authMiddleware,
     adminMiddleware,
 } from '../middleware/user_auth_middleware.js';
+import { ACCESS_LEVELS } from '../constants.js';
 
 let orderRouter = Router();
 
@@ -24,14 +25,14 @@ orderRouter.post('/:id/payCapture', authMiddleware, capturePayTransaction);
 orderRouter.put(
     '/:id/deliver',
     authMiddleware,
-    adminMiddleware,
+    adminMiddleware(ACCESS_LEVELS.MAINTAINER),
     updateOrderToDelivered
 );
 orderRouter.get('/:id', authMiddleware, getOrderById);
 orderRouter
     .route('/')
     .all(authMiddleware)
-    .get(adminMiddleware, getAllOrders)
+    .get(adminMiddleware(ACCESS_LEVELS.MAINTAINER), getAllOrders)
     .post(createUserOrder);
 
 export default orderRouter;

@@ -22,16 +22,17 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     }
 });
 
-const adminMiddleware = asyncHandler(async (req, res, next) => {
-    if (!req.user) {
-        throw new Error('no user for admin middleware to verify!');
-    }
+const adminMiddleware = (accessLevel) =>
+    asyncHandler(async (req, res, next) => {
+        if (!req.user) {
+            throw new Error('no user for admin middleware to verify!');
+        }
 
-    if (req.user.accessLevel !== ACCESS_LEVELS.ADMIN) {
-        throw new Error('Access not allowed for this user');
-    }
+        if (req.user.accessLevel < accessLevel) {
+            throw new Error('Access not allowed for this user');
+        }
 
-    next();
-});
+        next();
+    });
 
 export { authMiddleware, adminMiddleware };

@@ -14,13 +14,14 @@ import {
     authMiddleware,
     adminMiddleware,
 } from '../middleware/user_auth_middleware.js';
+import { ACCESS_LEVELS } from '../constants.js';
 
 let userRouter = express.Router();
 
 userRouter
     .route('/')
     .post(registerUser)
-    .get(authMiddleware, adminMiddleware, getUsers);
+    .get(authMiddleware, adminMiddleware(ACCESS_LEVELS.ADMIN), getUsers);
 
 userRouter.post('/login', loginUser);
 userRouter.post('/logout', authMiddleware, logoutUser);
@@ -33,7 +34,7 @@ userRouter
 
 userRouter
     .route('/:id')
-    .all(authMiddleware, adminMiddleware)
+    .all(authMiddleware, adminMiddleware(ACCESS_LEVELS.ADMIN))
     .get(getUserById)
     .put(updateUser)
     .delete(deleteUser);
