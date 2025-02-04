@@ -81,13 +81,13 @@ const AdminNav = () => {
         return (
             <Nav.Item>
                 <NavDropdown title="Admin Area">
-                    <LinkContainer to="/admin/ordersList">
+                    <LinkContainer to="/admin/orders/list">
                         <NavDropdown.Item>Orders</NavDropdown.Item>
                     </LinkContainer>
-                    <LinkContainer to="/admin/productsList">
+                    <LinkContainer to="/admin/products/list">
                         <NavDropdown.Item>Products</NavDropdown.Item>
                     </LinkContainer>
-                    <LinkContainer to="/admin/usersList">
+                    <LinkContainer to="/admin/users/list">
                         <NavDropdown.Item>Users</NavDropdown.Item>
                     </LinkContainer>
                 </NavDropdown>
