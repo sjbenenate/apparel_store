@@ -3,7 +3,15 @@ import { findAllProducts, findProductById } from '../data/db_interface.js';
 
 const getProducts = asyncHandler(async (req, res) => {
     console.log('products endpoint hit');
-    const products = await findAllProducts();
+    const activeOnly =
+        req.query?.active?.toLowerCase() === 'true' ||
+        req.query?.active === '1';
+    let products = [];
+    if (activeOnly) {
+        products = await findAllProducts({ disabled: false });
+    } else {
+        products = await findAllProducts();
+    }
     res.json(products);
 });
 
