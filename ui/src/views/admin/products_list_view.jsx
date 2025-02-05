@@ -1,6 +1,6 @@
 import { Container, Col, Row, Table, Button } from 'react-bootstrap';
 import { useGetProductsQuery } from '../../store/api_products';
-import { FaEdit } from 'react-icons/fa';
+import { FaEdit, FaBan, FaCheck } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 
 const ProductTableHead = () => {
@@ -13,12 +13,23 @@ const ProductTableHead = () => {
                 <th>Price</th>
                 <th>In Stock</th>
                 <th>Edit</th>
+                <th>Active</th>
             </tr>
         </thead>
     );
 };
 
 const ProductTableRow = ({ product }) => {
+    const getActivateHandler = (product) => {
+        return (e) => {
+            window.confirm(
+                `${product.disabled ? 'Active' : 'Deactive'} product '${
+                    product.name
+                }'? `
+            );
+        };
+    };
+
     return (
         <tr>
             <td>{product._id}</td>
@@ -33,6 +44,15 @@ const ProductTableRow = ({ product }) => {
                     </Button>
                 </LinkContainer>
             </td>
+            <td>
+                <Button
+                    variant={product.disabled ? 'danger' : 'success'}
+                    size="sm"
+                    onClick={getActivateHandler(product)}
+                >
+                    {product.disabled ? <FaBan /> : <FaCheck />}
+                </Button>
+            </td>
         </tr>
     );
 };
@@ -43,14 +63,13 @@ const ProductsListView = () => {
 
     return (
         <Container>
-            <Row>
+            <Row className="align-items-center">
                 <Col>
                     <h1>Products</h1>
                 </Col>
-                <Col></Col>
-                <Col className="flex-sm-shrink-1">
+                <Col style={{ textAlign: 'right' }}>
                     <LinkContainer to={`/admin/products/new`}>
-                        <Button>
+                        <Button className="m-3">
                             <FaEdit /> New Product
                         </Button>
                     </LinkContainer>
