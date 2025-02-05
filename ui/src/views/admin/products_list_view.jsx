@@ -3,23 +3,10 @@ import { useGetProductsQuery } from '../../store/api_products';
 import { FaEdit, FaBan, FaCheck } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 
-const ProductTableHead = () => {
-    return (
-        <thead align="center">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Brand</th>
-                <th>Price</th>
-                <th>In Stock</th>
-                <th>Edit</th>
-                <th>Active</th>
-            </tr>
-        </thead>
-    );
-};
+const ProductsListView = () => {
+    const { data: products, refetch: refetchProducts } =
+        useGetProductsQuery(false);
 
-const ProductTableRow = ({ product }) => {
     const getActivateHandler = (product) => {
         return (e) => {
             window.confirm(
@@ -30,8 +17,8 @@ const ProductTableRow = ({ product }) => {
         };
     };
 
-    return (
-        <tr>
+    const productTableRow = (product, index) => (
+        <tr key={index}>
             <td>{product._id}</td>
             <td>{product.name}</td>
             <td>{product.brand}</td>
@@ -55,11 +42,6 @@ const ProductTableRow = ({ product }) => {
             </td>
         </tr>
     );
-};
-
-const ProductsListView = () => {
-    const { data: products, refetch: refetchProducts } =
-        useGetProductsQuery(false);
 
     return (
         <Container>
@@ -77,15 +59,22 @@ const ProductsListView = () => {
             </Row>
             <Row>
                 <Table striped responsive hover className="table-sm">
-                    <ProductTableHead />
+                    <thead align="center">
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Brand</th>
+                            <th>Price</th>
+                            <th>In Stock</th>
+                            <th>Edit</th>
+                            <th>Active</th>
+                        </tr>
+                    </thead>
                     <tbody align="center">
                         {products && products.length > 0 ? (
-                            products.map((product, index) => (
-                                <ProductTableRow
-                                    product={product}
-                                    key={index}
-                                />
-                            ))
+                            products.map((product, index) =>
+                                productTableRow(product, index)
+                            )
                         ) : (
                             <tr></tr>
                         )}
