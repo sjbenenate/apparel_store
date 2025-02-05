@@ -1,14 +1,17 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
-import { findAllProducts, findProductById } from '../data/db_interface.js';
+import {
+    findAllProducts,
+    findProductById,
+    modifyProduct,
+    saveProduct,
+} from '../data/db_interface.js';
 
 const getProducts = asyncHandler(async (req, res) => {
     console.log('products endpoint hit');
-    const activeOnly =
-        req.query?.active?.toLowerCase() === 'true' ||
-        req.query?.active === '1';
+    const activeOnly = req.query?.activeOnly === 'true';
     let products = [];
     if (activeOnly) {
-        products = await findAllProducts({ disabled: false });
+        products = await findAllProducts({ active: true });
     } else {
         products = await findAllProducts();
     }
@@ -27,4 +30,32 @@ const getProductById = asyncHandler(async (req, res) => {
     }
 });
 
-export { getProducts, getProductById };
+const setProductActivate = asyncHandler(async (req, res) => {
+    const id = req.params.productId;
+    const active = req.body?.active;
+    const product = await modifyProduct(id, { active });
+    res.status(201).json(product);
+});
+
+const createProduct = asyncHandler(async (req, res) => {
+    const {
+        name,
+        description,
+        brand,
+        category,
+        price,
+        countInStock = 0,
+    } = req.body;
+    const product = await saveProduct({
+        userId: req.user._id,
+        name,
+        description,
+        brand,
+        category,
+        price,
+        countInStock,
+    });
+    res.status(201).json(product);
+});
+
+export { getProducts, getProductById, setProductActivate, createProduct };

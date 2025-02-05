@@ -1,19 +1,42 @@
 import { Container, Col, Row, Table, Button } from 'react-bootstrap';
-import { useGetProductsQuery } from '../../store/api_products';
+import {
+    useGetProductsQuery,
+    useActivateProductMutation,
+} from '../../store/api_products';
 import { FaEdit, FaBan, FaCheck } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 
 const ProductsListView = () => {
-    const { data: products, refetch: refetchProducts } =
-        useGetProductsQuery(false);
+    const { data: products, refetch: refetchProducts } = useGetProductsQuery({
+        activeOnly: false,
+    });
+
+    const [activateProduct, activateProductStatus] =
+        useActivateProductMutation();
 
     const getActivateHandler = (product) => {
-        return (e) => {
-            window.confirm(
-                `${product.disabled ? 'Active' : 'Deactive'} product '${
+        return async (e) => {
+            const confirmed = window.confirm(
+                `${product.active ? 'Deactive' : 'Activate'} product '${
                     product.name
                 }'? `
             );
+            if (confirmed) {
+                console.log(
+                    `Setting product id '${
+                        product._id
+                    }' active to '${!product.active}`
+                );
+                try {
+                    await activateProduct({
+                        productId: product._id,
+                        active: !product.active,
+                    });
+                    await refetchProducts();
+                } catch (err) {
+                    window.alert(err?.data?.message || err?.error);
+                }
+            }
         };
     };
 
@@ -33,11 +56,11 @@ const ProductsListView = () => {
             </td>
             <td>
                 <Button
-                    variant={product.disabled ? 'danger' : 'success'}
+                    variant={!product.active ? 'danger' : 'success'}
                     size="sm"
                     onClick={getActivateHandler(product)}
                 >
-                    {product.disabled ? <FaBan /> : <FaCheck />}
+                    {!product.active ? <FaBan /> : <FaCheck />}
                 </Button>
             </td>
         </tr>

@@ -18,7 +18,11 @@ const newProductsList = (products) => {
 };
 
 export const HomeView = () => {
-    const { data: products, isLoading, isError } = useGetProductsQuery();
+    const {
+        data: products,
+        isLoading,
+        isError,
+    } = useGetProductsQuery({ activeOnly: true });
 
     return (
         <>

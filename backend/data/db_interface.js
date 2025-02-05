@@ -19,7 +19,7 @@ const dbConnect = async () => {
     }
 };
 
-const findAllProducts = async () => await productModel.find({});
+const findAllProducts = async (filter) => await productModel.find(filter);
 
 const findProductById = async (id) => {
     const products = await productModel.find({ _id: id });
@@ -27,6 +27,18 @@ const findProductById = async (id) => {
         return null;
     }
     return products[0];
+};
+
+const saveProduct = async (data) => {
+    return await productModel.save(data);
+};
+
+const modifyProduct = async (productId, data) => {
+    return await productModel.findOneAndUpdate(
+        { _id: productId },
+        { ...data },
+        { new: true }
+    );
 };
 
 const findUser = async ({ email, id }) => {
@@ -70,8 +82,10 @@ const modifyUser = async (userId, { name, email, password }) => {
             password
         );
     }
-    await userModel.updateOne({ _id: userId }, payload);
-    return await userModel.findById(userId).select('-password').exec();
+    return await userModel
+        .findOneAndUpdate({ _id: userId }, payload, { new: true })
+        .select('-password')
+        .exec();
 };
 
 const findOrders = async (userId) => {
@@ -120,6 +134,7 @@ export {
     dbConnect,
     findAllProducts,
     findProductById,
+    modifyProduct,
     findUser,
     findAuthorizedUser,
     saveUser,
@@ -128,4 +143,5 @@ export {
     findOrderById,
     saveOrder,
     modifyOrder,
+    saveProduct,
 };
