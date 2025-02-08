@@ -79,7 +79,7 @@ const ProductsListView = () => {
                 </Col>
                 <Col style={{ textAlign: 'right' }}>
                     <LinkContainer to={`/admin/products/new`}>
-                        <Button className="m-3">
+                        <Button className="m-3 btn-info">
                             <FaEdit /> New Product
                         </Button>
                     </LinkContainer>
