@@ -4,6 +4,7 @@ import {
     getProductById,
     setProductActivate,
     createProduct,
+    updateProduct,
 } from '../controllers/product_controller.js';
 import {
     authMiddleware,
@@ -22,6 +23,18 @@ productRouter.put(
 
 productRouter.get('/:productId', getProductById);
 
-productRouter.get('/', getProducts);
+productRouter
+    .route('/')
+    .get(getProducts)
+    .put(
+        authMiddleware,
+        adminMiddleware(ACCESS_LEVELS.MAINTAINER),
+        createProduct
+    );
+/*.post(
+        authMiddleware,
+        adminMiddleware(ACCESS_LEVELS.MAINTAINER),
+        updateProduct
+    );*/
 
 export default productRouter;

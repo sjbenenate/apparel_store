@@ -38,14 +38,11 @@ const setProductActivate = asyncHandler(async (req, res) => {
 });
 
 const createProduct = asyncHandler(async (req, res) => {
-    const {
-        name,
-        description,
-        brand,
-        category,
-        price,
-        countInStock = 0,
-    } = req.body;
+    console.log('create product endpoint hit');
+
+    const { name, description, brand, category, price, countInStock } =
+        req.body;
+
     const product = await saveProduct({
         userId: req.user._id,
         name,
@@ -54,8 +51,20 @@ const createProduct = asyncHandler(async (req, res) => {
         category,
         price,
         countInStock,
+        image: '/images/airpods.jpg',
     });
+
     res.status(201).json(product);
 });
 
-export { getProducts, getProductById, setProductActivate, createProduct };
+const updateProduct = asyncHandler(async (req, res) => {
+    console.log('update product endpoint hit');
+});
+
+export {
+    getProducts,
+    getProductById,
+    setProductActivate,
+    createProduct,
+    updateProduct,
+};

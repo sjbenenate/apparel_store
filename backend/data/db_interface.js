@@ -30,7 +30,7 @@ const findProductById = async (id) => {
 };
 
 const saveProduct = async (data) => {
-    return await productModel.save(data);
+    return await productModel.create(data);
 };
 
 const modifyProduct = async (productId, data) => {
