@@ -5,11 +5,15 @@ import {
 } from '../../store/api_products';
 import { FaEdit, FaBan, FaCheck } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
+import Message from '../../components/message';
+import { useState } from 'react';
 
 const ProductsListView = () => {
     const { data: products, refetch: refetchProducts } = useGetProductsQuery({
         activeOnly: false,
     });
+
+    const [alertMessage, setAlertMessage] = useState(null);
 
     const [activateProduct, activateProductStatus] =
         useActivateProductMutation();
@@ -17,9 +21,9 @@ const ProductsListView = () => {
     const getActivateHandler = (product) => {
         return async (e) => {
             const confirmed = window.confirm(
-                `${product.active ? 'Deactive' : 'Activate'} product '${
-                    product.name
-                }'? `
+                `Please confirm ${
+                    product.active ? 'deactivation' : 'activation'
+                } of product '${product.name}'? `
             );
             if (confirmed) {
                 console.log(
@@ -32,9 +36,10 @@ const ProductsListView = () => {
                         productId: product._id,
                         active: !product.active,
                     });
+                    setAlertMessage(null);
                     await refetchProducts();
                 } catch (err) {
-                    window.alert(err?.data?.message || err?.error);
+                    setAlertMessage(err?.data?.message || err?.error);
                 }
             }
         };
@@ -80,6 +85,9 @@ const ProductsListView = () => {
                     </LinkContainer>
                 </Col>
             </Row>
+            {alertMessage ? (
+                <Message variant="danger">{alertMessage}</Message>
+            ) : null}
             <Row>
                 <Table striped responsive hover className="table-sm">
                     <thead align="center">
