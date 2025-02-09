@@ -14,6 +14,7 @@ const ProductCreateView = () => {
     const [category, setCategory] = useState('');
     const [price, setPrice] = useState('');
     const [countInStock, setCountInStock] = useState(0);
+    const [imageUrl, setImageUrl] = useState('/images/airpods.jpg');
     const [alertMsg, setAlertMessage] = useState(null);
 
     const [createProduct, createProductState] = useCreateProductMutation();
@@ -31,7 +32,7 @@ const ProductCreateView = () => {
                 category,
                 price: roundDecimals(price),
                 countInStock,
-                image: '/images/airpods.jpg',
+                image: imageUrl,
             }).unwrap();
             console.log(`Navigating to /admin/products/edit/${res._id}`);
             navigate(`/admin/products/edit/${res._id}`);
