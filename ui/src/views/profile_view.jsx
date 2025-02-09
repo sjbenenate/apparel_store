@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Col, Container, ListGroup, Row } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import { selectAuthInfo } from '../store/auth_slice';

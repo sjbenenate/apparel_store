@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Container, Button, Form } from 'react-bootstrap';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import FormContainer from '../components/form_container';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Button, Form } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { useLoginMutation } from '../store/api_users';
-import { selectAuthInfo, setUserCredentials } from '../store/auth_slice';
+import { setUserCredentials } from '../store/auth_slice';
 import Message from '../components/message';
 import Loader from '../components/loader';
 
