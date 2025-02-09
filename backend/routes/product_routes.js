@@ -21,20 +21,22 @@ productRouter.put(
     setProductActivate
 );
 
-productRouter.get('/:productId', getProductById);
+productRouter
+    .route('/:productId')
+    .get(getProductById)
+    .put(
+        authMiddleware,
+        adminMiddleware(ACCESS_LEVELS.MAINTAINER),
+        updateProduct
+    );
 
 productRouter
     .route('/')
     .get(getProducts)
-    .put(
+    .post(
         authMiddleware,
         adminMiddleware(ACCESS_LEVELS.MAINTAINER),
         createProduct
     );
-/*.post(
-        authMiddleware,
-        adminMiddleware(ACCESS_LEVELS.MAINTAINER),
-        updateProduct
-    );*/
 
 export default productRouter;

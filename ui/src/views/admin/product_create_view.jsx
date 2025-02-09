@@ -31,6 +31,7 @@ const ProductCreateView = () => {
                 category,
                 price: roundDecimals(price),
                 countInStock,
+                image: '/images/airpods.jpg',
             }).unwrap();
             console.log(`Navigating to /admin/products/edit/${res._id}`);
             navigate(`/admin/products/edit/${res._id}`);
@@ -101,7 +102,7 @@ const ProductCreateView = () => {
                     <LinkContainer to="/admin/products/list">
                         <Button variant="light">Cancel</Button>
                     </LinkContainer>
-                    <Button type="submit" variant="info">
+                    <Button type="submit" variant="info" autoFocus={true}>
                         Save
                     </Button>
                 </Form.Group>

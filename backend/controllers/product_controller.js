@@ -3,7 +3,7 @@ import {
     findAllProducts,
     findProductById,
     modifyProduct,
-    saveProduct,
+    saveNewProduct,
 } from '../data/db_interface.js';
 
 const getProducts = asyncHandler(async (req, res) => {
@@ -40,10 +40,10 @@ const setProductActivate = asyncHandler(async (req, res) => {
 const createProduct = asyncHandler(async (req, res) => {
     console.log('create product endpoint hit');
 
-    const { name, description, brand, category, price, countInStock } =
+    const { name, description, brand, category, price, countInStock, image } =
         req.body;
 
-    const product = await saveProduct({
+    const product = await saveNewProduct({
         userId: req.user._id,
         name,
         description,
@@ -51,7 +51,7 @@ const createProduct = asyncHandler(async (req, res) => {
         category,
         price,
         countInStock,
-        image: '/images/airpods.jpg',
+        image,
     });
 
     res.status(201).json(product);

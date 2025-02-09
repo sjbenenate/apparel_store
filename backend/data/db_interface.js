@@ -29,16 +29,17 @@ const findProductById = async (id) => {
     return products[0];
 };
 
-const saveProduct = async (data) => {
+const saveNewProduct = async (data) => {
     return await productModel.create(data);
 };
 
 const modifyProduct = async (productId, data) => {
-    return await productModel.findOneAndUpdate(
-        { _id: productId },
-        { ...data },
-        { new: true }
-    );
+    let product = await productModel.findById(productId);
+    if (!product) return null;
+    Object.entries(data).forEach(([key, value]) => {
+        product[key] = value;
+    });
+    return await product.save();
 };
 
 const findUser = async ({ email, id }) => {
@@ -52,10 +53,7 @@ const findUser = async ({ email, id }) => {
     }
     if (!user) {
         return null;
-    } else {
-        return user;
     }
-
     return user;
 };
 
@@ -143,5 +141,5 @@ export {
     findOrderById,
     saveOrder,
     modifyOrder,
-    saveProduct,
+    saveNewProduct,
 };
