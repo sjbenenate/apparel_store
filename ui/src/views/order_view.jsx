@@ -14,7 +14,7 @@ import Message from '../components/message';
 import { PriceRow } from '../components/cart_summary';
 import Address from '../components/address';
 import { ProductRowSmall } from '../components/product_previews';
-import { localTimeString } from '../utils';
+import { localDateString } from '../utils';
 import { useSelector } from 'react-redux';
 import { selectAuthInfo } from '../store/auth_slice';
 import { ACCESS_LEVELS } from '../constants';
@@ -87,7 +87,7 @@ export const OrderView = () => {
                     <Address {...order.shippingAddress} />
                     {order.isDelivered ? (
                         <Message variant="success">
-                            Delivered on {localTimeString(order.deliveredAt)}
+                            Delivered on {localDateString(order.deliveredAt)}
                         </Message>
                     ) : (
                         <Message variant="danger">Not delivered</Message>
@@ -101,7 +101,7 @@ export const OrderView = () => {
                     </p>
                     {order.isPaid ? (
                         <Message variant="success">
-                            Payment received on {localTimeString(order.paidAt)}
+                            Payment received on {localDateString(order.paidAt)}
                         </Message>
                     ) : (
                         <Message variant="danger">

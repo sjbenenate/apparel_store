@@ -7,12 +7,7 @@ const localDateString = (datetime) => {
 };
 
 const localTimeString = (datetime) => {
-    return new Date(datetime).toLocaleDateString({
-        options: {
-            hour: '2-digit',
-            minute: '2-digit',
-        },
-    });
+    return new Date(datetime).toLocaleString();
 };
 
 export { roundDecimals, localDateString, localTimeString };
