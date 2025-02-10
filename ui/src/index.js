@@ -28,7 +28,6 @@ import ProfileEditView from './views/profile_edit_view';
 import AdminRoute from './components/admin_route';
 import OrdersListView from './views/admin/orders_list_view';
 import ProductsListView from './views/admin/products_list_view';
-import ProductCreateView from './views/admin/product_create_view';
 import ProductEditView from './views/admin/product_edit_view';
 import UsersListView from './views/admin/users_list_view';
 import { ACCESS_LEVELS } from './constants';
@@ -62,10 +61,6 @@ const router = createBrowserRouter(
                 <Route
                     path="admin/products/list"
                     element={<ProductsListView />}
-                />
-                <Route
-                    path="admin/products/new"
-                    element={<ProductCreateView />}
                 />
                 <Route
                     path="admin/products/edit/:productId"

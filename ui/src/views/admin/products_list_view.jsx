@@ -2,11 +2,13 @@ import { Container, Col, Row, Table, Button } from 'react-bootstrap';
 import {
     useGetProductsQuery,
     useActivateProductMutation,
+    useCreateProductMutation,
 } from '../../store/api_products';
 import { FaEdit, FaBan, FaCheck } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import Message from '../../components/message';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ProductsListView = () => {
     const { data: products, refetch: refetchProducts } = useGetProductsQuery({
@@ -17,6 +19,31 @@ const ProductsListView = () => {
 
     const [activateProduct, activateProductStatus] =
         useActivateProductMutation();
+
+    const [createProduct, createProductState] = useCreateProductMutation();
+
+    const navigate = useNavigate();
+
+    const handleCreateProduct = async (e) => {
+        console.log('handling product submit');
+        e.preventDefault();
+        try {
+            const res = await createProduct({
+                name: 'Name',
+                description: 'description',
+                brand: 'brand',
+                category: 'sports',
+                price: '10.00',
+                countInStock: 0,
+                image: '/images/airpods.jpg',
+            }).unwrap();
+            console.log(`Navigating to /admin/products/edit/${res._id}`);
+            navigate(`/admin/products/edit/${res._id}`);
+            setAlertMessage(null);
+        } catch (err) {
+            setAlertMessage(err?.data?.message || err?.error);
+        }
+    };
 
     const getActivateHandler = (product) => {
         return async (e) => {
@@ -78,11 +105,12 @@ const ProductsListView = () => {
                     <h1>Products</h1>
                 </Col>
                 <Col style={{ textAlign: 'right' }}>
-                    <LinkContainer to={`/admin/products/new`}>
-                        <Button className="m-3 btn-info">
-                            <FaEdit /> New Product
-                        </Button>
-                    </LinkContainer>
+                    <Button
+                        className="m-3 btn-info"
+                        onClick={handleCreateProduct}
+                    >
+                        <FaEdit /> New Product
+                    </Button>
                 </Col>
             </Row>
             {alertMessage ? (
