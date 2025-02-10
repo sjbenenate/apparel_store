@@ -59,6 +59,23 @@ const createProduct = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
     console.log('update product endpoint hit');
+    const productId = req.params.productId;
+
+    const { name, description, brand, category, price, countInStock, image } =
+        req.body;
+
+    const product = await modifyProduct(productId, {
+        userId: req.user._id,
+        name,
+        description,
+        brand,
+        category,
+        price,
+        countInStock,
+        image,
+    });
+
+    res.status(201).json(product);
 });
 
 export {

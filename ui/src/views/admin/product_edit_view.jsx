@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, ListGroup } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import FormContainer from '../../components/form_container';
 import {
@@ -28,6 +28,8 @@ const ProductEditView = () => {
     const [imageUrl, setImageUrl] = useState('/images/airpods.jpg');
     const [alertMsg, setAlertMessage] = useState(null);
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         if (!product?._id) {
             setAlertMessage('No product found');
@@ -39,13 +41,29 @@ const ProductEditView = () => {
         setBrand(product?.brand || '');
         setCategory(product?.category || '');
         setPrice(product?.price || '');
-        setCountInStock(product?.countInStock || '');
+        setCountInStock(product?.countInStock || 0);
         setImageUrl(product?.image || '');
     }, [product]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(`updating product`);
+        try {
+            setAlertMessage(null);
+            const res = await updateProduct({
+                productId,
+                name: inputName,
+                description,
+                brand,
+                category,
+                price,
+                countInStock,
+                image: imageUrl,
+            }).unwrap();
+            navigate('/admin/products/list');
+        } catch (err) {
+            setAlertMessage(err?.data?.message || err?.error);
+        }
     };
 
     return (
@@ -113,11 +131,10 @@ const ProductEditView = () => {
                 <FormGroup controlId="qty-in-stock" className={inputSpacing}>
                     <Form.Label>Qty In Stock: </Form.Label>
                     <Form.Control
+                        type="number"
                         value={countInStock}
                         placeholder="Quantity"
-                        onChange={(e) =>
-                            setCountInStock(Number(e.target.value))
-                        }
+                        onChange={(e) => setCountInStock(e.target.value)}
                     />
                 </FormGroup>
                 <Form.Group className="my-4 d-flex justify-content-between">
