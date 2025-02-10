@@ -8,7 +8,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
                 url: `${PRODUCTS_URL}?activeOnly=${activeOnly}`,
                 method: 'GET',
             }),
-            providesTags: ['Product'],
+            providesTags: ['Products'],
         }),
         getProductInfo: builder.query({
             query: (id) => ({
@@ -21,7 +21,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: { ...data },
             }),
-            invalidatesTags: ['Product'],
+            invalidatesTags: ['Products'],
         }),
         updateProduct: builder.mutation({
             query: (data) => ({
@@ -29,7 +29,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
                 method: 'PUT',
                 body: { ...data },
             }),
-            invalidatesTags: ['Product'],
+            invalidatesTags: ['Products'],
         }),
         activateProduct: builder.mutation({
             query: ({ productId, active }) => ({
@@ -37,7 +37,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
                 method: 'PUT',
                 body: { active },
             }),
-            invalidatesTags: ['Product'],
+            invalidatesTags: ['Products'],
         }),
     }),
 });

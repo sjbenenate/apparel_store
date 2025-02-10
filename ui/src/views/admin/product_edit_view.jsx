@@ -91,6 +91,7 @@ const ProductEditView = () => {
                 <FormGroup controlId="name" className={inputSpacing}>
                     <Form.Label>Name: </Form.Label>
                     <Form.Control
+                        type="text"
                         value={inputName}
                         placeholder="Product name"
                         onChange={(e) => setInputName(e.target.value)}
@@ -99,6 +100,7 @@ const ProductEditView = () => {
                 <FormGroup controlId="brand" className={inputSpacing}>
                     <Form.Label>Brand: </Form.Label>
                     <Form.Control
+                        type="text"
                         value={brand}
                         placeholder="Brand"
                         onChange={(e) => setBrand(e.target.value)}
@@ -107,6 +109,7 @@ const ProductEditView = () => {
                 <FormGroup controlId="description" className={inputSpacing}>
                     <Form.Label>Description: </Form.Label>
                     <Form.Control
+                        type="text"
                         value={description}
                         placeholder="Description"
                         onChange={(e) => setDescription(e.target.value)}
@@ -115,6 +118,7 @@ const ProductEditView = () => {
                 <FormGroup controlId="category" className={inputSpacing}>
                     <Form.Label>Category: </Form.Label>
                     <Form.Control
+                        type="text"
                         value={category}
                         placeholder="Category or comma separated list of categories"
                         onChange={(e) => setCategory(e.target.value)}
@@ -123,6 +127,7 @@ const ProductEditView = () => {
                 <FormGroup controlId="price" className={inputSpacing}>
                     <Form.Label>Price: </Form.Label>
                     <Form.Control
+                        type="number"
                         value={price}
                         placeholder="Price with decimals (3.89)"
                         onChange={(e) => setPrice(e.target.value)}
