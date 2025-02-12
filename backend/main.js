@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: true })); // for parsing application/x-ww
 app.use(cookieParser());
 
 // Static storage
-app.use(express.static(path.resolve('./uploads')));
+app.use('/uploads', express.static(path.resolve('./uploads')));
 
 // Routes
 app.use('/api/products', productRouter);
