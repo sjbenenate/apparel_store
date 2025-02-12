@@ -6,6 +6,7 @@ import FormContainer from '../../components/form_container';
 import {
     useGetProductInfoQuery,
     useUpdateProductMutation,
+    useUploadProductImageMutation,
 } from '../../store/api_products';
 import Message from '../../components/message';
 import { localTimeString } from '../../utils';
@@ -18,6 +19,8 @@ const ProductEditView = () => {
         useGetProductInfoQuery(productId);
 
     const [updateProduct, updateProductStatus] = useUpdateProductMutation();
+    const [uploadImage, { isLoading: imageIsLoading }] =
+        useUploadProductImageMutation();
 
     const [inputName, setInputName] = useState('');
     const [description, setDescription] = useState('');
@@ -60,7 +63,20 @@ const ProductEditView = () => {
                 countInStock,
                 image: imageUrl,
             }).unwrap();
-            navigate('/admin/products/list');
+            navigate(`/product/${res._id}`);
+        } catch (err) {
+            setAlertMessage(err?.data?.message || err?.error);
+        }
+    };
+
+    const handleImageUpload = async (e) => {
+        if (!e.target.files[0]) return;
+        try {
+            let formData = new FormData();
+            formData.append('product-image', e.target.files[0]);
+            const res = await uploadImage(formData).unwrap();
+            console.log(res?.message);
+            setImageUrl(res.imageUrl);
         } catch (err) {
             setAlertMessage(err?.data?.message || err?.error);
         }
@@ -87,7 +103,7 @@ const ProductEditView = () => {
             ) : null}
 
             {alertMsg ? <Message variant="danger">{alertMsg}</Message> : null}
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} encType="multipart/form-data">
                 <FormGroup controlId="name" className={inputSpacing}>
                     <Form.Label>Name: </Form.Label>
                     <Form.Control
@@ -113,6 +129,24 @@ const ProductEditView = () => {
                         value={description}
                         placeholder="Description"
                         onChange={(e) => setDescription(e.target.value)}
+                    />
+                </FormGroup>
+                <FormGroup controlId="image-url" className={inputSpacing}>
+                    <Form.Label>Current Image URL</Form.Label>
+                    <Form.Control
+                        type="text"
+                        placeholder={imageUrl}
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                    />
+                </FormGroup>
+                <FormGroup controlId="product-image" className={inputSpacing}>
+                    <Form.Label>Upload New Image</Form.Label>
+                    <Form.Control
+                        type="file"
+                        name="product-image"
+                        disabled={imageIsLoading}
+                        onChange={handleImageUpload}
                     />
                 </FormGroup>
                 <FormGroup controlId="category" className={inputSpacing}>
