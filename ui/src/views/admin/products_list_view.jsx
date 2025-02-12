@@ -1,4 +1,4 @@
-import { Container, Col, Row, Table, Button } from 'react-bootstrap';
+import { Container, Col, Row, Table, Button, Image } from 'react-bootstrap';
 import {
     useGetProductsQuery,
     useActivateProductMutation,
@@ -75,6 +75,9 @@ const ProductsListView = () => {
     const productTableRow = (product, index) => (
         <tr key={index}>
             <td>{product._id}</td>
+            <td style={{ maxWidth: '40px', minWidth: '30px' }}>
+                <Image src={product.image} alt={product.name} rounded fluid />
+            </td>
             <td>{product.name}</td>
             <td>{product.brand}</td>
             <td>{product.price}</td>
@@ -121,6 +124,7 @@ const ProductsListView = () => {
                     <thead align="center">
                         <tr>
                             <th>ID</th>
+                            <th></th>
                             <th>Name</th>
                             <th>Brand</th>
                             <th>Price</th>
