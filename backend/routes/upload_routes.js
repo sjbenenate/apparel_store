@@ -10,7 +10,7 @@ import { ACCESS_LEVELS } from '../constants.js';
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, `/uploads/`);
+        cb(null, path.resolve('./uploads/'));
     },
     filename: (req, file, cb) => {
         const fileName = `${file.fieldname}-${Date.now()}-${file.originalname}`;
@@ -30,7 +30,7 @@ uploadRouter.post(
     (req, res) => {
         res.json({
             message: `File has been uploaded`,
-            imageUrl: req.file.path,
+            imageUrl: `\\uploads\\${req.file.filename}`,
         });
     }
 );
