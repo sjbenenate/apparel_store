@@ -18,7 +18,18 @@ const storage = multer.diskStorage({
     },
 });
 
-const upload = multer({ storage });
+const checkFileType = (req, file, cb) => {
+    const approvedTypes = /jpg|JPG|jpeg|JPEG|png|PNG/;
+    const fileType = path.extname(file.originalname);
+    const approved = approvedTypes.test(fileType);
+    if (!approved) {
+        cb('Only png or jpeg files allowed at this time');
+    } else {
+        cb(null, true);
+    }
+};
+
+const upload = multer({ storage, fileFilter: checkFileType });
 
 let uploadRouter = express.Router();
 
