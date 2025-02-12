@@ -42,6 +42,11 @@ const modifyProduct = async (productId, data) => {
     return await product.save();
 };
 
+const removeProduct = async (productId) => {
+    const result = await productModel.deleteOne({ _id: productId });
+    return result.deletedCount === 1;
+};
+
 const findUser = async ({ email, id }) => {
     let user;
     if (email) {
@@ -142,4 +147,5 @@ export {
     saveOrder,
     modifyOrder,
     saveNewProduct,
+    removeProduct,
 };

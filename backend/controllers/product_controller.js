@@ -4,6 +4,7 @@ import {
     findProductById,
     modifyProduct,
     saveNewProduct,
+    removeProduct,
 } from '../data/db_interface.js';
 
 const getProducts = asyncHandler(async (req, res) => {
@@ -78,10 +79,22 @@ const updateProduct = asyncHandler(async (req, res) => {
     res.status(201).json(product);
 });
 
+const deleteProduct = asyncHandler(async (req, res) => {
+    const productId = req.params.productId;
+    console.log(`Deleting product id ${productId}`);
+    const success = await removeProduct(productId);
+    if (success) {
+        res.status(200);
+    } else {
+        res.status(404);
+    }
+});
+
 export {
     getProducts,
     getProductById,
     setProductActivate,
     createProduct,
     updateProduct,
+    deleteProduct,
 };

@@ -5,6 +5,7 @@ import {
     setProductActivate,
     createProduct,
     updateProduct,
+    deleteProduct,
 } from '../controllers/product_controller.js';
 import {
     authMiddleware,
@@ -28,6 +29,11 @@ productRouter
         authMiddleware,
         adminMiddleware(ACCESS_LEVELS.MAINTAINER),
         updateProduct
+    )
+    .delete(
+        authMiddleware,
+        adminMiddleware(ACCESS_LEVELS.MAINTAINER),
+        deleteProduct
     );
 
 productRouter
