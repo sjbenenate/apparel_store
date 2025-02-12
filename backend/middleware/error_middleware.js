@@ -6,7 +6,7 @@ const UrlNotFound = (req, res, next) => {
 
 const errorHandler = (err, req, res, next) => {
     let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-    let message = err.message;
+    let message = err.message || err;
     const stack =
         process.env.NODE_ENVIRONMENT !== 'production' ? err.stack : '';
 
