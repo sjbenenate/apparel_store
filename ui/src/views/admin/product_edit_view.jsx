@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Button, Form, FormGroup, ListGroup } from 'react-bootstrap';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import FormContainer from '../../components/form_container';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../../store/api_products';
 import Message from '../../components/message';
 import { localTimeString } from '../../utils';
+import Loader from '../../components/loader';
 
 const inputSpacing = 'my-2';
 
@@ -82,27 +83,8 @@ const ProductEditView = () => {
         }
     };
 
-    return (
-        <FormContainer>
-            <h1>Edit Product</h1>
-            {product?._id ? (
-                <ListGroup>
-                    <ListGroup.Item>
-                        <strong>ID: </strong>
-                        {product?._id}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <strong>Last modified on: </strong>
-                        {localTimeString(product?.updatedAt)}
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <strong>Created on: </strong>
-                        {localTimeString(product?.createdAt)}
-                    </ListGroup.Item>
-                </ListGroup>
-            ) : null}
-
-            {alertMsg ? <Message variant="danger">{alertMsg}</Message> : null}
+    const getForm = () => {
+        return (
             <Form onSubmit={handleSubmit} encType="multipart/form-data">
                 <FormGroup controlId="name" className={inputSpacing}>
                     <Form.Label>Name: </Form.Label>
@@ -185,6 +167,40 @@ const ProductEditView = () => {
                     </Button>
                 </Form.Group>
             </Form>
+        );
+    };
+
+    const productInfo = () => {
+        return (
+            <ListGroup>
+                <ListGroup.Item>
+                    <strong>ID: </strong>
+                    {product?._id}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                    <strong>Last modified on: </strong>
+                    {localTimeString(product?.updatedAt)}
+                </ListGroup.Item>
+                <ListGroup.Item>
+                    <strong>Created on: </strong>
+                    {localTimeString(product?.createdAt)}
+                </ListGroup.Item>
+            </ListGroup>
+        );
+    };
+
+    return (
+        <FormContainer>
+            <h1>Edit Product</h1>
+            {alertMsg ? <Message variant="danger">{alertMsg}</Message> : null}
+            {productLoading ? (
+                <Loader />
+            ) : (
+                <>
+                    {productInfo()}
+                    {getForm()}
+                </>
+            )}
         </FormContainer>
     );
 };
