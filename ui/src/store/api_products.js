@@ -53,6 +53,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
+            invalidatesTags: ['Products'],
         }),
         addReview: builder.mutation({
             query: (data) => ({
@@ -60,6 +61,7 @@ const productsApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: data,
             }),
+            invalidatesTags: ['Products'],
         }),
     }),
 });

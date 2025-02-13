@@ -9,6 +9,26 @@ import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../store/cart_slice.js';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
 import ReviewForm from '../components/review_form.jsx';
+import { localDateString } from '../utils.js';
+
+const ProductReviewsList = ({ reviews }) => {
+    if (!reviews) return null;
+    return (
+        <ListGroup>
+            {reviews.map((review, index) => (
+                <ListGroup.Item key={index} className="p-0">
+                    <Rating value={review.rating} />
+                    <span>
+                        <strong>{`${localDateString(review.createdAt)} - ${
+                            review.name
+                        }`}</strong>
+                    </span>
+                    <p>{review.comment}</p>
+                </ListGroup.Item>
+            ))}
+        </ListGroup>
+    );
+};
 
 export const ProductView = () => {
     const { productId } = useParams();
@@ -46,7 +66,7 @@ export const ProductView = () => {
                         <ListGroup.Item>
                             <Rating
                                 value={product.rating}
-                                msg={`${product.numReviews} reviews`}
+                                msg={`${product.reviews.length} reviews`}
                             />
                         </ListGroup.Item>
                         <ListGroup.Item>
@@ -104,7 +124,15 @@ export const ProductView = () => {
                 {product ? productInfo(product) : null}
             </Row>
             <Row className="my-4">
-                <Col sm="6">
+                <Col md="6">
+                    <h2>All Reviews</h2>
+                    {product?.reviews.length ? (
+                        <ProductReviewsList reviews={product.reviews} />
+                    ) : (
+                        <Message>There are no reviews</Message>
+                    )}
+                </Col>
+                <Col md="6">
                     {product?._id && <ReviewForm productId={product._id} />}
                 </Col>
             </Row>
