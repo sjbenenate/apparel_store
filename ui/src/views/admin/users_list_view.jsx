@@ -1,8 +1,5 @@
 import { Container, Table, Button } from 'react-bootstrap';
-import {
-    useGetUsersQuery,
-    useDeleteUsersMutation,
-} from '../../store/api_users';
+import { useGetUsersQuery, useDeleteUserMutation } from '../../store/api_users';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
@@ -15,7 +12,7 @@ const UsersListView = () => {
     const users = userQuery.data;
     const usersLoading = userQuery.isLoading;
 
-    const [deleteUser, deleteUserStatus] = useDeleteUsersMutation();
+    const [deleteUser, deleteUserStatus] = useDeleteUserMutation();
 
     const deleteHandler = async (e, user) => {
         console.log(`delete handler for '${user.name}'`);
@@ -39,7 +36,7 @@ const UsersListView = () => {
 
     const userRow = (user) => {
         return (
-            <tr>
+            <tr key={user._id}>
                 <td>{user._id}</td>
                 <td>{user.name}</td>
                 <td>
