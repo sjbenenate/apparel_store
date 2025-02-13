@@ -8,7 +8,7 @@ import {
     getUsers,
     deleteUser,
     getUserById,
-    updateUser,
+    updateUserById,
 } from '../controllers/user_controller.js';
 import {
     authMiddleware,
@@ -36,7 +36,7 @@ userRouter
     .route('/:id')
     .all(authMiddleware, adminMiddleware(ACCESS_LEVELS.ADMIN))
     .get(getUserById)
-    .put(updateUser)
+    .put(updateUserById)
     .delete(deleteUser);
 
 export default userRouter;

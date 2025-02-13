@@ -62,6 +62,10 @@ const findUser = async ({ email, id }) => {
     return user;
 };
 
+const findAllUsers = async () => {
+    return await userModel.find().select('-password').exec();
+};
+
 const findAuthorizedUser = async (email, inputPassword) => {
     const user = await userModel.findOne({ email });
     if (user && user.checkPassword(inputPassword)) {
@@ -139,6 +143,7 @@ export {
     findProductById,
     modifyProduct,
     findUser,
+    findAllUsers,
     findAuthorizedUser,
     saveUser,
     modifyUser,

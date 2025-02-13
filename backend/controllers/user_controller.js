@@ -4,6 +4,7 @@ import {
     findUser,
     saveUser,
     modifyUser,
+    findAllUsers,
 } from '../data/db_interface.js';
 import { generateToken, deleteToken } from '../utils/tokens.js';
 
@@ -64,7 +65,8 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 const getUsers = asyncHandler(async (req, res) => {
     console.log('getUsers endpoint hit');
-    res.send('getUsers');
+    const users = await findAllUsers();
+    res.status(200).json(users);
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
@@ -77,7 +79,7 @@ const getUserById = asyncHandler(async (req, res) => {
     res.send('getUserById');
 });
 
-const updateUser = asyncHandler(async (req, res) => {
+const updateUserById = asyncHandler(async (req, res) => {
     console.log('updateUser endpoint hit');
     res.send('updateUser');
 });
@@ -91,5 +93,5 @@ export {
     getUsers,
     deleteUser,
     getUserById,
-    updateUser,
+    updateUserById,
 };
