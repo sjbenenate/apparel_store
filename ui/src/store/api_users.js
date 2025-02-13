@@ -49,6 +49,7 @@ const usersApiSlice = apiSlice.injectEndpoints({
                 url: `${USERS_URL}/${userId}`,
                 method: 'GET',
             }),
+            providesTags: ['Users'],
         }),
         updateUser: builder.mutation({
             query: (data) => ({

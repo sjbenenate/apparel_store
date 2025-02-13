@@ -11,6 +11,7 @@ import Message from '../../components/message';
 import { localTimeString } from '../../utils';
 import Loader from '../../components/loader';
 import { ToastContainer, toast } from 'react-toastify';
+import { ACCESS_LEVELS, printAccessLevel } from '../../constants';
 
 const inputSpacing = 'my-2';
 
@@ -90,16 +91,23 @@ const UserEditView = () => {
                 </FormGroup>
                 <FormGroup controlId="access-level" className={inputSpacing}>
                     <Form.Label>Access Level: </Form.Label>
-                    <Form.Control
-                        type="dropdown"
-                        placeholder={user.accessLevel}
+                    <Form.Select
                         value={accessLevel}
-                        onChange={(e) => setAccessLevel(e.target.value)}
-                    />
+                        onChange={(e) => {
+                            console.log('access level select');
+                            setAccessLevel(e.target.value);
+                        }}
+                    >
+                        {Object.values(ACCESS_LEVELS).map((level, index) => (
+                            <option value={level} key={index}>
+                                {printAccessLevel(level)}
+                            </option>
+                        ))}
+                    </Form.Select>
                 </FormGroup>
 
                 <Form.Group className="my-4 d-flex justify-content-between">
-                    <LinkContainer to="/admin/products/list">
+                    <LinkContainer to="/admin/users/list">
                         <Button variant="light">Cancel</Button>
                     </LinkContainer>
                     <Button type="submit" variant="info" autoFocus={true}>
@@ -137,7 +145,7 @@ const UserEditView = () => {
             {userError ? (
                 <Message variant="danger">{userErrorData}</Message>
             ) : null}
-            {userLoading ? (
+            {userLoading && !userError ? (
                 <Loader />
             ) : (
                 <>
