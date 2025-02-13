@@ -87,7 +87,10 @@ const AdminNav = () => {
                     <LinkContainer to="/admin/products/list">
                         <NavDropdown.Item>Products</NavDropdown.Item>
                     </LinkContainer>
-                    <LinkContainer to="/admin/users/list">
+                    <LinkContainer
+                        to="/admin/users/list"
+                        disabled={authInfo.accessLevel < ACCESS_LEVELS.ADMIN}
+                    >
                         <NavDropdown.Item>Users</NavDropdown.Item>
                     </LinkContainer>
                 </NavDropdown>
