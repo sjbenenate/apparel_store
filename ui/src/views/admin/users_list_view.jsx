@@ -58,7 +58,10 @@ const UsersListView = () => {
                         variant="danger"
                         size="sm"
                         onClick={(e) => deleteHandler(e, user)}
-                        disabled={user.accessLevel >= ACCESS_LEVELS.ADMIN}
+                        disabled={
+                            user.accessLevel >= ACCESS_LEVELS.ADMIN ||
+                            deleteUserStatus.isLoading
+                        }
                     >
                         <FaTrash />
                     </Button>
