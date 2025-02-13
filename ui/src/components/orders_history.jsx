@@ -34,11 +34,11 @@ const OrdersHistory = ({ orders }) => {
         <Table striped responsive hover className="table-sm">
             <thead align="center">
                 <tr>
-                    <td>Order ID</td>
-                    <td>Date</td>
-                    <td>Items</td>
-                    <td>Paid</td>
-                    <td>Delivered</td>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Items</th>
+                    <th>Paid</th>
+                    <th>Delivered</th>
                 </tr>
             </thead>
             <tbody align="center">
