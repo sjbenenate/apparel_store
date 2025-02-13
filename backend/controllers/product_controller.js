@@ -91,6 +91,47 @@ const deleteProduct = asyncHandler(async (req, res) => {
     }
 });
 
+const addProductReview = asyncHandler(async (req, res) => {
+    const productId = req.params.productId;
+    console.log(`Adding review to product id ${productId}`);
+    let product = await findProductById(productId);
+    if (!product) {
+        res.status(404).json({ message: 'Product not found' });
+        return;
+    }
+    const alreadyReviewed = product.reviews.some((review) => {
+        console.log(review);
+        return req.user._id.equals(review.userId);
+    });
+    if (alreadyReviewed) {
+        res.status(400).json({
+            message: 'A review already exists for this user',
+        });
+        return;
+    }
+
+    const review = {
+        userId: req.user._id,
+        name: req.user.name,
+        heading: req.body?.heading,
+        comment: req.body?.comment,
+        rating: Number(req.body?.rating),
+    };
+
+    const allReviews = [...product.reviews, review];
+    const reviewsSum = allReviews.reduce(
+        (acc, review) => acc + review.rating,
+        0
+    );
+
+    const result = await modifyProduct(productId, {
+        reviews: allReviews,
+        rating: reviewsSum / allReviews.length,
+    });
+
+    res.status(201).json({ message: 'Review added successfully' });
+});
+
 export {
     getProducts,
     getProductById,
@@ -98,4 +139,5 @@ export {
     createProduct,
     updateProduct,
     deleteProduct,
+    addProductReview,
 };

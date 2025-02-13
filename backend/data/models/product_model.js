@@ -7,6 +7,10 @@ const reviewSchema = new mongoose.Schema(
             required: true,
             ref: 'user',
         },
+        name: {
+            type: String,
+            required: true,
+        },
         heading: { type: String },
         comment: { type: String },
         rating: { type: Number, required: true },
@@ -31,7 +35,6 @@ const productSchema = new mongoose.Schema(
         price: { type: Number, required: true },
         countInStock: { type: Number, required: true, default: 0 },
         rating: { type: Number, required: false },
-        numReviews: { type: Number, required: true, default: 0 },
         reviews: [reviewSchema],
         active: { type: Boolean, default: true },
     },

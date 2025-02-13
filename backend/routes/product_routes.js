@@ -6,6 +6,7 @@ import {
     createProduct,
     updateProduct,
     deleteProduct,
+    addProductReview,
 } from '../controllers/product_controller.js';
 import {
     authMiddleware,
@@ -21,6 +22,8 @@ productRouter.put(
     adminMiddleware(ACCESS_LEVELS.MAINTAINER),
     setProductActivate
 );
+
+productRouter.post('/:productId/review', authMiddleware, addProductReview);
 
 productRouter
     .route('/:productId')
