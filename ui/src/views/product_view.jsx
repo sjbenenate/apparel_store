@@ -8,6 +8,7 @@ import Message from '../components/message.jsx';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../store/cart_slice.js';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
+import ReviewForm from '../components/review_form.jsx';
 
 export const ProductView = () => {
     const { productId } = useParams();
@@ -74,7 +75,7 @@ export const ProductView = () => {
                         </ListGroup.Item>
                         <ListGroup.Item>
                             <Button
-                                variant="success"
+                                variant="info"
                                 type="button"
                                 disabled={product.countInStock < 1}
                                 onClick={addToCart}
@@ -101,6 +102,11 @@ export const ProductView = () => {
                 ) : null}
                 {isLoading ? <Loader /> : null}
                 {product ? productInfo(product) : null}
+            </Row>
+            <Row className="my-4">
+                <Col sm="6">
+                    {product?._id && <ReviewForm productId={product._id} />}
+                </Col>
             </Row>
         </Container>
     );
