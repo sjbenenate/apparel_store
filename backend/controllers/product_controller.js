@@ -84,9 +84,10 @@ const deleteProduct = asyncHandler(async (req, res) => {
     console.log(`Deleting product id ${productId}`);
     const success = await removeProduct(productId);
     if (success) {
-        res.status(200);
+        res.status(200).json({ success });
     } else {
         res.status(404);
+        throw new Error('Product not found');
     }
 });
 

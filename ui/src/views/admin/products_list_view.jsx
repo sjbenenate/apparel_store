@@ -3,24 +3,24 @@ import {
     useGetProductsQuery,
     useActivateProductMutation,
     useCreateProductMutation,
+    useDeleteProductMutation,
 } from '../../store/api_products';
-import { FaEdit, FaBan, FaCheck } from 'react-icons/fa';
+import { FaEdit, FaBan, FaCheck, FaTrash } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
-import Message from '../../components/message';
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 const ProductsListView = () => {
     const { data: products, refetch: refetchProducts } = useGetProductsQuery({
         activeOnly: false,
     });
 
-    const [alertMessage, setAlertMessage] = useState(null);
-
     const [activateProduct, activateProductStatus] =
         useActivateProductMutation();
 
-    const [createProduct, createProductState] = useCreateProductMutation();
+    const [createProduct, createProductStatus] = useCreateProductMutation();
+
+    const [deleteProduct, deleteProductStatus] = useDeleteProductMutation();
 
     const navigate = useNavigate();
 
@@ -39,18 +39,17 @@ const ProductsListView = () => {
             }).unwrap();
             console.log(`Navigating to /admin/products/edit/${res._id}`);
             navigate(`/admin/products/edit/${res._id}`);
-            setAlertMessage(null);
         } catch (err) {
-            setAlertMessage(err?.data?.message || err?.error);
+            toast.error(err?.data?.message || err?.error);
         }
     };
 
     const getActivateHandler = (product) => {
         return async (e) => {
             const confirmed = window.confirm(
-                `Please confirm ${
-                    product.active ? 'deactivation' : 'activation'
-                } of product '${product.name}'? `
+                `${product.active ? 'Deactivate' : 'Activate'} product '${
+                    product.name
+                }'? `
             );
             if (confirmed) {
                 console.log(
@@ -59,17 +58,41 @@ const ProductsListView = () => {
                     }' active to '${!product.active}`
                 );
                 try {
-                    await activateProduct({
+                    const res = await activateProduct({
                         productId: product._id,
                         active: !product.active,
-                    });
-                    setAlertMessage(null);
+                    }).unwrap();
                     await refetchProducts();
+                    toast.success(
+                        `Product has been ${
+                            res.active ? 'activated' : 'deactivated'
+                        }`
+                    );
                 } catch (err) {
-                    setAlertMessage(err?.data?.message || err?.error);
+                    toast.error(err?.data?.message || err?.error);
                 }
             }
         };
+    };
+
+    const deleteHandler = async (e, product) => {
+        console.log(`delete handler for '${product.name}'`);
+        if (window.confirm(`Delete product '${product.name}'?`)) {
+            try {
+                const res = await deleteProduct({ productId: product._id });
+                if (res?.data?.success) {
+                    toast.success('Product was deleted');
+                } else {
+                    toast.error(
+                        res?.data?.message ||
+                            res?.error?.data?.message ||
+                            'Error deleting product'
+                    );
+                }
+            } catch (err) {
+                toast.error(err?.data?.message || err?.error);
+            }
+        }
     };
 
     const productTableRow = (product, index) => (
@@ -80,7 +103,7 @@ const ProductsListView = () => {
             </td>
             <td>{product.name}</td>
             <td>{product.brand}</td>
-            <td>{product.price}</td>
+            <td>${product.price}</td>
             <td>{product.countInStock}</td>
             <td>
                 <LinkContainer to={`/admin/products/edit/${product._id}`}>
@@ -98,11 +121,21 @@ const ProductsListView = () => {
                     {!product.active ? <FaBan /> : <FaCheck />}
                 </Button>
             </td>
+            <td>
+                <Button
+                    variant="danger"
+                    size="sm"
+                    onClick={(e) => deleteHandler(e, product)}
+                >
+                    <FaTrash />
+                </Button>
+            </td>
         </tr>
     );
 
     return (
         <Container>
+            <ToastContainer />
             <Row className="align-items-center">
                 <Col>
                     <h1>Products</h1>
@@ -116,9 +149,6 @@ const ProductsListView = () => {
                     </Button>
                 </Col>
             </Row>
-            {alertMessage ? (
-                <Message variant="danger">{alertMessage}</Message>
-            ) : null}
             <Row>
                 <Table striped responsive hover className="table-sm">
                     <thead align="center">
