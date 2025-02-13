@@ -95,6 +95,11 @@ const modifyUser = async (userId, { name, email, password }) => {
         .exec();
 };
 
+const removeUser = async (userId) => {
+    const result = await userModel.deleteOne({ _id: userId });
+    return result.deletedCount === 1;
+};
+
 const findOrders = async (userId) => {
     let orders;
     if (userId) {
@@ -153,4 +158,5 @@ export {
     modifyOrder,
     saveNewProduct,
     removeProduct,
+    removeUser,
 };

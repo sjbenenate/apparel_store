@@ -1,10 +1,13 @@
 import { Container, Table, Button } from 'react-bootstrap';
-import { useGetUsersQuery } from '../../store/api_users';
+import {
+    useGetUsersQuery,
+    useDeleteUsersMutation,
+} from '../../store/api_users';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../../components/loader';
-import { printAccessLevel } from '../../constants';
+import { ACCESS_LEVELS, printAccessLevel } from '../../constants';
 import Message from '../../components/message';
 
 const UsersListView = () => {
@@ -12,11 +15,13 @@ const UsersListView = () => {
     const users = userQuery.data;
     const usersLoading = userQuery.isLoading;
 
+    const [deleteUser, deleteUserStatus] = useDeleteUsersMutation();
+
     const deleteHandler = async (e, user) => {
         console.log(`delete handler for '${user.name}'`);
         if (window.confirm(`Delete user '${user.name}'?`)) {
             try {
-                const res = {}; //await deleteUser({ userId: user._id });
+                const res = await deleteUser({ userId: user._id });
                 if (res?.data?.success) {
                     toast.success('User was deleted');
                 } else {
@@ -53,6 +58,7 @@ const UsersListView = () => {
                         variant="danger"
                         size="sm"
                         onClick={(e) => deleteHandler(e, user)}
+                        disabled={user.accessLevel >= ACCESS_LEVELS.ADMIN}
                     >
                         <FaTrash />
                     </Button>

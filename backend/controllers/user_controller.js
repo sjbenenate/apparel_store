@@ -4,9 +4,11 @@ import {
     findUser,
     saveUser,
     modifyUser,
+    removeUser,
     findAllUsers,
 } from '../data/db_interface.js';
 import { generateToken, deleteToken } from '../utils/tokens.js';
+import { ACCESS_LEVELS } from '../constants.js';
 
 const loginUser = asyncHandler(async (req, res) => {
     console.log('authUser endpoint hit');
@@ -70,8 +72,20 @@ const getUsers = asyncHandler(async (req, res) => {
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
-    console.log('deleteUser endpoint hit');
-    res.send('deleteUser');
+    const userId = req.params.userId;
+    console.log(`delete user ${userId}`);
+    const user = await findUser({ id: userId });
+    if (user.accessLevel >= ACCESS_LEVELS.ADMIN) {
+        res.status(400).json({
+            success: false,
+            message: 'Admin level users cannot be deleted',
+        });
+    } else if (!user) {
+        res.status(404).json({ success: false, message: 'User was not found' });
+    } else {
+        const success = await removeUser(userId);
+        res.status(200).json({ success });
+    }
 });
 
 const getUserById = asyncHandler(async (req, res) => {

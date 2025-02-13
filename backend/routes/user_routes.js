@@ -33,7 +33,7 @@ userRouter
     .put(updateUserProfile);
 
 userRouter
-    .route('/:id')
+    .route('/:userId')
     .all(authMiddleware, adminMiddleware(ACCESS_LEVELS.ADMIN))
     .get(getUserById)
     .put(updateUserById)
