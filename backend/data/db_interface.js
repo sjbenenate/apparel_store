@@ -80,10 +80,11 @@ const saveUser = async (name, email, password) => {
     return user;
 };
 
-const modifyUser = async (userId, { name, email, password }) => {
+const modifyUser = async (userId, { name, email, password, accessLevel }) => {
     let payload = {};
     if (name) payload.name = name;
     if (email) payload.email = email;
+    if (accessLevel) payload.accessLevel = accessLevel;
     if (password) {
         payload.password = await userModel.schema.methods.encryptPassword(
             password

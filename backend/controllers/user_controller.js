@@ -89,13 +89,30 @@ const deleteUser = asyncHandler(async (req, res) => {
 });
 
 const getUserById = asyncHandler(async (req, res) => {
-    console.log('getUserById endpoint hit');
-    res.send('getUserById');
+    const userId = req.params.userId;
+    console.log(`get user by id ${userId}`);
+    const user = await findUser({ id: userId });
+    if (!user) {
+        res.status(404).json({ message: 'User was not found' });
+    } else {
+        res.status(200).json(user);
+    }
 });
 
 const updateUserById = asyncHandler(async (req, res) => {
-    console.log('updateUser endpoint hit');
-    res.send('updateUser');
+    const userId = req.params.userId;
+    console.log(`update user ${userId}`);
+    const user = await findUser({ id: userId });
+    if (!user) {
+        res.status(404).json({ message: 'User not found' });
+    } else {
+        const newUser = await modifyUser(userId, {
+            name: req.body?.name || user.name,
+            email: req.body?.email || user.email,
+            accessLevel: req.body?.accessLevel || user.accessLevel,
+        });
+        res.status(201).json(newUser);
+    }
 });
 
 export {
