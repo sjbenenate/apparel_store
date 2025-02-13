@@ -9,8 +9,8 @@
         "server": "nodemon backend/main",
         "client": "npm run start --prefix ui",
         "dev": "concurrently --kill-others \"npm run server\" \"npm run client\"",
-        "data:seed": "node backend/data/seeder",
-        "data:clear": "node backend/data/seeder --clear"
+        "data:seed": "node backend/data/seeder/seeder",
+        "data:clear": "node backend/data/seeder/seeder --clear"
     },
     "author": "Sarah Benenate",
     "license": "MIT",

@@ -1,9 +1,9 @@
 import env from 'dotenv';
 import mongoose from 'mongoose';
-import dbConnect from '../db_interface.js';
+import { dbConnect } from '../db_interface.js';
 import orderModel from '../models/order_model.js';
 import userModel from '../models/user_model.js';
-import { ACCESS_LEVELS } from '../../models/constant.js';
+import { ACCESS_LEVELS } from '../../constants.js';
 import productModel from '../models/product_model.js';
 import products from './products_seed.js';
 import users from './users_seed.js';
