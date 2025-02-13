@@ -161,6 +161,7 @@ const ProductsListView = () => {
                             <th>In Stock</th>
                             <th>Edit</th>
                             <th>Active</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody align="center">
