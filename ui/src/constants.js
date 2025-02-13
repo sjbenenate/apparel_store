@@ -25,7 +25,7 @@ export const ACCESS_LEVELS = {
 export const printAccessLevel = (level) => {
     if (level === 5) {
         return 'Admin';
-    } else if (level === 2) {
+    } else if (level === 3) {
         return 'Maintainer';
     } else if (level === 0) {
         return 'Customer';
