@@ -18,6 +18,16 @@ export const PAYMENT_METHODS = {
 
 export const ACCESS_LEVELS = {
     ADMIN: 5,
-    MAINTAINER: 2,
+    MAINTAINER: 3,
     BASIC: 0,
+};
+
+export const printAccessLevel = (level) => {
+    if (level === 5) {
+        return 'Admin';
+    } else if (level === 2) {
+        return 'Maintainer';
+    } else if (level === 0) {
+        return 'Customer';
+    } else return 'New access level';
 };
