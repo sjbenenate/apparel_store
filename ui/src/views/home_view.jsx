@@ -4,6 +4,7 @@ import { useGetProductsQuery } from '../store/api_products.js';
 import Loader from '../components/loader.jsx';
 import Message from '../components/message.jsx';
 import { useParams } from 'react-router-dom';
+import PaginateNav from '../components/paginate_nav.jsx';
 
 const newProductsList = (products) => {
     if (!products) {
@@ -21,13 +22,13 @@ const newProductsList = (products) => {
 export const HomeView = () => {
     const params = useParams();
     const pageNumber = params?.pageNumber || 1;
-    const pageCount = params?.pageCount || 20;
+    const pageCount = params?.pageCount || 3;
     const {
         data: productData,
         isLoading,
         isError,
     } = useGetProductsQuery({ activeOnly: true, pageNumber, pageCount });
-    const { products } = productData || {};
+    const { products, productCount } = productData || {};
 
     return (
         <>
@@ -39,7 +40,15 @@ export const HomeView = () => {
                 />
             ) : null}
             {isLoading ? <Loader /> : null}
-            <Row>{newProductsList(products)}</Row>
+            <Row>
+                {newProductsList(products)}
+                <PaginateNav
+                    pageNumber={pageNumber}
+                    pageCount={pageCount}
+                    totalCount={productCount}
+                    baseUrl=""
+                />
+            </Row>
         </>
     );
 };
