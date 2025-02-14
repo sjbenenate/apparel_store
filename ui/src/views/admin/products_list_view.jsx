@@ -195,7 +195,7 @@ const ProductsListView = () => {
                 {products && (
                     <PaginateNav
                         currentPage={pageNumber}
-                        pageCount={pageCount}
+                        initialPageCount={pageCount}
                         totalCount={productCount}
                         baseUrl="/admin/products/list"
                     />
