@@ -19,7 +19,7 @@ export const ProductCard = ({ product }) => {
                 <Card.Text as="div">
                     <Rating
                         value={product.rating}
-                        msg={`${product.numReviews} reviews`}
+                        msg={`${product.reviews.length} reviews`}
                     />
                 </Card.Text>
                 <Card.Text as="p">${product.price}</Card.Text>
