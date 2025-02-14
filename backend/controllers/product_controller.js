@@ -5,6 +5,7 @@ import {
     modifyProduct,
     saveNewProduct,
     removeProduct,
+    countProducts,
 } from '../data/db_interface.js';
 
 const getProducts = asyncHandler(async (req, res) => {
@@ -13,14 +14,22 @@ const getProducts = asyncHandler(async (req, res) => {
     const pageNumber = Number(req.query?.pageNumber || 1); // start at 0
     const pageCount = Number(req.query?.pageCount || 10); // items per page
 
+    console.log(`get products: page=${pageNumber} pageCount=${pageCount}`);
+
+    const filter = activeOnly ? { active: true } : {};
+
     const products = await findProducts({
-        filter: activeOnly ? { active: true } : null,
+        filter,
         sortFilter: { rating: -1 },
         pageNumber,
         pageCount,
     });
 
-    res.json({ products, pageNumber, pageCount, active: activeOnly });
+    const productCount = await countProducts(
+        activeOnly ? { active: true } : null
+    );
+
+    res.json({ products, productCount });
 });
 
 const getProductById = asyncHandler(async (req, res) => {

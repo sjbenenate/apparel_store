@@ -21,6 +21,9 @@ const dbConnect = async () => {
 
 const findAllProducts = async (filter) => await productModel.find(filter);
 
+const countProducts = async (filter) =>
+    await productModel.countDocuments(filter);
+
 const findProducts = async ({
     filter,
     sortFilter,
@@ -178,4 +181,5 @@ export {
     saveNewProduct,
     removeProduct,
     removeUser,
+    countProducts,
 };
