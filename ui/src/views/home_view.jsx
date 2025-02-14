@@ -43,8 +43,8 @@ export const HomeView = () => {
             <Row>
                 {newProductsList(products)}
                 <PaginateNav
-                    pageNumber={pageNumber}
-                    pageCount={pageCount}
+                    currentPage={pageNumber}
+                    initialPageCount={pageCount}
                     totalCount={productCount}
                     baseUrl=""
                 />
