@@ -21,6 +21,20 @@ const dbConnect = async () => {
 
 const findAllProducts = async (filter) => await productModel.find(filter);
 
+const findProducts = async ({
+    filter,
+    sortFilter,
+    pageNumber = 0,
+    pageCount = 0,
+}) => {
+    const products = await productModel
+        .find(filter || {})
+        .sort(sortFilter || { createdAt: -1 })
+        .skip(pageCount * pageNumber)
+        .limit(pageCount); // 0 returns al
+    return products;
+};
+
 const findProductById = async (id) => {
     const products = await productModel.find({ _id: id });
     if (products.length < 1) {
@@ -146,6 +160,7 @@ const modifyOrder = async (
 export {
     dbConnect,
     findAllProducts,
+    findProducts,
     findProductById,
     modifyProduct,
     findUser,

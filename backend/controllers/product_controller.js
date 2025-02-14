@@ -1,6 +1,6 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
 import {
-    findAllProducts,
+    findProducts,
     findProductById,
     modifyProduct,
     saveNewProduct,
@@ -10,12 +10,16 @@ import {
 const getProducts = asyncHandler(async (req, res) => {
     console.log('products endpoint hit');
     const activeOnly = req.query?.activeOnly === 'true';
-    let products = [];
-    if (activeOnly) {
-        products = await findAllProducts({ active: true });
-    } else {
-        products = await findAllProducts();
-    }
+    const pageNumber = Number(req.query?.pageNumber || 1); // start at 0
+    const pageCount = Number(req.query?.pageCount || 10); // items per page
+
+    const products = await findProducts({
+        filter: activeOnly ? { active: true } : null,
+        sortFilter: { createdAt: -1 },
+        pageNumber,
+        pageCount,
+    });
+
     res.json(products);
 });
 
