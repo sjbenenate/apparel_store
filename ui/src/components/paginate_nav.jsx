@@ -30,7 +30,7 @@ const PaginateNav = ({
 
     const handleCountDropdown = (e) => {
         setPageCount(e.target.value);
-        navigate(`${baseUrl}/page/1/${pageCount}`, { replace: true });
+        navigate(`${baseUrl}/page/1/${e.target.value}`);
     };
 
     return (
