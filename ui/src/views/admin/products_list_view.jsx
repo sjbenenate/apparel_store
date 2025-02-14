@@ -7,13 +7,26 @@ import {
 } from '../../store/api_products';
 import { FaEdit, FaBan, FaCheck, FaTrash } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import PaginateNav from '../../components/paginate_nav';
 
 const ProductsListView = () => {
-    const { data: products, refetch: refetchProducts } = useGetProductsQuery({
+    const params = useParams();
+    const pageNumber = params?.pageNumber || 1;
+    const pageCount = params?.pageCount || 3;
+
+    const {
+        data: productData,
+        refetch: refetchProducts,
+        //isError: productsIsError,
+        //error: productsError,
+    } = useGetProductsQuery({
         activeOnly: false,
+        pageNumber,
+        pageCount,
     });
+    const { products, productCount } = productData || {};
 
     const [activateProduct, activateProductStatus] =
         useActivateProductMutation();
@@ -133,6 +146,34 @@ const ProductsListView = () => {
         </tr>
     );
 
+    const productTable = (products) => {
+        if (!products || products.length === 0) {
+            return <p>No Products found</p>;
+        }
+        return (
+            <Table striped responsive hover className="table-sm">
+                <thead align="center">
+                    <tr>
+                        <th>ID</th>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Brand</th>
+                        <th>Price</th>
+                        <th>In Stock</th>
+                        <th>Edit</th>
+                        <th>Active</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody align="center">
+                    {products.map((product, index) =>
+                        productTableRow(product, index)
+                    )}
+                </tbody>
+            </Table>
+        );
+    };
+
     return (
         <Container>
             <ToastContainer />
@@ -150,30 +191,15 @@ const ProductsListView = () => {
                 </Col>
             </Row>
             <Row>
-                <Table striped responsive hover className="table-sm">
-                    <thead align="center">
-                        <tr>
-                            <th>ID</th>
-                            <th></th>
-                            <th>Name</th>
-                            <th>Brand</th>
-                            <th>Price</th>
-                            <th>In Stock</th>
-                            <th>Edit</th>
-                            <th>Active</th>
-                            <th>Delete</th>
-                        </tr>
-                    </thead>
-                    <tbody align="center">
-                        {products && products.length > 0 ? (
-                            products.map((product, index) =>
-                                productTableRow(product, index)
-                            )
-                        ) : (
-                            <tr></tr>
-                        )}
-                    </tbody>
-                </Table>
+                {productTable(products)}
+                {products && (
+                    <PaginateNav
+                        currentPage={pageNumber}
+                        pageCount={pageCount}
+                        totalCount={productCount}
+                        baseUrl="/admin/products/list"
+                    />
+                )}
             </Row>
         </Container>
     );

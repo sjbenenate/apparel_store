@@ -65,6 +65,10 @@ const router = createBrowserRouter(
                     element={<ProductsListView />}
                 />
                 <Route
+                    path="admin/products/list/page/:pageNumber/:pageCount"
+                    element={<ProductsListView />}
+                />
+                <Route
                     path="admin/products/edit/:productId"
                     element={<ProductEditView />}
                 />

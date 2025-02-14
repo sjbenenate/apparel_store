@@ -8,7 +8,7 @@ const PaginateNav = ({ currentPage, pageCount, totalCount, baseUrl }) => {
 
     for (let i = 1; i <= totalPages; i++) {
         pageLinks.push(
-            <LinkContainer to={`${baseUrl}/page/${i}/${pageCount}`}>
+            <LinkContainer key={i} to={`${baseUrl}/page/${i}/${pageCount}`}>
                 <Pagination.Item active={currentPage === i}>
                     {i}
                 </Pagination.Item>
