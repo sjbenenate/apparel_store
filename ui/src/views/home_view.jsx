@@ -3,6 +3,7 @@ import { ProductCard } from '../components/product_card.jsx';
 import { useGetProductsQuery } from '../store/api_products.js';
 import Loader from '../components/loader.jsx';
 import Message from '../components/message.jsx';
+import { useParams } from 'react-router-dom';
 
 const newProductsList = (products) => {
     if (!products) {
@@ -18,11 +19,15 @@ const newProductsList = (products) => {
 };
 
 export const HomeView = () => {
+    const params = useParams();
+    const pageNumber = params?.pageNumber || 1;
+    const pageCount = params?.pageCount || 20;
     const {
-        data: products,
+        data: productData,
         isLoading,
         isError,
-    } = useGetProductsQuery({ activeOnly: true });
+    } = useGetProductsQuery({ activeOnly: true, pageNumber, pageCount });
+    const { products } = productData || {};
 
     return (
         <>

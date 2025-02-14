@@ -24,13 +24,16 @@ const findAllProducts = async (filter) => await productModel.find(filter);
 const findProducts = async ({
     filter,
     sortFilter,
-    pageNumber = 0,
+    pageNumber = 1,
     pageCount = 0,
 }) => {
+    if (pageNumber < 0) {
+        throw new Error('Product pagination must start at page 1');
+    }
     const products = await productModel
         .find(filter || {})
-        .sort(sortFilter || { createdAt: -1 })
-        .skip(pageCount * pageNumber)
+        .sort(sortFilter || { name: 1 })
+        .skip(pageCount * (pageNumber - 1))
         .limit(pageCount); // 0 returns al
     return products;
 };

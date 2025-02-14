@@ -15,12 +15,12 @@ const getProducts = asyncHandler(async (req, res) => {
 
     const products = await findProducts({
         filter: activeOnly ? { active: true } : null,
-        sortFilter: { createdAt: -1 },
+        sortFilter: { rating: -1 },
         pageNumber,
         pageCount,
     });
 
-    res.json(products);
+    res.json({ products, pageNumber, pageCount, active: activeOnly });
 });
 
 const getProductById = asyncHandler(async (req, res) => {
