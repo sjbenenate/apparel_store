@@ -14,7 +14,11 @@ const Search = ({ baseUrl, searchKey = 'name' }) => {
     };
 
     return (
-        <Form className="d-flex" onSubmit={submitHandler}>
+        <Form
+            className="d-flex"
+            onSubmit={submitHandler}
+            style={{ minWidth: '250px' }}
+        >
             <Form.Group controlId="search" className="d-inline-block">
                 <Form.Control
                     type="text"

@@ -1,4 +1,4 @@
-import { Row, Col } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import { ProductCard } from '../components/product_card.jsx';
 import { useGetProductsQuery } from '../store/api_products.js';
 import Loader from '../components/loader.jsx';
@@ -38,17 +38,25 @@ export const HomeView = () => {
     const { products, productCount } = productData || {};
 
     return (
-        <>
-            <h1>New Products</h1>
-            {isError ? (
-                <Message
-                    variant="danger"
-                    children={'Error loading products!'}
-                />
-            ) : null}
-            {isLoading ? <Loader /> : null}
+        <Container>
+            <Row className="align-items-center">
+                <Col>
+                    <h1>New Products</h1>
+                </Col>
+                <Col className="d-flex justify-content-sm-end">
+                    <Search baseUrl="" />
+                </Col>
+            </Row>
             <Row>
-                <Search baseUrl="" />
+                {isError ? (
+                    <Message
+                        variant="danger"
+                        children={'Error loading products!'}
+                    />
+                ) : null}
+                {isLoading ? <Loader /> : null}
+            </Row>
+            <Row>
                 {newProductsList(products)}
                 <PaginateNav
                     currentPage={pageNumber}
@@ -57,6 +65,6 @@ export const HomeView = () => {
                     baseUrl={searchKeyword ? `/search/${searchKeyword}` : ''}
                 />
             </Row>
-        </>
+        </Container>
     );
 };
