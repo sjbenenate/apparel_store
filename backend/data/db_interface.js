@@ -24,21 +24,33 @@ const findAllProducts = async (filter) => await productModel.find(filter);
 const countProducts = async (filter) =>
     await productModel.countDocuments(filter);
 
+const _paginationFind = async (
+    model,
+    { filter, sortFilter, pageNumber = 1, pageCount = 0 }
+) => {
+    if (pageNumber < 0) {
+        throw new Error('Pagination must start at page 1');
+    }
+    const documents = await model
+        .find(filter || {})
+        .sort(sortFilter || {})
+        .skip(pageCount * (pageNumber - 1))
+        .limit(pageCount); // 0 returns all
+    return documents;
+};
+
 const findProducts = async ({
     filter,
     sortFilter,
     pageNumber = 1,
     pageCount = 0,
 }) => {
-    if (pageNumber < 0) {
-        throw new Error('Product pagination must start at page 1');
-    }
-    const products = await productModel
-        .find(filter || {})
-        .sort(sortFilter || { name: 1 })
-        .skip(pageCount * (pageNumber - 1))
-        .limit(pageCount); // 0 returns al
-    return products;
+    return await _paginationFind(productModel, {
+        filter,
+        sortFilter: sortFilter || { name: 1 },
+        pageNumber,
+        pageCount,
+    });
 };
 
 const findProductById = async (id) => {
