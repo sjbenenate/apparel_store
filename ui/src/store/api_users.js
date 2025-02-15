@@ -31,9 +31,13 @@ const usersApiSlice = apiSlice.injectEndpoints({
             }),
         }),
         getUsers: builder.query({
-            query: () => ({
+            query: ({ pageNumber, pageCount }) => ({
                 url: `${USERS_URL}`,
                 method: 'GET',
+                params: {
+                    pageNumber,
+                    pageCount,
+                },
             }),
             providesTags: ['Users'],
         }),

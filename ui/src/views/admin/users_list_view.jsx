@@ -6,10 +6,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../../components/loader';
 import { ACCESS_LEVELS, printAccessLevel } from '../../constants';
 import Message from '../../components/message';
+import { useParams } from 'react-router-dom';
+import PaginateNav from '../../components/paginate_nav';
 
 const UsersListView = () => {
-    const userQuery = useGetUsersQuery();
-    const users = userQuery.data;
+    const params = useParams();
+    const pageNumber = params?.pageNumber || 1;
+    const pageCount = params?.pageCount || 5;
+
+    const userQuery = useGetUsersQuery({ pageNumber, pageCount });
+    const users = userQuery.isSuccess ? userQuery.data.users : [];
+    const userCount = userQuery.isSuccess ? userQuery.data.userCount : 0;
     const usersLoading = userQuery.isLoading;
 
     const [deleteUser, deleteUserStatus] = useDeleteUserMutation();
@@ -97,6 +104,14 @@ const UsersListView = () => {
                 </Message>
             ) : null}
             {users ? usersTable(users) : null}
+            {userCount && (
+                <PaginateNav
+                    baseUrl="/admin/users/list"
+                    currentPage={pageNumber}
+                    initialPageCount={pageCount}
+                    totalCount={userCount}
+                />
+            )}
         </Container>
     );
 };

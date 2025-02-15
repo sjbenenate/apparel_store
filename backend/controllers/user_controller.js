@@ -6,6 +6,7 @@ import {
     modifyUser,
     removeUser,
     findAllUsers,
+    countUsers,
 } from '../data/db_interface.js';
 import { generateToken, deleteToken } from '../utils/tokens.js';
 import { ACCESS_LEVELS } from '../constants.js';
@@ -66,9 +67,18 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-    console.log('getUsers endpoint hit');
-    const users = await findAllUsers();
-    res.status(200).json(users);
+    const pageNumber = Number(req.query?.pageNumber || 1); // start at 0
+    const pageCount = Number(req.query?.pageCount || 10); // items per page
+    console.log(`get users: page=${pageNumber} pageCount=${pageCount}`);
+
+    const users = await findAllUsers({
+        pageNumber,
+        pageCount,
+    });
+
+    const userCount = await countUsers();
+
+    res.status(200).json({ users, userCount });
 });
 
 const deleteUser = asyncHandler(async (req, res) => {

@@ -94,9 +94,23 @@ const findUser = async ({ email, id }) => {
     return user;
 };
 
-const findAllUsers = async () => {
-    return await userModel.find().select('-password').exec();
+const findAllUsers = async ({
+    filter,
+    sortFilter,
+    pageNumber = 1,
+    pageCount = 0,
+}) => {
+    const users = await userModel
+        .find(filter || {})
+        .sort(sortFilter || { name: 1 })
+        .skip(pageCount * (pageNumber - 1))
+        .limit(pageCount) // 0 returns all
+        .select('-password')
+        .exec();
+    return users;
 };
+
+const countUsers = async (filter) => await userModel.countDocuments(filter);
 
 const findAuthorizedUser = async (email, inputPassword) => {
     const user = await userModel.findOne({ email });
@@ -138,7 +152,7 @@ const countOrders = async (filter) => await orderModel.countDocuments(filter);
 const findOrders = async ({ filter, sortFilter, pageNumber, pageCount }) => {
     const orders = await _paginationFind(orderModel, {
         filter: filter || {},
-        sortFilter: sortFilter || { name: 1 },
+        sortFilter: sortFilter || { createdAt: 1 },
         pageNumber,
         pageCount,
     });
@@ -197,4 +211,5 @@ export {
     removeUser,
     countProducts,
     countOrders,
+    countUsers,
 };

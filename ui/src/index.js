@@ -80,6 +80,10 @@ const router = createBrowserRouter(
             <Route element={<AdminRoute accessLevel={ACCESS_LEVELS.ADMIN} />}>
                 <Route path="admin/users/list" element={<UsersListView />} />
                 <Route
+                    path="admin/users/list/page/:pageNumber/:pageCount"
+                    element={<UsersListView />}
+                />
+                <Route
                     path="admin/users/edit/:userId"
                     element={<UserEditView />}
                 />
