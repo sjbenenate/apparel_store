@@ -5,6 +5,7 @@ import {
     saveOrder,
     modifyOrder,
     findUser,
+    countOrders,
 } from '../data/db_interface.js';
 import {
     CheckoutPaymentIntent,
@@ -26,14 +27,23 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 const getAllOrders = asyncHandler(async (req, res) => {
-    console.log('get all orders');
-    const orders = await findOrders();
-    res.status(200).json(orders);
+    const pageNumber = Number(req.query?.pageNumber || 1); // start at 0
+    const pageCount = Number(req.query?.pageCount || 10); // items per page
+    console.log(`get orders: page=${pageNumber} pageCount=${pageCount}`);
+
+    const orders = await findOrders({
+        pageNumber,
+        pageCount,
+    });
+
+    const orderCount = await countOrders();
+
+    res.status(200).json({ orders, orderCount });
 });
 
 const getOrdersByUser = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const orders = await findOrders(userId);
+    const orders = await findOrders({ filter: { userId } });
     console.log(`get orders by user ${req?.user?.name}`);
     res.status(200).json(orders);
 });

@@ -133,13 +133,15 @@ const removeUser = async (userId) => {
     return result.deletedCount === 1;
 };
 
-const findOrders = async (userId) => {
-    let orders;
-    if (userId) {
-        orders = await orderModel.find({ userId });
-    } else {
-        orders = await orderModel.find();
-    }
+const countOrders = async (filter) => await orderModel.countDocuments(filter);
+
+const findOrders = async ({ filter, sortFilter, pageNumber, pageCount }) => {
+    const orders = await _paginationFind(orderModel, {
+        filter: filter || {},
+        sortFilter: sortFilter || { name: 1 },
+        pageNumber,
+        pageCount,
+    });
     return orders;
 };
 
@@ -194,4 +196,5 @@ export {
     removeProduct,
     removeUser,
     countProducts,
+    countOrders,
 };

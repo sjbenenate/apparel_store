@@ -41,9 +41,13 @@ const ordersApiSlice = apiSlice.injectEndpoints({
             }),
         }),
         getAllOrders: builder.query({
-            query: () => ({
+            query: ({ pageNumber, pageCount }) => ({
                 url: ORDERS_URL,
                 method: 'GET',
+                params: {
+                    pageNumber,
+                    pageCount,
+                },
             }),
         }),
         markAsDelivered: builder.query({
