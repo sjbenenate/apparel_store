@@ -7,7 +7,7 @@ export const ProductCard = ({ product }) => {
     return (
         <Card className="my-3 p-3">
             <Link to={linkUrl}>
-                <Card.Img src={product.image}></Card.Img>
+                <Card.Img width="100%" src={product.image}></Card.Img>
             </Link>
             <Card.Body>
                 <Link to={linkUrl}>

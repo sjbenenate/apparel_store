@@ -142,16 +142,6 @@ const OrderConfirmationView = () => {
                     text="Back to Payment"
                     className={btnSpaceClassName}
                 />
-
-                <Button
-                    type="button"
-                    variant="info"
-                    onClick={placeOrderHandler}
-                    className={btnSpaceClassName}
-                    disabled={createOrderStatus?.isLoading}
-                >
-                    Place Order
-                </Button>
             </div>
         </Container>
     );
