@@ -23,11 +23,17 @@ export const HomeView = () => {
     const params = useParams();
     const pageNumber = params?.pageNumber || 1;
     const pageCount = params?.pageCount || 3;
+    const searchKeyword = params?.keyword;
     const {
         data: productData,
         isLoading,
         isError,
-    } = useGetProductsQuery({ activeOnly: true, pageNumber, pageCount });
+    } = useGetProductsQuery({
+        activeOnly: true,
+        pageNumber,
+        pageCount,
+        searchKeyword,
+    });
     const { products, productCount } = productData || {};
 
     return (
@@ -46,7 +52,7 @@ export const HomeView = () => {
                     currentPage={pageNumber}
                     initialPageCount={pageCount}
                     totalCount={productCount}
-                    baseUrl=""
+                    baseUrl={searchKeyword ? `/search/${searchKeyword}` : ''}
                 />
             </Row>
         </>

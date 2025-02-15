@@ -37,7 +37,12 @@ const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<App />} errorElement={<NotFoundView />}>
             <Route index path="/" element={<HomeView />} />
+            <Route path="/search/:keyword" element={<HomeView />} />
             <Route path="/page/:pageNumber/:pageCount" element={<HomeView />} />
+            <Route
+                path="/search/:keyword/page/:pageNumber/:pageCount"
+                element={<HomeView />}
+            />
             <Route path="product/:productId" element={<ProductView />} />
             <Route path="cart" element={<CartView />} />
             <Route path="login" element={<AuthView signInType="login" />} />

@@ -13,10 +13,16 @@ const getProducts = asyncHandler(async (req, res) => {
     const activeOnly = req.query?.activeOnly === 'true';
     const pageNumber = Number(req.query?.pageNumber || 1); // start at 0
     const pageCount = Number(req.query?.pageCount || 10); // items per page
+    const [searchKey, searchStr] = (req.query?.searchKeyword || ':').split(':');
+
+    const searchExp = new RegExp(searchStr);
 
     console.log(`get products: page=${pageNumber} pageCount=${pageCount}`);
 
-    const filter = activeOnly ? { active: true } : {};
+    let filter = activeOnly ? { active: true } : {};
+    if (searchKey.length > 0) {
+        filter[searchKey] = searchExp;
+    }
 
     const products = await findProducts({
         filter,

@@ -33,6 +33,7 @@ const PaginateNav = ({
         navigate(`${baseUrl}/page/1/${e.target.value}`);
     };
 
+    if (!totalCount) return null;
     return (
         <div className="d-flex flex-wrap">
             <Pagination>{pageLinks}</Pagination>

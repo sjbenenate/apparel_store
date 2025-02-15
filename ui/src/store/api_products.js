@@ -4,12 +4,18 @@ import apiSlice from './api_slice';
 const productsApiSlice = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getProducts: builder.query({
-            query: ({ activeOnly = true, pageNumber, pageCount }) => ({
+            query: ({
+                activeOnly = true,
+                pageNumber,
+                pageCount,
+                searchKeyword,
+            }) => ({
                 url: `${PRODUCTS_URL}`,
                 params: {
                     activeOnly,
                     pageNumber,
                     pageCount,
+                    searchKeyword,
                 },
                 method: 'GET',
             }),
