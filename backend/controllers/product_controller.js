@@ -15,7 +15,7 @@ const getProducts = asyncHandler(async (req, res) => {
     const pageCount = Number(req.query?.pageCount || 10); // items per page
     const [searchKey, searchStr] = (req.query?.searchKeyword || ':').split(':');
 
-    const searchExp = new RegExp(searchStr);
+    const searchExp = new RegExp(searchStr, 'i');
 
     console.log(`get products: page=${pageNumber} pageCount=${pageCount}`);
 
@@ -31,9 +31,7 @@ const getProducts = asyncHandler(async (req, res) => {
         pageCount,
     });
 
-    const productCount = await countProducts(
-        activeOnly ? { active: true } : null
-    );
+    const productCount = await countProducts(filter);
 
     res.json({ products, productCount });
 });

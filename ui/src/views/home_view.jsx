@@ -5,6 +5,7 @@ import Loader from '../components/loader.jsx';
 import Message from '../components/message.jsx';
 import { useParams } from 'react-router-dom';
 import PaginateNav from '../components/paginate_nav.jsx';
+import Search from '../components/search.jsx';
 
 const newProductsList = (products) => {
     if (!products) {
@@ -47,6 +48,7 @@ export const HomeView = () => {
             ) : null}
             {isLoading ? <Loader /> : null}
             <Row>
+                <Search baseUrl="" />
                 {newProductsList(products)}
                 <PaginateNav
                     currentPage={pageNumber}
