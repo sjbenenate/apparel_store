@@ -20,12 +20,14 @@ const OrdersListView = () => {
             <h1>Orders</h1>
             <div>
                 <OrdersHistory orders={orders} />
-                <PaginateNav
-                    baseUrl={`/admin/orders/list`}
-                    currentPage={pageNumber}
-                    initialPageCount={pageCount}
-                    totalCount={orderCount}
-                />
+                {orders.length > 0 && (
+                    <PaginateNav
+                        baseUrl={`/admin/orders/list`}
+                        currentPage={pageNumber}
+                        initialPageCount={pageCount}
+                        totalCount={orderCount}
+                    />
+                )}
                 {ordersQuery.isLoading ? <Loader /> : null}
                 {ordersQuery.isError ? (
                     <Message variant="danger">Error loading orders</Message>
