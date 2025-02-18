@@ -3,7 +3,7 @@ import { ProductCard } from '../components/product_card.jsx';
 import { useGetProductsQuery } from '../store/api_products.js';
 import Loader from '../components/loader.jsx';
 import Message from '../components/message.jsx';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import PaginateNav from '../components/paginate_nav.jsx';
 import Search from '../components/search.jsx';
 
@@ -41,12 +41,21 @@ export const HomeView = () => {
         <Container>
             <Row className="align-items-center">
                 <Col>
-                    <h1>New Products</h1>
+                    <h1>Products</h1>
                 </Col>
                 <Col className="d-flex justify-content-sm-end">
                     <Search baseUrl="" />
                 </Col>
             </Row>
+            {searchKeyword && (
+                <Row>
+                    <Col sm="2">
+                        <Link to="/" className="btn btn-outline-light my-2">
+                            Go Back
+                        </Link>
+                    </Col>
+                </Row>
+            )}
             <Row>
                 {isError ? (
                     <Message

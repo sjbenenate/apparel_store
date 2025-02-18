@@ -10,7 +10,11 @@ const Search = ({ baseUrl, searchKey = 'name' }) => {
     const submitHandler = (e) => {
         e.preventDefault();
         console.log('search submit');
-        navigate(`${baseUrl}/search/${searchKey}:${searchInput}`);
+        const searchValue = searchInput.trim();
+        if (searchValue.length) {
+            navigate(`${baseUrl}/search/${searchKey}:${searchInput.trim()}`);
+            setSearchInput('');
+        }
     };
 
     return (
@@ -22,7 +26,8 @@ const Search = ({ baseUrl, searchKey = 'name' }) => {
             <Form.Group controlId="search" className="d-inline-block">
                 <Form.Control
                     type="text"
-                    placeholder="type search here"
+                    name="q"
+                    placeholder="Search..."
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                 />

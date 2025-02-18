@@ -15,6 +15,8 @@ const getProducts = asyncHandler(async (req, res) => {
     const pageCount = Number(req.query?.pageCount || 10); // items per page
     const [searchKey, searchStr] = (req.query?.searchKeyword || ':').split(':');
 
+    console.log(`Search key '${searchKey}', search value '${searchStr}'`);
+
     const searchExp = new RegExp(searchStr, 'i');
 
     console.log(`get products: page=${pageNumber} pageCount=${pageCount}`);
