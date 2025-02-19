@@ -31,7 +31,7 @@ const ProductCarousel = () => {
                                 alt={product.name}
                                 fluid
                                 rounded
-                                style={{ maxHeight: '500px' }}
+                                style={{ maxHeight: '500px', padding: '3em' }}
                             />
                         </Col>
                         <Col
@@ -55,6 +55,7 @@ const ProductCarousel = () => {
             </Carousel.Item>
         );
     };
+    if (!products.length) return null;
     return <Carousel>{products.map((p) => carouselRow(p))}</Carousel>;
 };
 
