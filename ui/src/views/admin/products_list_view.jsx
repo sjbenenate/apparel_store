@@ -11,6 +11,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import PaginateNav from '../../components/paginate_nav';
 import Search from '../../components/search';
+import Metadata from '../../components/metadata.jsx';
 
 const ProductsListView = () => {
     const params = useParams();
@@ -208,6 +209,7 @@ const ProductsListView = () => {
 
     return (
         <Container>
+            <Metadata title="Admin - Products" />
             <ToastContainer />
             <Row className="align-items-center">
                 <Col>

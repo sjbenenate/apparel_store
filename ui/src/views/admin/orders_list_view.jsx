@@ -5,6 +5,7 @@ import Loader from '../../components/loader';
 import Message from '../../components/message';
 import { useParams } from 'react-router-dom';
 import PaginateNav from '../../components/paginate_nav';
+import Metadata from '../../components/metadata.jsx';
 
 const OrdersListView = () => {
     const params = useParams();
@@ -17,6 +18,7 @@ const OrdersListView = () => {
 
     return (
         <Container>
+            <Metadata title="Admin - Orders" />
             <h1>Orders</h1>
             <div>
                 <OrdersHistory orders={orders} />

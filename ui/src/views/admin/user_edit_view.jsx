@@ -12,6 +12,7 @@ import { localTimeString } from '../../utils';
 import Loader from '../../components/loader';
 import { ToastContainer, toast } from 'react-toastify';
 import { ACCESS_LEVELS, printAccessLevel } from '../../constants';
+import Metadata from '../../components/metadata.jsx';
 
 const inputSpacing = 'my-2';
 
@@ -139,6 +140,7 @@ const UserEditView = () => {
 
     return (
         <FormContainer>
+            <Metadata title={`Admin - Edit User - ${userId}`} />
             <ToastContainer />
             <h1>Edit User</h1>
             {alertMsg ? <Message variant="danger">{alertMsg}</Message> : null}

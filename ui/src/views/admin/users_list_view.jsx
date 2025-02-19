@@ -8,6 +8,7 @@ import { ACCESS_LEVELS, printAccessLevel } from '../../constants';
 import Message from '../../components/message';
 import { useParams } from 'react-router-dom';
 import PaginateNav from '../../components/paginate_nav';
+import Metadata from '../../components/metadata.jsx';
 
 const UsersListView = () => {
     const params = useParams();
@@ -94,6 +95,7 @@ const UsersListView = () => {
     };
     return (
         <Container>
+            <Metadata title="Admin - Users" />
             <ToastContainer />
             <h1>Users</h1>
             {usersLoading ? <Loader /> : null}

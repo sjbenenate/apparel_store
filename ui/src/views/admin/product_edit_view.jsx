@@ -11,6 +11,7 @@ import {
 import Message from '../../components/message';
 import { localTimeString } from '../../utils';
 import Loader from '../../components/loader';
+import Metadata from '../../components/metadata.jsx';
 
 const inputSpacing = 'my-2';
 
@@ -191,6 +192,7 @@ const ProductEditView = () => {
 
     return (
         <FormContainer>
+            <Metadata title={`Admin - Edit Product - ${productId}`} />
             <h1>Edit Product</h1>
             {alertMsg ? <Message variant="danger">{alertMsg}</Message> : null}
             {productLoading ? (
