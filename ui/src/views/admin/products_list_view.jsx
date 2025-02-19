@@ -24,6 +24,8 @@ const ProductsListView = () => {
             pageNumber,
             pageCount,
             searchKeyword,
+            sortKey: 'createdAt',
+            sortDirection: 'up',
         }
     );
     const { products, productCount } = productData || {};

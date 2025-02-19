@@ -14,6 +14,8 @@ const getProducts = asyncHandler(async (req, res) => {
     const pageNumber = Number(req.query?.pageNumber || 1); // start at 0
     const pageCount = Number(req.query?.pageCount || 10); // items per page
     const [searchKey, searchStr] = (req.query?.searchKeyword || ':').split(':');
+    const sortKey = req.query?.sortKey;
+    const sortDirection = req.query?.sortDirection === 'up' ? 1 : -1;
 
     console.log(`Search key '${searchKey}', search value '${searchStr}'`);
 
@@ -28,7 +30,9 @@ const getProducts = asyncHandler(async (req, res) => {
 
     const products = await findProducts({
         filter,
-        sortFilter: { rating: -1 },
+        sortFilter: sortKey
+            ? { [sortKey]: sortDirection }
+            : { rating: sortDirection },
         pageNumber,
         pageCount,
     });

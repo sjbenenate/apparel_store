@@ -34,7 +34,7 @@ const productSchema = new mongoose.Schema(
         category: { type: String, required: true },
         price: { type: Number, required: true },
         countInStock: { type: Number, required: true, default: 0 },
-        rating: { type: Number, required: false },
+        rating: { type: Number, required: false, default: 0 },
         reviews: [reviewSchema],
         active: { type: Boolean, default: true },
     },

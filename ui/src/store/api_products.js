@@ -9,6 +9,8 @@ const productsApiSlice = apiSlice.injectEndpoints({
                 pageNumber,
                 pageCount,
                 searchKeyword,
+                sortKey = 'rating',
+                sortDirection = 'down',
             }) => ({
                 url: `${PRODUCTS_URL}`,
                 params: {
@@ -16,6 +18,8 @@ const productsApiSlice = apiSlice.injectEndpoints({
                     pageNumber,
                     pageCount,
                     searchKeyword,
+                    sortKey,
+                    sortDirection,
                 },
                 method: 'GET',
             }),
