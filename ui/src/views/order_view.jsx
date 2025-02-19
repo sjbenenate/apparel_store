@@ -18,6 +18,7 @@ import { localDateString } from '../utils';
 import { useSelector } from 'react-redux';
 import { selectAuthInfo } from '../store/auth_slice';
 import { ACCESS_LEVELS } from '../constants';
+import Metadata from '../components/metadata.jsx';
 
 export const OrderView = () => {
     const { orderId } = useParams();
@@ -235,6 +236,10 @@ export const OrderView = () => {
 
     return (
         <Container className="my-3 p-3">
+            <Metadata
+                title={`Order ${orderResponse?.order?._id}`}
+                description=""
+            />
             <Row>
                 <h1>{`Order ${orderId}`}</h1>
             </Row>

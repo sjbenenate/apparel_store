@@ -6,6 +6,7 @@ import { RouteButton } from '../components/controls';
 import { useGetUserOrdersQuery } from '../store/api_orders';
 import Loader from '../components/loader';
 import Message from '../components/message';
+import Metadata from '../components/metadata.jsx';
 
 const UserInfoItem = ({ label, value }) => {
     return (
@@ -26,6 +27,7 @@ const ProfileView = () => {
 
     return (
         <Container>
+            <Metadata title={`Profile`} description="" />
             <h1>My Account</h1>
             <Row>
                 <Col md={4} className="my-3 px-md-3">

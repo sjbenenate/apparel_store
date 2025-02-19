@@ -12,6 +12,7 @@ import { RouteButton } from '../components/controls';
 import Message from '../components/message';
 import CheckoutSteps from '../components/checkout_steps';
 import { PAYMENT_METHODS } from '../constants';
+import Metadata from '../components/metadata.jsx';
 
 const PaymentView = () => {
     // Hooks
@@ -58,6 +59,7 @@ const PaymentView = () => {
 
     return (
         <FormContainer>
+            <Metadata title="Checkout - Payment" description="" />
             <CheckoutSteps currentStep="payment" />
             <h1>Payment</h1>
             {alertMessage ? (

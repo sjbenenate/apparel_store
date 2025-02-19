@@ -10,6 +10,7 @@ import { addItemToCart } from '../store/cart_slice.js';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
 import ReviewForm from '../components/review_form.jsx';
 import { localDateString } from '../utils.js';
+import Metadata from '../components/metadata.jsx';
 
 const ProductReviewsList = ({ reviews }) => {
     if (!reviews) return null;
@@ -111,6 +112,10 @@ export const ProductView = () => {
 
     return (
         <Container className="my-3 p-3">
+            <Metadata
+                title={product?.name}
+                description={product?.description}
+            />
             <Row className="mb-3">
                 <Col>
                     <RouteButton text="Home" to="/" />

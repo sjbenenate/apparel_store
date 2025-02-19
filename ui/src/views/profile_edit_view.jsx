@@ -8,6 +8,7 @@ import FormContainer from '../components/form_container';
 import { RouteButton } from '../components/controls';
 import { setUserCredentials } from '../store/auth_slice';
 import { useNavigate } from 'react-router-dom';
+import Metadata from '../components/metadata.jsx';
 
 const ProfileEditView = () => {
     const dispatch = useDispatch();
@@ -48,6 +49,7 @@ const ProfileEditView = () => {
 
     return (
         <FormContainer>
+            <Metadata title={`Profile Edit`} description="" />
             <h1>Edit Profile</h1>
             {alertMessage ? (
                 <Message variant="danger">{alertMessage}</Message>

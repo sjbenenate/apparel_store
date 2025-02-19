@@ -6,6 +6,7 @@ import FormContainer from '../components/form_container';
 import { selectAuthInfo } from '../store/auth_slice';
 import LoginForm from '../components/login_form';
 import RegisterForm from '../components/register_form';
+import Metadata from '../components/metadata.jsx';
 
 const AuthView = ({ signInType }) => {
     const navigate = useNavigate();
@@ -28,6 +29,7 @@ const AuthView = ({ signInType }) => {
 
     return (
         <Container>
+            <Metadata title={`Peacock Apparel - ${signInType}`} />
             <FormContainer>
                 <FormComponent redirect={redirect} />
             </FormContainer>
