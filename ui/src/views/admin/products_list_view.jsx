@@ -10,22 +10,22 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import PaginateNav from '../../components/paginate_nav';
+import Search from '../../components/search';
 
 const ProductsListView = () => {
     const params = useParams();
     const pageNumber = params?.pageNumber || 1;
     const pageCount = params?.pageCount || 3;
+    const searchKeyword = params?.keyword;
 
-    const {
-        data: productData,
-        refetch: refetchProducts,
-        //isError: productsIsError,
-        //error: productsError,
-    } = useGetProductsQuery({
-        activeOnly: false,
-        pageNumber,
-        pageCount,
-    });
+    const { data: productData, refetch: refetchProducts } = useGetProductsQuery(
+        {
+            activeOnly: false,
+            pageNumber,
+            pageCount,
+            searchKeyword,
+        }
+    );
     const { products, productCount } = productData || {};
 
     const [activateProduct, activateProductStatus] =
@@ -181,15 +181,26 @@ const ProductsListView = () => {
                 <Col>
                     <h1>Products</h1>
                 </Col>
-                <Col style={{ textAlign: 'right' }}>
+                <Col>
+                    <Search baseUrl="/admin/products/list" />
+                </Col>
+                <Col sm={5} md={3} className="text-md-end">
                     <Button
-                        className="m-3 btn-info"
+                        className="my-3 btn-info"
                         onClick={handleCreateProduct}
                     >
                         <FaEdit /> New Product
                     </Button>
                 </Col>
             </Row>
+            {searchKeyword && (
+                <Row>
+                    <h6>
+                        Search results for:{' '}
+                        <strong>{searchKeyword.split(':')[1]}</strong>
+                    </h6>
+                </Row>
+            )}
             <Row>
                 {productTable(products)}
                 {products && (
