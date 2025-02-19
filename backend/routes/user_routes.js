@@ -14,6 +14,7 @@ import {
     authMiddleware,
     adminMiddleware,
 } from '../middleware/user_auth_middleware.js';
+import { checkObjectId } from '../middleware/check_object_id_middleware.js';
 import { ACCESS_LEVELS } from '../constants.js';
 
 let userRouter = express.Router();
@@ -34,7 +35,7 @@ userRouter
 
 userRouter
     .route('/:userId')
-    .all(authMiddleware, adminMiddleware(ACCESS_LEVELS.ADMIN))
+    .all(authMiddleware, adminMiddleware(ACCESS_LEVELS.ADMIN), checkObjectId)
     .get(getUserById)
     .put(updateUserById)
     .delete(deleteUser);

@@ -10,11 +10,6 @@ const errorHandler = (err, req, res, next) => {
     const stack =
         process.env.NODE_ENVIRONMENT !== 'production' ? err.stack : '';
 
-    if (err.kind === 'ObjectId' && err.name === 'CastError') {
-        statusCode = 404;
-        message = `Resource not found in database`;
-    }
-
     console.error(message);
 
     res.status(statusCode).json({ message, stack });
