@@ -17,9 +17,9 @@ const ProductCarousel = () => {
     });
     const products = queryData ? queryData.products : [];
 
-    const carouselRow = (product) => {
+    const carouselRow = (product, index) => {
         return (
-            <Carousel.Item className="bg-dark">
+            <Carousel.Item className="bg-dark" key={index}>
                 <Link
                     to={`/product/${product._id}`}
                     className="text-decoration-none text-secondary"
@@ -56,7 +56,7 @@ const ProductCarousel = () => {
         );
     };
     if (!products.length) return null;
-    return <Carousel>{products.map((p) => carouselRow(p))}</Carousel>;
+    return <Carousel>{products.map((p, i) => carouselRow(p, i))}</Carousel>;
 };
 
 export default ProductCarousel;
