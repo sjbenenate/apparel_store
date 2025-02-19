@@ -1,6 +1,10 @@
 import { Helmet } from 'react-helmet-async';
 
-const Metadata = ({ title, description, keywords }) => {
+const Metadata = ({
+    title = 'Peacock Apparel',
+    description = 'New and used clothing for sale and great prices for the fashion minded.',
+    keywords = 'clothing, retail',
+}) => {
     return (
         <Helmet>
             <title>{title}</title>
@@ -8,13 +12,6 @@ const Metadata = ({ title, description, keywords }) => {
             <meta name="keywords" content={keywords} />
         </Helmet>
     );
-};
-
-Metadata.defaultProps = {
-    title: 'Peacock Apparel',
-    description:
-        'New and used clothing for sale and great prices for the fashion minded.',
-    keywords: 'clothing, retail',
 };
 
 export default Metadata;
