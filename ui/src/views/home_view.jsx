@@ -6,6 +6,7 @@ import Message from '../components/message.jsx';
 import { useParams, Link } from 'react-router-dom';
 import PaginateNav from '../components/paginate_nav.jsx';
 import Search from '../components/search.jsx';
+import ProductCarousel from '../components/product_carousel.jsx';
 
 const newProductsList = (products) => {
     if (!products) {
@@ -39,6 +40,11 @@ export const HomeView = () => {
 
     return (
         <Container>
+            {!searchKeyword && (
+                <Row>
+                    <ProductCarousel />
+                </Row>
+            )}
             <Row className="align-items-center">
                 <Col>
                     <h1>Products</h1>
