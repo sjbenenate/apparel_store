@@ -19,10 +19,12 @@ const storage = multer.diskStorage({
 });
 
 const checkFileType = (req, file, cb) => {
-    const approvedTypes = /jpg|JPG|jpeg|JPEG|png|PNG/;
-    const fileType = path.extname(file.originalname);
-    const approved = approvedTypes.test(fileType);
-    if (!approved) {
+    const approvedTypes = /jpg|jpeg|png|webp/;
+    const mimeTypes = /image\/jpe?g|image\/png|image\/webp/;
+    const fileType = path.extname(file.originalname).toLowerCase();
+    const approvedFileType = approvedTypes.test(fileType);
+    const approvedMimeType = mimeTypes.test(file.mimetype);
+    if (!approvedFileType || !approvedMimeType) {
         cb('Only png or jpeg files allowed at this time');
     } else {
         cb(null, true);
