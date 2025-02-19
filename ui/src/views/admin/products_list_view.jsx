@@ -5,7 +5,7 @@ import {
     useCreateProductMutation,
     useDeleteProductMutation,
 } from '../../store/api_products';
-import { FaEdit, FaBan, FaCheck, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaBan, FaCheck, FaTrash, FaCopy } from 'react-icons/fa';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -37,8 +37,8 @@ const ProductsListView = () => {
 
     const navigate = useNavigate();
 
-    const handleCreateProduct = async (e) => {
-        console.log('handling product submit');
+    const createProductHandler = async (e) => {
+        console.log('handling product create');
         e.preventDefault();
         try {
             const res = await createProduct({
@@ -49,6 +49,26 @@ const ProductsListView = () => {
                 price: '10.00',
                 countInStock: 0,
                 image: '/images/airpods.jpg',
+            }).unwrap();
+            console.log(`Navigating to /admin/products/edit/${res._id}`);
+            navigate(`/admin/products/edit/${res._id}`);
+        } catch (err) {
+            toast.error(err?.data?.message || err?.error);
+        }
+    };
+
+    const copyProductHandler = async (e, product) => {
+        console.log('handling product copy');
+        e.preventDefault();
+        try {
+            const res = await createProduct({
+                name: `${product.name} COPY`,
+                description: product.description,
+                brand: product.brand,
+                category: product.category,
+                price: product.price,
+                countInStock: product.countInStock,
+                image: product.image,
             }).unwrap();
             console.log(`Navigating to /admin/products/edit/${res._id}`);
             navigate(`/admin/products/edit/${res._id}`);
@@ -127,6 +147,15 @@ const ProductsListView = () => {
             </td>
             <td>
                 <Button
+                    variant="info"
+                    size="sm"
+                    onClick={(e) => copyProductHandler(e, product)}
+                >
+                    <FaCopy />
+                </Button>
+            </td>
+            <td>
+                <Button
                     variant={!product.active ? 'danger' : 'success'}
                     size="sm"
                     onClick={getActivateHandler(product)}
@@ -161,6 +190,7 @@ const ProductsListView = () => {
                         <th>Price</th>
                         <th>In Stock</th>
                         <th>Edit</th>
+                        <th>Copy</th>
                         <th>Active</th>
                         <th>Delete</th>
                     </tr>
@@ -187,7 +217,7 @@ const ProductsListView = () => {
                 <Col sm={5} md={3} className="text-md-end">
                     <Button
                         className="my-3 btn-info"
-                        onClick={handleCreateProduct}
+                        onClick={createProductHandler}
                     >
                         <FaEdit /> New Product
                     </Button>
@@ -208,7 +238,9 @@ const ProductsListView = () => {
                         currentPage={pageNumber}
                         initialPageCount={pageCount}
                         totalCount={productCount}
-                        baseUrl="/admin/products/list"
+                        baseUrl={`/admin/products/list${
+                            searchKeyword ? `/search/${searchKeyword}` : ''
+                        }`}
                     />
                 )}
             </Row>
