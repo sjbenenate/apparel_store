@@ -7,6 +7,7 @@ import { useParams, Link } from 'react-router-dom';
 import PaginateNav from '../components/paginate_nav.jsx';
 import Search from '../components/search.jsx';
 import ProductCarousel from '../components/product_carousel.jsx';
+import Metadata from '../components/metadata.jsx';
 
 const newProductsList = (products) => {
     if (!products) {
@@ -40,6 +41,7 @@ export const HomeView = () => {
 
     return (
         <Container>
+            <Metadata title="Peacock Apparel" />
             {!searchKeyword && (
                 <Row>
                     <ProductCarousel />
