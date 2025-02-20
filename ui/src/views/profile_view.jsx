@@ -43,9 +43,10 @@ const ProfileView = () => {
                     <div>
                         <OrdersHistory orders={orders} />
                         {ordersQuery.isLoading ? <Loader /> : null}
-                        {ordersQuery.isError ? (
+                        {ordersQuery.error ? (
                             <Message variant="danger">
-                                Error loading orders
+                                {ordersQuery.error?.data?.message ||
+                                    'Error loading orders'}
                             </Message>
                         ) : null}
                     </div>

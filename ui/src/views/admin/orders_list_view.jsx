@@ -30,9 +30,12 @@ const OrdersListView = () => {
                         totalCount={orderCount}
                     />
                 )}
-                {ordersQuery.isLoading ? <Loader /> : null}
-                {ordersQuery.isError ? (
-                    <Message variant="danger">Error loading orders</Message>
+                {ordersQuery?.isLoading ? <Loader /> : null}
+                {ordersQuery?.isError ? (
+                    <Message variant="danger">
+                        {ordersQuery?.error?.data?.message ||
+                            'Error loading orders'}
+                    </Message>
                 ) : null}
             </div>
         </Container>

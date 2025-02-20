@@ -30,7 +30,7 @@ export const OrderView = () => {
     const {
         data: orderResponse,
         isLoading,
-        isError,
+        error,
         refetch: orderRefetch,
     } = useGetOrderQuery(orderId);
 
@@ -246,9 +246,9 @@ export const OrderView = () => {
             <Row>
                 <Col md="8">
                     {isLoading ? <Loader /> : null}
-                    {isError ? (
+                    {error ? (
                         <Message variant="danger">
-                            Error loading order info
+                            {error?.data?.message || 'Error loading order info'}
                         </Message>
                     ) : null}
                     {orderResponse

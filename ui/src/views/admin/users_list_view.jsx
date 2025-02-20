@@ -101,8 +101,7 @@ const UsersListView = () => {
             {usersLoading ? <Loader /> : null}
             {userQuery.isError ? (
                 <Message variant="danger">
-                    {'Error loading users: '}
-                    {userQuery?.error?.error || userQuery?.error?.data?.message}
+                    {userQuery?.error?.data?.message}
                 </Message>
             ) : null}
             {users ? usersTable(users) : null}

@@ -41,7 +41,7 @@ export const ProductView = () => {
     const {
         data: product,
         isLoading,
-        isError,
+        error: productError,
     } = useGetProductInfoQuery(productId);
 
     const addToCart = () => {
@@ -122,8 +122,11 @@ export const ProductView = () => {
                 </Col>
             </Row>
             <Row>
-                {isError ? (
-                    <Message variant="danger">Error loading product!</Message>
+                {productError ? (
+                    <Message variant="danger">
+                        {productError?.data?.message ||
+                            'Error loading product!'}
+                    </Message>
                 ) : null}
                 {isLoading ? <Loader /> : null}
                 {product ? productInfo(product) : null}

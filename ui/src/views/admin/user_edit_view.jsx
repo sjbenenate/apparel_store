@@ -21,8 +21,7 @@ const UserEditView = () => {
     const {
         data: user,
         isLoading: userLoading,
-        isError: userError,
-        error: userErrorData,
+        error: userError,
     } = useGetUserInfoQuery(userId);
 
     const [updateUser, updateUserStatus] = useUpdateUserMutation();
@@ -36,12 +35,7 @@ const UserEditView = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!user?._id) {
-            setAlertMessage('No user found');
-            return;
-        }
-        setAlertMessage(null);
-        setInputName(user.name);
+        setInputName(user?.name);
         setEmail(user?.email || '');
         setAccessLevel(user?.accessLevel || 0);
     }, [user]);
@@ -145,7 +139,7 @@ const UserEditView = () => {
             <h1>Edit User</h1>
             {alertMsg ? <Message variant="danger">{alertMsg}</Message> : null}
             {userError ? (
-                <Message variant="danger">{userErrorData}</Message>
+                <Message variant="danger">{userError?.data?.message}</Message>
             ) : null}
             {userLoading && !userError ? (
                 <Loader />
