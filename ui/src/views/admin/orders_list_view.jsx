@@ -21,6 +21,13 @@ const OrdersListView = () => {
             <Metadata title="Admin - Orders" />
             <h1>Orders</h1>
             <div>
+                {ordersQuery?.isLoading ? <Loader /> : null}
+                {ordersQuery?.isError ? (
+                    <Message variant="danger">
+                        {ordersQuery?.error?.data?.message ||
+                            'Error loading orders'}
+                    </Message>
+                ) : null}
                 <OrdersHistory orders={orders} />
                 {orders.length > 0 && (
                     <PaginateNav
@@ -30,13 +37,6 @@ const OrdersListView = () => {
                         totalCount={orderCount}
                     />
                 )}
-                {ordersQuery?.isLoading ? <Loader /> : null}
-                {ordersQuery?.isError ? (
-                    <Message variant="danger">
-                        {ordersQuery?.error?.data?.message ||
-                            'Error loading orders'}
-                    </Message>
-                ) : null}
             </div>
         </Container>
     );
