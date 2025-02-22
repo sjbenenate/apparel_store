@@ -4,7 +4,7 @@ import { GiShoppingCart } from 'react-icons/gi';
 import { CiUser } from 'react-icons/ci';
 import logo from '../img/peacock_logo.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectCartItems } from '../store/cart_slice';
+import { selectCartItems, resetCart } from '../store/cart_slice';
 import { selectAuthInfo, clearUserCredentials } from '../store/auth_slice';
 import { useLogoutQuery } from '../store/api_users';
 import { useNavigate } from 'react-router-dom';
@@ -37,6 +37,7 @@ const UserNav = () => {
             const res = await logoutQuery.refetch().unwrap();
             console.info(`${res?.message}`);
             dispatch(clearUserCredentials());
+            dispatch(resetCart());
             navigate('/');
         } catch (err) {
             if (err.status !== 409) {
