@@ -128,8 +128,15 @@ const capturePayTransaction = asyncHandler(async (req, res) => {
     const paymentId = req.body?.paymentId;
     const order = await findOrderById(orderId);
     if (!order) {
+        res.status(400);
         throw new Error('Order could not be found by this id');
     }
+
+    if (paymentId !== order.paymentId) {
+        res.status(400);
+        throw new Error('The order has a different payment id');
+    }
+
     const paypalRes = await paypalOrdersController.ordersCapture({
         id: paymentId,
     });

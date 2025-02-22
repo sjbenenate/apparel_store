@@ -150,7 +150,6 @@ export const OrderView = () => {
     const paypalOnApprove = async (data, actions) => {
         console.log('paypal on approve called');
         try {
-            console.log(data);
             const res = await capturePayment({
                 orderId,
                 paymentId: data.orderID,
