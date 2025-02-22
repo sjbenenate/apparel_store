@@ -6,12 +6,15 @@ import {
     modifyOrder,
     findUser,
     countOrders,
+    findProducts,
+    modifyProduct,
 } from '../data/db_interface.js';
 import {
     CheckoutPaymentIntent,
     CaptureStatus,
 } from '@paypal/paypal-server-sdk';
 import paypalOrdersController from './paypal_controller.js';
+import { calculatePrices } from '../utils/prices.js';
 
 const getOrderById = asyncHandler(async (req, res) => {
     const orderId = req.params?.id;
@@ -197,16 +200,62 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 });
 
 const createUserOrder = asyncHandler(async (req, res) => {
-    console.log('add to order started');
+    console.log('creating user order');
     const shippingAddress = req.body?.shippingAddress;
     const orderItems = req.body?.orderItems;
-    const { paymentMethod, orderPrice, shippingPrice, taxPrice, totalPrice } =
+    const { paymentMethod, taxPrice, orderPrice, shippingPrice, totalPrice } =
         req.body;
 
     if (!orderItems || orderItems.length < 1) {
         res.status(400);
         throw new Error('No items in order');
     }
+
+    const dbProducts = await findProducts({
+        filter: { _id: { $in: orderItems.map((p) => p._id) } },
+    });
+
+    const { productsPrice, tax, shipping, total } = calculatePrices(
+        dbProducts,
+        orderItems
+    );
+
+    if (total !== Number(totalPrice)) {
+        res.status(400);
+        throw new Error(`The total order price is not correct.`);
+    }
+
+    // verify stock is still on the shelf
+    const nonAvailableProducts = dbProducts.filter((product) => {
+        const orderItem = orderItems.find((item) =>
+            product._id.equals(item._id)
+        );
+        return product.countInStock - orderItem.qty < 0;
+    });
+
+    if (nonAvailableProducts.length > 0) {
+        res.status(400);
+        throw new Error(
+            `These products are no longer in stock at the requested qty: ${nonAvailableProducts.map(
+                (p) =>
+                    JSON.stringify({
+                        name: p.name,
+                        countInStock: p.countInStock,
+                    })
+            )}`
+        );
+    }
+
+    // take the product qty off the shelf
+    dbProducts.forEach(async (product) => {
+        const orderItem = orderItems.find((item) =>
+            product._id.equals(item._id)
+        );
+        await modifyProduct(product._id, {
+            countInStock: product.countInStock - orderItem.qty,
+        });
+    });
+
     const orderPayload = {
         userId: req.user._id,
         orderItems: orderItems.map((item) => {
@@ -217,13 +266,14 @@ const createUserOrder = asyncHandler(async (req, res) => {
             };
         }),
         shippingAddress,
-        orderPrice,
-        shippingPrice,
-        taxPrice,
-        totalPrice,
+        orderPrice: productsPrice,
+        shippingPrice: shipping,
+        taxPrice: tax,
+        totalPrice: total,
         paymentMethod,
     };
     const order = await saveOrder(orderPayload);
+
     res.status(201).json({ orderId: order._id });
     console.log(`order created ${order._id}`);
 });
