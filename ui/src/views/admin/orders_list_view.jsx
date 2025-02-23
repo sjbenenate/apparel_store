@@ -10,7 +10,7 @@ import Metadata from '../../components/metadata.jsx';
 const OrdersListView = () => {
     const params = useParams();
     const pageNumber = params?.pageNumber || 1;
-    const pageCount = params?.pageCount || 2;
+    const pageCount = params?.pageCount || 10;
     const ordersQuery = useGetAllOrdersQuery({ pageNumber, pageCount });
 
     const orders = ordersQuery.isSuccess ? ordersQuery.data.orders : [];

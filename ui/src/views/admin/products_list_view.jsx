@@ -16,7 +16,7 @@ import Metadata from '../../components/metadata.jsx';
 const ProductsListView = () => {
     const params = useParams();
     const pageNumber = params?.pageNumber || 1;
-    const pageCount = params?.pageCount || 3;
+    const pageCount = params?.pageCount || 10;
     const searchKeyword = params?.keyword;
 
     const { data: productData, refetch: refetchProducts } = useGetProductsQuery(
