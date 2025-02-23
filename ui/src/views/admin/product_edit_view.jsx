@@ -12,6 +12,7 @@ import Message from '../../components/message';
 import { localTimeString } from '../../utils';
 import Loader from '../../components/loader';
 import Metadata from '../../components/metadata.jsx';
+import { ToastContainer, toast } from 'react-toastify';
 
 const inputSpacing = 'my-2';
 
@@ -80,7 +81,9 @@ const ProductEditView = () => {
             console.log(res?.message);
             setImageUrl(res.imageUrl);
         } catch (err) {
-            setAlertMessage(err?.data?.message || err?.error);
+            const msg = err?.data?.message || err?.error;
+            setAlertMessage(msg);
+            toast.error(msg);
         }
     };
 
@@ -192,6 +195,7 @@ const ProductEditView = () => {
 
     return (
         <FormContainer>
+            <ToastContainer />
             <Metadata title={`Admin - Edit Product - ${productId}`} />
             <h1>Edit Product</h1>
             {alertMsg ? <Message variant="danger">{alertMsg}</Message> : null}
