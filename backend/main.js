@@ -24,9 +24,6 @@ app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
 
-// Static storage
-app.use('/uploads', express.static(path.resolve('./uploads')));
-
 // Routes
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
@@ -37,9 +34,22 @@ app.get('/api/config/paypal', authMiddleware, async (req, res) => {
     res.json({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
 
-app.get('/', (req, res) => {
-    res.send('Server was reached on root route.');
-});
+// Static storage
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
+if (process.env.NODE_ENV === 'production') {
+    console.log('launching production');
+    app.use(express.static(path.join(__dirname, 'ui', 'build')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'ui', 'build', 'index.html'));
+    });
+} else {
+    console.log('launching development');
+    app.get('/', (req, res) => {
+        res.send('API is running');
+    });
+}
 
 // Error Middleware
 app.use(UrlNotFound);

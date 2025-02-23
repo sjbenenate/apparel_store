@@ -10,7 +10,8 @@
         "client": "npm run start --prefix ui",
         "dev": "concurrently --kill-others \"npm run server\" \"npm run client\"",
         "data:seed": "node backend/data/seeder/seeder",
-        "data:clear": "node backend/data/seeder/seeder --clear"
+        "data:clear": "node backend/data/seeder/seeder --clear",
+        "build": "npm install && npm install --prefix ui && npm run build --prefix ui"
     },
     "author": "Sarah Benenate",
     "license": "MIT",
