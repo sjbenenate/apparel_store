@@ -6,6 +6,8 @@ import { useRegisterMutation } from '../store/api_users';
 import { useDispatch } from 'react-redux';
 import { setUserCredentials } from '../store/auth_slice';
 
+const MIN_PW_LENGTH = 8;
+
 const RegisterForm = ({ redirect }) => {
     const [inputEmail, setInputEmail] = useState('');
     const [inputName, setInputName] = useState('');
@@ -21,6 +23,10 @@ const RegisterForm = ({ redirect }) => {
         e.preventDefault();
         if (inputPassword !== confirmPassword) {
             setAlertMessage('Passwords to not match!');
+            return;
+        }
+        if (inputPassword.length < MIN_PW_LENGTH) {
+            setAlertMessage(`The minimum password length is ${MIN_PW_LENGTH}`);
             return;
         }
         try {
