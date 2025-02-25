@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Button, Form, FormGroup, ListGroup } from 'react-bootstrap';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Button, Form, FormGroup, ListGroup, Image } from 'react-bootstrap';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import FormContainer from '../../components/form_container';
 import {
     useGetProductInfoQuery,
     useUpdateProductMutation,
-    useUploadProductImageMutation,
 } from '../../store/api_products';
 import Message from '../../components/message';
 import { localTimeString } from '../../utils';
@@ -22,8 +21,6 @@ const ProductEditView = () => {
         useGetProductInfoQuery(productId);
 
     const [updateProduct, updateProductStatus] = useUpdateProductMutation();
-    const [uploadImage, { isLoading: imageIsLoading }] =
-        useUploadProductImageMutation();
 
     const [inputName, setInputName] = useState('');
     const [description, setDescription] = useState('');
@@ -31,7 +28,6 @@ const ProductEditView = () => {
     const [category, setCategory] = useState('');
     const [price, setPrice] = useState('');
     const [countInStock, setCountInStock] = useState(0);
-    const [imageUrl, setImageUrl] = useState('/images/airpods.jpg');
     const [alertMsg, setAlertMessage] = useState(null);
 
     const navigate = useNavigate();
@@ -48,7 +44,6 @@ const ProductEditView = () => {
         setCategory(product?.category || '');
         setPrice(product?.price || '');
         setCountInStock(product?.countInStock || 0);
-        setImageUrl(product?.image || '');
     }, [product]);
 
     const handleSubmit = async (e) => {
@@ -64,26 +59,10 @@ const ProductEditView = () => {
                 category,
                 price,
                 countInStock,
-                image: imageUrl,
             }).unwrap();
             navigate(`/product/${res._id}`);
         } catch (err) {
             setAlertMessage(err?.data?.message || err?.error);
-        }
-    };
-
-    const handleImageUpload = async (e) => {
-        if (!e.target.files[0]) return;
-        try {
-            let formData = new FormData();
-            formData.append('product-image', e.target.files[0]);
-            const res = await uploadImage(formData).unwrap();
-            console.log(res?.message);
-            setImageUrl(res.imageUrl);
-        } catch (err) {
-            const msg = err?.data?.message || err?.error;
-            setAlertMessage(msg);
-            toast.error(msg);
         }
     };
 
@@ -115,24 +94,6 @@ const ProductEditView = () => {
                         value={description}
                         placeholder="Description"
                         onChange={(e) => setDescription(e.target.value)}
-                    />
-                </FormGroup>
-                <FormGroup controlId="image-url" className={inputSpacing}>
-                    <Form.Label>Current Image URL</Form.Label>
-                    <Form.Control
-                        type="text"
-                        placeholder={imageUrl}
-                        value={imageUrl}
-                        onChange={(e) => setImageUrl(e.target.value)}
-                    />
-                </FormGroup>
-                <FormGroup controlId="product-image" className={inputSpacing}>
-                    <Form.Label>Upload New Image</Form.Label>
-                    <Form.Control
-                        type="file"
-                        name="product-image"
-                        disabled={imageIsLoading}
-                        onChange={handleImageUpload}
                     />
                 </FormGroup>
                 <FormGroup controlId="category" className={inputSpacing}>
@@ -193,6 +154,22 @@ const ProductEditView = () => {
         );
     };
 
+    const ImageDisplay = (
+        <div style={{ maxWidth: '400px' }}>
+            <Image src={product?.image} alt={product?.name} rounded fluid />
+            <p>
+                <strong>Image url: </strong>
+                {product?.image}
+            </p>
+            <Link
+                to={`/admin/uploads/${productId}`}
+                className="btn btn-info mb-3"
+            >
+                Change Image
+            </Link>
+        </div>
+    );
+
     return (
         <FormContainer>
             <ToastContainer />
@@ -204,6 +181,7 @@ const ProductEditView = () => {
             ) : (
                 <>
                     {productInfo()}
+                    {ImageDisplay}
                     {getForm()}
                 </>
             )}

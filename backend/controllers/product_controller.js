@@ -88,16 +88,18 @@ const updateProduct = asyncHandler(async (req, res) => {
     const { name, description, brand, category, price, countInStock, image } =
         req.body;
 
-    const product = await modifyProduct(productId, {
+    const payload = {
         userId: req.user._id,
-        name,
-        description,
-        brand,
-        category,
-        price,
-        countInStock,
-        image,
-    });
+        ...(name !== undefined && { name }),
+        ...(description !== undefined && { description }),
+        ...(brand !== undefined && { brand }),
+        ...(category !== undefined && { category }),
+        ...(price !== undefined && { price }),
+        ...(countInStock !== undefined && { countInStock }),
+        ...(image !== undefined && { image }),
+    };
+
+    const product = await modifyProduct(productId, payload);
 
     res.status(201).json(product);
 });

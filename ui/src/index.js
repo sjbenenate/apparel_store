@@ -91,7 +91,10 @@ const router = createBrowserRouter(
                     path="admin/products/edit/:productId"
                     element={<ProductEditView />}
                 />
-                <Route path="admin/uploads" element={<UploadsView />} />
+                <Route
+                    path="admin/uploads/:productId"
+                    element={<UploadsView />}
+                />
             </Route>
             <Route element={<AdminRoute accessLevel={ACCESS_LEVELS.ADMIN} />}>
                 <Route path="admin/users/list" element={<UsersListView />} />

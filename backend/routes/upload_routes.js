@@ -46,7 +46,7 @@ uploadRouter.post(
     (req, res) => {
         res.json({
             message: `File has been uploaded`,
-            imageUrl: `\\uploads\\${req.file.filename}`,
+            imageUrl: `/uploads/${req.file.filename}`,
         });
     }
 );
@@ -61,7 +61,9 @@ uploadRouter.get(
             windowsPathsNoEscape: true,
         });
 
-        res.status(200).json(uploads);
+        res.status(200).json(
+            uploads.map((src) => `/${src.replace('\\', '/')}`)
+        );
     })
 );
 
