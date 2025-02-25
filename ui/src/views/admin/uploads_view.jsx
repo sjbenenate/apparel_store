@@ -13,19 +13,26 @@ const UploadsView = () => {
     const location = useLocation();
     const params = new URLSearchParams(location.search);
     const redirect = params.get('redirect');
-    console.log(`images redirect = '${redirect}'`);
+
+    const handleImageUpdate = (imageData) => {
+        console.log(`Updating to ${imageData}`);
+    };
 
     const imageCard = (imageData, index) => {
+        const fileName = imageData.split('\\')[1];
         return (
             <Col xs={12} sm={6} md={4} lg={3}>
                 <Card key={index} className="p-2 my-3">
-                    <Image
-                        src={`/${imageData}`}
-                        alt={imageData}
-                        rounded
-                        fluid
-                    />
-                    <Card.Footer>{imageData}</Card.Footer>
+                    <Image src={`/${imageData}`} alt={fileName} rounded fluid />
+                    <Card.Footer className="d-flex flex-column text-center">
+                        <p>{fileName}</p>
+                        <Button
+                            variant="info"
+                            onClick={() => handleImageUpdate(imageData)}
+                        >
+                            Select
+                        </Button>
+                    </Card.Footer>
                 </Card>
             </Col>
         );
