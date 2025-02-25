@@ -1,12 +1,15 @@
 import path from 'path';
 import express from 'express';
 import multer from 'multer';
+import { glob } from 'glob';
 
 import {
     authMiddleware,
     adminMiddleware,
 } from '../middleware/user_auth_middleware.js';
 import { ACCESS_LEVELS } from '../constants.js';
+import { asyncHandler } from '../middleware/async_handler_middleware.js';
+import { UPLOADS_PATH } from '../constants.js';
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -46,6 +49,20 @@ uploadRouter.post(
             imageUrl: `\\uploads\\${req.file.filename}`,
         });
     }
+);
+
+uploadRouter.get(
+    '/',
+    authMiddleware,
+    adminMiddleware(ACCESS_LEVELS.MAINTAINER),
+    asyncHandler(async (req, res) => {
+        const uploads = await glob(`${UPLOADS_PATH}/*.{jpg,jpeg,png,webp}`, {
+            absolute: false,
+            windowsPathsNoEscape: true,
+        });
+
+        res.status(200).json(uploads);
+    })
 );
 
 export default uploadRouter;

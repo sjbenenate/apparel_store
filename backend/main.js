@@ -9,6 +9,7 @@ import uploadRouter from './routes/upload_routes.js';
 import { UrlNotFound, errorHandler } from './middleware/error_middleware.js';
 import cookieParser from 'cookie-parser';
 import { authMiddleware } from './middleware/user_auth_middleware.js';
+import { __DIRNAME, UPLOADS_PATH } from './constants.js';
 
 // Environment and database config
 env.config();
@@ -35,14 +36,13 @@ app.get('/api/config/paypal', authMiddleware, async (req, res) => {
 });
 
 // Static storage
-const __dirname = path.resolve();
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+app.use('/uploads', express.static(UPLOADS_PATH));
 
 if (process.env.NODE_ENV === 'production') {
     console.log('launching production');
-    app.use(express.static(path.join(__dirname, 'ui', 'build')));
+    app.use(express.static(path.join(__DIRNAME, 'ui', 'build')));
     app.get('*', (req, res) => {
-        res.sendFile(path.join(__dirname, 'ui', 'build', 'index.html'));
+        res.sendFile(path.join(__DIRNAME, 'ui', 'build', 'index.html'));
     });
 } else {
     console.log('launching development');
