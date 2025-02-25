@@ -70,6 +70,12 @@ const productsApiSlice = apiSlice.injectEndpoints({
             }),
             invalidatesTags: ['Products'],
         }),
+        getUploadedImages: builder.query({
+            query: () => ({
+                url: UPLOADS_URL,
+                method: 'GET',
+            }),
+        }),
         addReview: builder.mutation({
             query: (data) => ({
                 url: `${PRODUCTS_URL}/${data?.productId}/review`,
@@ -89,5 +95,6 @@ export const {
     useActivateProductMutation,
     useUpdateProductMutation,
     useUploadProductImageMutation,
+    useGetUploadedImagesQuery,
     useAddReviewMutation,
 } = productsApiSlice;
