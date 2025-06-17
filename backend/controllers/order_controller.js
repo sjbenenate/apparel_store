@@ -5,12 +5,16 @@ import {
     saveOrder,
     modifyOrder,
     findUser,
+    countOrders,
+    findProducts,
+    modifyProduct,
 } from '../data/db_interface.js';
 import {
     CheckoutPaymentIntent,
     CaptureStatus,
 } from '@paypal/paypal-server-sdk';
 import paypalOrdersController from './paypal_controller.js';
+import { calculatePrices } from '../utils/prices.js';
 
 const getOrderById = asyncHandler(async (req, res) => {
     const orderId = req.params?.id;
@@ -26,14 +30,23 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 const getAllOrders = asyncHandler(async (req, res) => {
-    console.log('get all orders');
-    const orders = await findOrders();
-    res.status(200).json(orders);
+    const pageNumber = Number(req.query?.pageNumber || 1); // start at 0
+    const pageCount = Number(req.query?.pageCount || 10); // items per page
+    console.log(`get orders: page=${pageNumber} pageCount=${pageCount}`);
+
+    const orders = await findOrders({
+        pageNumber,
+        pageCount,
+    });
+
+    const orderCount = await countOrders();
+
+    res.status(200).json({ orders, orderCount });
 });
 
 const getOrdersByUser = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const orders = await findOrders(userId);
+    const orders = await findOrders({ filter: { userId } });
     console.log(`get orders by user ${req?.user?.name}`);
     res.status(200).json(orders);
 });
@@ -115,8 +128,15 @@ const capturePayTransaction = asyncHandler(async (req, res) => {
     const paymentId = req.body?.paymentId;
     const order = await findOrderById(orderId);
     if (!order) {
+        res.status(400);
         throw new Error('Order could not be found by this id');
     }
+
+    if (paymentId !== order.paymentId) {
+        res.status(400);
+        throw new Error('The order has a different payment id');
+    }
+
     const paypalRes = await paypalOrdersController.ordersCapture({
         id: paymentId,
     });
@@ -187,16 +207,62 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 });
 
 const createUserOrder = asyncHandler(async (req, res) => {
-    console.log('add to order started');
+    console.log('creating user order');
     const shippingAddress = req.body?.shippingAddress;
     const orderItems = req.body?.orderItems;
-    const { paymentMethod, orderPrice, shippingPrice, taxPrice, totalPrice } =
+    const { paymentMethod, taxPrice, orderPrice, shippingPrice, totalPrice } =
         req.body;
 
     if (!orderItems || orderItems.length < 1) {
         res.status(400);
         throw new Error('No items in order');
     }
+
+    const dbProducts = await findProducts({
+        filter: { _id: { $in: orderItems.map((p) => p._id) } },
+    });
+
+    const { productsPrice, tax, shipping, total } = calculatePrices(
+        dbProducts,
+        orderItems
+    );
+
+    if (total !== Number(totalPrice)) {
+        res.status(400);
+        throw new Error(`The total order price is not correct.`);
+    }
+
+    // verify stock is still on the shelf
+    const nonAvailableProducts = dbProducts.filter((product) => {
+        const orderItem = orderItems.find((item) =>
+            product._id.equals(item._id)
+        );
+        return product.countInStock - orderItem.qty < 0;
+    });
+
+    if (nonAvailableProducts.length > 0) {
+        res.status(400);
+        throw new Error(
+            `These products are no longer in stock at the requested qty: ${nonAvailableProducts.map(
+                (p) =>
+                    JSON.stringify({
+                        name: p.name,
+                        countInStock: p.countInStock,
+                    })
+            )}`
+        );
+    }
+
+    // take the product qty off the shelf
+    dbProducts.forEach(async (product) => {
+        const orderItem = orderItems.find((item) =>
+            product._id.equals(item._id)
+        );
+        await modifyProduct(product._id, {
+            countInStock: product.countInStock - orderItem.qty,
+        });
+    });
+
     const orderPayload = {
         userId: req.user._id,
         orderItems: orderItems.map((item) => {
@@ -207,13 +273,14 @@ const createUserOrder = asyncHandler(async (req, res) => {
             };
         }),
         shippingAddress,
-        orderPrice,
-        shippingPrice,
-        taxPrice,
-        totalPrice,
+        orderPrice: productsPrice,
+        shippingPrice: shipping,
+        taxPrice: tax,
+        totalPrice: total,
         paymentMethod,
     };
     const order = await saveOrder(orderPayload);
+
     res.status(201).json({ orderId: order._id });
     console.log(`order created ${order._id}`);
 });

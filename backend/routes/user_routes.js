@@ -8,12 +8,13 @@ import {
     getUsers,
     deleteUser,
     getUserById,
-    updateUser,
+    updateUserById,
 } from '../controllers/user_controller.js';
 import {
     authMiddleware,
     adminMiddleware,
 } from '../middleware/user_auth_middleware.js';
+import { checkObjectId } from '../middleware/check_object_id_middleware.js';
 import { ACCESS_LEVELS } from '../constants.js';
 
 let userRouter = express.Router();
@@ -33,10 +34,10 @@ userRouter
     .put(updateUserProfile);
 
 userRouter
-    .route('/:id')
-    .all(authMiddleware, adminMiddleware(ACCESS_LEVELS.ADMIN))
+    .route('/:userId')
+    .all(authMiddleware, adminMiddleware(ACCESS_LEVELS.ADMIN), checkObjectId)
     .get(getUserById)
-    .put(updateUser)
+    .put(updateUserById)
     .delete(deleteUser);
 
 export default userRouter;

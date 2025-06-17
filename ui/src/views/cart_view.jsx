@@ -21,6 +21,7 @@ import { RouteButton, QtySelect } from '../components/controls.jsx';
 import { roundDecimals } from '../utils.js';
 import Message from '../components/message.jsx';
 import CartSummary from '../components/cart_summary.jsx';
+import Metadata from '../components/metadata.jsx';
 
 const CartRow = ({ itemId }) => {
     const dispatch = useDispatch();
@@ -40,6 +41,7 @@ const CartRow = ({ itemId }) => {
 
     return (
         <Card className="p-3">
+            <Metadata title="Peacock Apparel - Checkout" description="" />
             <Row className="align-items-center">
                 <Col sm={2}>
                     <Image

@@ -1,21 +1,45 @@
 import { asyncHandler } from '../middleware/async_handler_middleware.js';
 import {
-    findAllProducts,
+    findProducts,
     findProductById,
     modifyProduct,
     saveNewProduct,
+    removeProduct,
+    countProducts,
 } from '../data/db_interface.js';
 
 const getProducts = asyncHandler(async (req, res) => {
     console.log('products endpoint hit');
     const activeOnly = req.query?.activeOnly === 'true';
-    let products = [];
-    if (activeOnly) {
-        products = await findAllProducts({ active: true });
-    } else {
-        products = await findAllProducts();
+    const pageNumber = Number(req.query?.pageNumber || 1); // start at 0
+    const pageCount = Number(req.query?.pageCount || 10); // items per page
+    const [searchKey, searchStr] = (req.query?.searchKeyword || ':').split(':');
+    const sortKey = req.query?.sortKey;
+    const sortDirection = req.query?.sortDirection === 'up' ? 1 : -1;
+
+    console.log(`Search key '${searchKey}', search value '${searchStr}'`);
+
+    const searchExp = new RegExp(searchStr, 'i');
+
+    console.log(`get products: page=${pageNumber} pageCount=${pageCount}`);
+
+    let filter = activeOnly ? { active: true } : {};
+    if (searchKey.length > 0) {
+        filter[searchKey] = searchExp;
     }
-    res.json(products);
+
+    const products = await findProducts({
+        filter,
+        sortFilter: sortKey
+            ? { [sortKey]: sortDirection }
+            : { rating: sortDirection },
+        pageNumber,
+        pageCount,
+    });
+
+    const productCount = await countProducts(filter);
+
+    res.json({ products, productCount });
 });
 
 const getProductById = asyncHandler(async (req, res) => {
@@ -64,18 +88,73 @@ const updateProduct = asyncHandler(async (req, res) => {
     const { name, description, brand, category, price, countInStock, image } =
         req.body;
 
-    const product = await modifyProduct(productId, {
+    const payload = {
         userId: req.user._id,
-        name,
-        description,
-        brand,
-        category,
-        price,
-        countInStock,
-        image,
-    });
+        ...(name !== undefined && { name }),
+        ...(description !== undefined && { description }),
+        ...(brand !== undefined && { brand }),
+        ...(category !== undefined && { category }),
+        ...(price !== undefined && { price }),
+        ...(countInStock !== undefined && { countInStock }),
+        ...(image !== undefined && { image }),
+    };
+
+    const product = await modifyProduct(productId, payload);
 
     res.status(201).json(product);
+});
+
+const deleteProduct = asyncHandler(async (req, res) => {
+    const productId = req.params.productId;
+    console.log(`Deleting product id ${productId}`);
+    const success = await removeProduct(productId);
+    if (success) {
+        res.status(200).json({ success });
+    } else {
+        res.status(404);
+        throw new Error('Product not found');
+    }
+});
+
+const addProductReview = asyncHandler(async (req, res) => {
+    const productId = req.params.productId;
+    console.log(`Adding review to product id ${productId}`);
+    let product = await findProductById(productId);
+    if (!product) {
+        res.status(404).json({ message: 'Product not found' });
+        return;
+    }
+    const alreadyReviewed = product.reviews.some((review) => {
+        console.log(review);
+        return req.user._id.equals(review.userId);
+    });
+    if (alreadyReviewed) {
+        res.status(400).json({
+            message: 'A review already exists for this user',
+        });
+        return;
+    }
+
+    const review = {
+        userId: req.user._id,
+        name: req.user.name,
+        heading: req.body?.heading,
+        comment: req.body?.comment,
+        rating: Number(req.body?.rating),
+    };
+
+    const allReviews = [...product.reviews, review];
+    const reviewsSum = allReviews.reduce(
+        (acc, review) => acc + review.rating,
+        0
+    );
+
+    const result = await modifyProduct(productId, {
+        reviews: allReviews,
+        rating: reviewsSum / allReviews.length,
+    });
+
+    res.status(201).json({ message: 'Review added successfully' });
 });
 
 export {
@@ -84,4 +163,6 @@ export {
     setProductActivate,
     createProduct,
     updateProduct,
+    deleteProduct,
+    addProductReview,
 };

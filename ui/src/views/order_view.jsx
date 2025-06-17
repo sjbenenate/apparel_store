@@ -18,6 +18,7 @@ import { localDateString } from '../utils';
 import { useSelector } from 'react-redux';
 import { selectAuthInfo } from '../store/auth_slice';
 import { ACCESS_LEVELS } from '../constants';
+import Metadata from '../components/metadata.jsx';
 
 export const OrderView = () => {
     const { orderId } = useParams();
@@ -29,7 +30,7 @@ export const OrderView = () => {
     const {
         data: orderResponse,
         isLoading,
-        isError,
+        error,
         refetch: orderRefetch,
     } = useGetOrderQuery(orderId);
 
@@ -149,7 +150,6 @@ export const OrderView = () => {
     const paypalOnApprove = async (data, actions) => {
         console.log('paypal on approve called');
         try {
-            console.log(data);
             const res = await capturePayment({
                 orderId,
                 paymentId: data.orderID,
@@ -235,15 +235,19 @@ export const OrderView = () => {
 
     return (
         <Container className="my-3 p-3">
+            <Metadata
+                title={`Order ${orderResponse?.order?._id}`}
+                description=""
+            />
             <Row>
                 <h1>{`Order ${orderId}`}</h1>
             </Row>
             <Row>
                 <Col md="8">
                     {isLoading ? <Loader /> : null}
-                    {isError ? (
+                    {error ? (
                         <Message variant="danger">
-                            Error loading order info
+                            {error?.data?.message || 'Error loading order info'}
                         </Message>
                     ) : null}
                     {orderResponse

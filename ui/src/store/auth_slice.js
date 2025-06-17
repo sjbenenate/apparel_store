@@ -21,11 +21,11 @@ const authSlice = createSlice({
     reducers: {
         setUserCredentials: (state, action) => {
             state.userInfo = action.payload;
-            //updateLocalStorage(state);
+            updateLocalStorage(state);
         },
         clearUserCredentials: (state, action) => {
             state.userInfo = null;
-            //updateLocalStorage(state);
+            localStorage.clear();
         },
     },
 });

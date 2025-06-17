@@ -9,6 +9,7 @@ const ordersApiSlice = apiSlice.injectEndpoints({
                 method: 'POST',
                 body: { ...data },
             }),
+            invalidatesTags: ['PRODUCTS'],
         }),
         getOrder: builder.query({
             query: (id) => ({
@@ -41,9 +42,13 @@ const ordersApiSlice = apiSlice.injectEndpoints({
             }),
         }),
         getAllOrders: builder.query({
-            query: () => ({
+            query: ({ pageNumber, pageCount }) => ({
                 url: ORDERS_URL,
                 method: 'GET',
+                params: {
+                    pageNumber,
+                    pageCount,
+                },
             }),
         }),
         markAsDelivered: builder.query({

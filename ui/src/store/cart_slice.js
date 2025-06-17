@@ -110,6 +110,10 @@ const cartSlice = createSlice({
             updateLocalStorage(state);
             return state;
         },
+        resetCart: (state) => {
+            state = initialState;
+            return state;
+        },
     },
 });
 
@@ -121,6 +125,7 @@ export const {
     setShippingAddress,
     setPaymentMethod,
     clearCart,
+    resetCart,
 } = cartSlice.actions;
 export default cartSlice;
 

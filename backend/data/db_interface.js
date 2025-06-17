@@ -14,12 +14,45 @@ const dbConnect = async () => {
         var db = await mongoose.connect(mongo_uri);
         console.log(`Connected to ${db.connection.host}`.green.inverse);
     } catch (err) {
+        console.log('Error connecting to database');
         console.error(err).red.inverse;
-        process.exit(1);
+        process.exit(0);
     }
 };
 
 const findAllProducts = async (filter) => await productModel.find(filter);
+
+const countProducts = async (filter) =>
+    await productModel.countDocuments(filter);
+
+const _paginationFind = async (
+    model,
+    { filter, sortFilter, pageNumber = 1, pageCount = 0 }
+) => {
+    if (pageNumber < 0) {
+        throw new Error('Pagination must start at page 1');
+    }
+    const documents = await model
+        .find(filter || {})
+        .sort(sortFilter || {})
+        .skip(pageCount * (pageNumber - 1))
+        .limit(pageCount); // 0 returns all
+    return documents;
+};
+
+const findProducts = async ({
+    filter,
+    sortFilter,
+    pageNumber = 1,
+    pageCount = 0,
+}) => {
+    return await _paginationFind(productModel, {
+        filter,
+        sortFilter: sortFilter || { name: 1 },
+        pageNumber,
+        pageCount,
+    });
+};
 
 const findProductById = async (id) => {
     const products = await productModel.find({ _id: id });
@@ -42,6 +75,11 @@ const modifyProduct = async (productId, data) => {
     return await product.save();
 };
 
+const removeProduct = async (productId) => {
+    const result = await productModel.deleteOne({ _id: productId });
+    return result.deletedCount === 1;
+};
+
 const findUser = async ({ email, id }) => {
     let user;
     if (email) {
@@ -57,6 +95,24 @@ const findUser = async ({ email, id }) => {
     return user;
 };
 
+const findAllUsers = async ({
+    filter,
+    sortFilter,
+    pageNumber = 1,
+    pageCount = 0,
+}) => {
+    const users = await userModel
+        .find(filter || {})
+        .sort(sortFilter || { name: 1 })
+        .skip(pageCount * (pageNumber - 1))
+        .limit(pageCount) // 0 returns all
+        .select('-password')
+        .exec();
+    return users;
+};
+
+const countUsers = async (filter) => await userModel.countDocuments(filter);
+
 const findAuthorizedUser = async (email, inputPassword) => {
     const user = await userModel.findOne({ email });
     if (user && user.checkPassword(inputPassword)) {
@@ -71,10 +127,11 @@ const saveUser = async (name, email, password) => {
     return user;
 };
 
-const modifyUser = async (userId, { name, email, password }) => {
+const modifyUser = async (userId, { name, email, password, accessLevel }) => {
     let payload = {};
     if (name) payload.name = name;
     if (email) payload.email = email;
+    if (accessLevel) payload.accessLevel = accessLevel;
     if (password) {
         payload.password = await userModel.schema.methods.encryptPassword(
             password
@@ -86,13 +143,20 @@ const modifyUser = async (userId, { name, email, password }) => {
         .exec();
 };
 
-const findOrders = async (userId) => {
-    let orders;
-    if (userId) {
-        orders = await orderModel.find({ userId });
-    } else {
-        orders = await orderModel.find();
-    }
+const removeUser = async (userId) => {
+    const result = await userModel.deleteOne({ _id: userId });
+    return result.deletedCount === 1;
+};
+
+const countOrders = async (filter) => await orderModel.countDocuments(filter);
+
+const findOrders = async ({ filter, sortFilter, pageNumber, pageCount }) => {
+    const orders = await _paginationFind(orderModel, {
+        filter: filter || {},
+        sortFilter: sortFilter || { createdAt: 1 },
+        pageNumber,
+        pageCount,
+    });
     return orders;
 };
 
@@ -131,9 +195,11 @@ const modifyOrder = async (
 export {
     dbConnect,
     findAllProducts,
+    findProducts,
     findProductById,
     modifyProduct,
     findUser,
+    findAllUsers,
     findAuthorizedUser,
     saveUser,
     modifyUser,
@@ -142,4 +208,9 @@ export {
     saveOrder,
     modifyOrder,
     saveNewProduct,
+    removeProduct,
+    removeUser,
+    countProducts,
+    countOrders,
+    countUsers,
 };

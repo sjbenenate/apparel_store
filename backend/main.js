@@ -9,6 +9,7 @@ import uploadRouter from './routes/upload_routes.js';
 import { UrlNotFound, errorHandler } from './middleware/error_middleware.js';
 import cookieParser from 'cookie-parser';
 import { authMiddleware } from './middleware/user_auth_middleware.js';
+import { __DIRNAME, UPLOADS_PATH } from './constants.js';
 
 // Environment and database config
 env.config();
@@ -24,9 +25,6 @@ app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
 
-// Static storage
-app.use('/uploads', express.static(path.resolve('./uploads')));
-
 // Routes
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
@@ -37,9 +35,21 @@ app.get('/api/config/paypal', authMiddleware, async (req, res) => {
     res.json({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
 
-app.get('/', (req, res) => {
-    res.send('Server was reached on root route.');
-});
+// Static storage
+app.use('/uploads', express.static(UPLOADS_PATH));
+
+if (process.env.NODE_ENV === 'production') {
+    console.log('launching production');
+    app.use(express.static(path.join(__DIRNAME, 'ui', 'build')));
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__DIRNAME, 'ui', 'build', 'index.html'));
+    });
+} else {
+    console.log('launching development');
+    app.get('/', (req, res) => {
+        res.send('API is running');
+    });
+}
 
 // Error Middleware
 app.use(UrlNotFound);

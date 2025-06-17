@@ -8,6 +8,28 @@ import Message from '../components/message.jsx';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../store/cart_slice.js';
 import { RouteButton, QtySelect } from '../components/controls.jsx';
+import ReviewForm from '../components/review_form.jsx';
+import { localDateString } from '../utils.js';
+import Metadata from '../components/metadata.jsx';
+
+const ProductReviewsList = ({ reviews }) => {
+    if (!reviews) return null;
+    return (
+        <ListGroup>
+            {reviews.map((review, index) => (
+                <ListGroup.Item key={index} className="p-0">
+                    <Rating value={review.rating} />
+                    <span>
+                        <strong>{`${localDateString(review.createdAt)} - ${
+                            review.name
+                        }`}</strong>
+                    </span>
+                    <p>{review.comment}</p>
+                </ListGroup.Item>
+            ))}
+        </ListGroup>
+    );
+};
 
 export const ProductView = () => {
     const { productId } = useParams();
@@ -19,7 +41,7 @@ export const ProductView = () => {
     const {
         data: product,
         isLoading,
-        isError,
+        error: productError,
     } = useGetProductInfoQuery(productId);
 
     const addToCart = () => {
@@ -45,7 +67,7 @@ export const ProductView = () => {
                         <ListGroup.Item>
                             <Rating
                                 value={product.rating}
-                                msg={`${product.numReviews} reviews`}
+                                msg={`${product.reviews.length} reviews`}
                             />
                         </ListGroup.Item>
                         <ListGroup.Item>
@@ -74,7 +96,7 @@ export const ProductView = () => {
                         </ListGroup.Item>
                         <ListGroup.Item>
                             <Button
-                                variant="success"
+                                variant="info"
                                 type="button"
                                 disabled={product.countInStock < 1}
                                 onClick={addToCart}
@@ -90,17 +112,37 @@ export const ProductView = () => {
 
     return (
         <Container className="my-3 p-3">
+            <Metadata
+                title={product?.name}
+                description={product?.description}
+            />
             <Row className="mb-3">
                 <Col>
                     <RouteButton text="Home" to="/" />
                 </Col>
             </Row>
             <Row>
-                {isError ? (
-                    <Message variant="danger">Error loading product!</Message>
+                {productError ? (
+                    <Message variant="danger">
+                        {productError?.data?.message ||
+                            'Error loading product!'}
+                    </Message>
                 ) : null}
                 {isLoading ? <Loader /> : null}
                 {product ? productInfo(product) : null}
+            </Row>
+            <Row className="my-4">
+                <Col md="6">
+                    <h2>All Reviews</h2>
+                    {product?.reviews.length ? (
+                        <ProductReviewsList reviews={product.reviews} />
+                    ) : (
+                        <Message>There are no reviews</Message>
+                    )}
+                </Col>
+                <Col md="6">
+                    {product?._id && <ReviewForm productId={product._id} />}
+                </Col>
             </Row>
         </Container>
     );

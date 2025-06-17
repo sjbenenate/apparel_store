@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Form } from 'react-bootstrap';
 
-const RouteButton = ({ to = '/', text = 'Back', className = '' }) => {
+const RouteButton = ({ to = '/', text = 'Back', className = '', children }) => {
     return (
         <Link className={`btn btn-outline-light ${className}`} to={to}>
-            {text}
+            {text || children}
         </Link>
     );
 };

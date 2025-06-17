@@ -16,6 +16,7 @@ import CheckoutSteps from '../components/checkout_steps';
 import CartSummary from '../components/cart_summary';
 import { useCreateOrderMutation } from '../store/api_orders';
 import Address from '../components/address';
+import Metadata from '../components/metadata.jsx';
 
 const OrderConfirmationView = () => {
     // Hooks
@@ -97,6 +98,7 @@ const OrderConfirmationView = () => {
 
     return (
         <Container>
+            <Metadata title="Checkout - Confirmation" description="" />
             <CheckoutSteps currentStep="confirmation" />
             <h1>Order Confirmation</h1>
             {alertMessage ? (
@@ -142,16 +144,6 @@ const OrderConfirmationView = () => {
                     text="Back to Payment"
                     className={btnSpaceClassName}
                 />
-
-                <Button
-                    type="button"
-                    variant="info"
-                    onClick={placeOrderHandler}
-                    className={btnSpaceClassName}
-                    disabled={createOrderStatus?.isLoading}
-                >
-                    Place Order
-                </Button>
             </div>
         </Container>
     );

@@ -12,6 +12,7 @@ import {
 import { Provider } from 'react-redux';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import store from './store/store';
+import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import { HomeView } from './views/home_view';
 import { NotFoundView } from './views/404_view';
@@ -30,12 +31,20 @@ import OrdersListView from './views/admin/orders_list_view';
 import ProductsListView from './views/admin/products_list_view';
 import ProductEditView from './views/admin/product_edit_view';
 import UsersListView from './views/admin/users_list_view';
+import UserEditView from './views/admin/user_edit_view';
 import { ACCESS_LEVELS } from './constants';
+import UploadsView from './views/admin/uploads_view';
 
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<App />} errorElement={<NotFoundView />}>
             <Route index path="/" element={<HomeView />} />
+            <Route path="/search/:keyword" element={<HomeView />} />
+            <Route path="/page/:pageNumber/:pageCount" element={<HomeView />} />
+            <Route
+                path="/search/:keyword/page/:pageNumber/:pageCount"
+                element={<HomeView />}
+            />
             <Route path="product/:productId" element={<ProductView />} />
             <Route path="cart" element={<CartView />} />
             <Route path="login" element={<AuthView signInType="login" />} />
@@ -59,16 +68,44 @@ const router = createBrowserRouter(
             >
                 <Route path="admin/orders/list" element={<OrdersListView />} />
                 <Route
+                    path="admin/orders/list/page/:pageNumber/:pageCount"
+                    element={<OrdersListView />}
+                />
+                <Route
                     path="admin/products/list"
+                    element={<ProductsListView />}
+                />
+                <Route
+                    path="admin/products/list/search/:keyword"
+                    element={<ProductsListView />}
+                />
+                <Route
+                    path="admin/products/list/search/:keyword/page/:pageNumber/:pageCount"
+                    element={<ProductsListView />}
+                />
+                <Route
+                    path="admin/products/list/page/:pageNumber/:pageCount"
                     element={<ProductsListView />}
                 />
                 <Route
                     path="admin/products/edit/:productId"
                     element={<ProductEditView />}
                 />
+                <Route
+                    path="admin/uploads/:productId"
+                    element={<UploadsView />}
+                />
             </Route>
             <Route element={<AdminRoute accessLevel={ACCESS_LEVELS.ADMIN} />}>
                 <Route path="admin/users/list" element={<UsersListView />} />
+                <Route
+                    path="admin/users/list/page/:pageNumber/:pageCount"
+                    element={<UsersListView />}
+                />
+                <Route
+                    path="admin/users/edit/:userId"
+                    element={<UserEditView />}
+                />
             </Route>
         </Route>
     )
@@ -77,11 +114,13 @@ const router = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <Provider store={store}>
-            <PayPalScriptProvider>
-                <RouterProvider router={router} />
-            </PayPalScriptProvider>
-        </Provider>
+        <HelmetProvider>
+            <Provider store={store}>
+                <PayPalScriptProvider>
+                    <RouterProvider router={router} />
+                </PayPalScriptProvider>
+            </Provider>
+        </HelmetProvider>
     </React.StrictMode>
 );
 
